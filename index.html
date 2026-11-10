@@ -134,4 +134,83 @@ $('parseRdo').onclick=()=>{let si=Number($('sheetPick').value),hi=Number($('head
 function renderCandidates(){ $('candidatesBlock').classList.remove('hidden');$('candidateCount').textContent=candidateRows.length+' candidatos';$('candidateRows').innerHTML=candidateRows.slice(0,400).map((r,i)=>`<tr><td><input type="checkbox" data-i="${i}" ${r.select?'checked':''} ${r.valid?'':'disabled'}></td><td>${safe(r.date||'Não identificada')}</td><td>${r.axis?'Eixo '+r.axis:'Não identificada'}</td><td>${safe(r.service||'—')}${r.phase?' / '+safe(r.phase):''}</td><td>${safe(r.qty)}</td><td>${safe(r.status)}</td><td><span class="source">Linha ${r.row}</span> ${safe(r.note).slice(0,120)}</td></tr>`).join('');$('rdoFeedback').textContent=`${candidateRows.filter(r=>r.valid).length} linha(s) com informações suficientes. Registros incompletos não são aprovados automaticamente.`}
 $('candidateRows').onchange=ev=>{let i=Number(ev.target.dataset.i);if(candidateRows[i])candidateRows[i].select=ev.target.checked};$('clearCandidates').onclick=()=>{$('candidatesBlock').classList.add('hidden');candidateRows=[]};$('approveCandidates').onclick=()=>{let added=0,skipped=0,dups=0;let copy=records.slice();for(const r of candidateRows){if(!r.select||!r.valid)continue;let target='E'+pad(r.axis);let checksum=[r.rdo,r.date,target,r.service,r.phase,r.qty].join('|');if(copy.some(x=>x.importKey===checksum)){dups++;continue}let curr=(r.service==='estacas'?HIST[r.axis-1]:r.service==='bloco'&&[2,3].includes(r.axis)?1:r.service==='pilar'&&r.axis===2?4:0)+copy.filter(x=>x.target===target&&x.status==='produziu'&&x.service===r.service&&x.phase===SERVICES[r.service].final).reduce((a,x)=>a+Number(x.qty),0);let tot=r.service==='estacas'?AX[r.axis-1]:r.service==='pilar'?4:1;if(r.status==='produziu'&&r.phase===SERVICES[r.service].final&&curr+Number(r.qty)>tot){skipped++;continue}copy.push({id:String(Date.now())+'-'+Math.random().toString(36).slice(2),date:r.date,target,service:r.service,phase:r.phase,status:r.status,qty:r.qty||0,reason:r.reason,rdo:r.rdo,resource:r.resource,element:r.element,note:r.note,origin:'RDO importado',validated:true,importKey:checksum});added++}records=copy;save();updateStats();$('rdoFeedback').textContent=`Importados: ${added}; duplicados: ${dups}; incompatíveis com os saldos: ${skipped}. Confira no Histórico.`;renderCandidates()};
 $('nav').onclick=ev=>{let b=ev.target.closest('[data-page]');if(b)view(b.dataset.page)};renderModel();
-</script></body></html>
+</script>
+<!-- CERTARE: interface de importação de apontamentos extraídos da conversa -->
+<script>
+(function(){
+'use strict';
+const nav=document.getElementById('nav');
+const newTab=document.createElement('button');
+newTab.dataset.page='agente';
+newTab.textContent='✦   Agente de atividades';
+nav.insertBefore(newTab,nav.querySelector('[data-page="diario"]'));
+const page=document.createElement('section');
+page.id='page-agente';page.className='view';
+page.innerHTML='<div class="panel"><h2>Agente de atividades · revisão humana</h2><p class="sub">Cole um JSON de lançamentos preparado a partir da conversa. Nenhum apontamento é gravado antes da aprovação. Não invente datas, códigos individuais ou quantidades.</p><div class="section"><label class="field">Lançamentos estruturados (JSON)<textarea id="agentJson" style="min-height:190px;font:13px/1.5 Consolas,monospace" placeholder=\'{"atividades":[{"date":"2026-11-10","target":"E07","service":"estacas","phase":"CON","status":"produziu","qty":2,"note":"Concretadas duas estacas; identificação não informada"}]}\'></textarea></label></div><div class="toolbar"><button class="btn primary" id="agentParse">Analisar lançamentos</button><button class="btn" id="agentPrompt">Copiar instruções para ChatGPT</button></div><p class="mini" id="agentFeedback" aria-live="polite"></p><div id="agentReview" class="hidden section"><h3>Conferência antes de registrar</h3><p class="mini">Revise os itens. Corrija o JSON de origem e analise novamente se houver campos incorretos.</p><div class="tablewrap"><table><thead><tr><th>Aprovar</th><th>Data</th><th>Frente</th><th>Serviço / etapa</th><th>Situação</th><th>Quantidade</th><th>Evidência / observação</th><th>Validação</th></tr></thead><tbody id="agentRows"></tbody></table></div><div class="footerbar"><button class="btn" id="agentCancel">Cancelar</button><button class="btn primary" id="agentConfirm">Registrar selecionados</button></div></div></div>';
+document.querySelector('main').appendChild(page);
+let proposals=[];
+const el=id=>document.getElementById(id);
+const escapeText=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const allowedStatus=new Set(['produziu','andamento','parado','nao_programado']);
+function validTarget(t){return /^(E0[1-9]|V0[1-8]|FAB)$/.test(t)}
+function targetSelection(t){return t==='FAB'?{kind:'fabrica',index:1}:t[0]==='E'?{kind:'eixo',index:Number(t.slice(1))}:{kind:'vao',index:Number(t.slice(1))}}
+function fingerprint(r){return [r.date,r.target,r.service,r.phase,r.status,r.qty,r.element.trim().toUpperCase(),r.rdo.trim(),r.note.trim()].join('|').toLowerCase()}
+function validate(r){
+ let reasons=[];
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(r.date)||Number.isNaN(Date.parse(r.date+'T12:00:00Z')))reasons.push('Data inválida');
+ if(!validTarget(r.target))reasons.push('Frente inválida');
+ if(!SERVICES[r.service])reasons.push('Serviço desconhecido');
+ if(SERVICES[r.service]&&!SERVICES[r.service].phases.some(p=>p[0]===r.phase))reasons.push('Etapa incompatível');
+ if(!allowedStatus.has(r.status))reasons.push('Situação inválida');
+ if(validTarget(r.target)&&SERVICES[r.service]&&!((r.target.startsWith('E')?['estacas','bloco','pilar','travessa']:r.target.startsWith('V')?['longarina','tabuleiro']:['longarina','prelaje']).includes(r.service)))reasons.push('Serviço incompatível com a frente');
+ if(!Number.isInteger(r.qty)||r.qty<0||(r.status==='produziu'&&r.qty<1)||(r.status!=='produziu'&&r.qty!==0))reasons.push('Quantidade incompatível com situação');
+ if(!r.note&&!r.rdo)reasons.push('Falta evidência/descrição');
+ if(records.some(x=>(x.agentFingerprint&&x.agentFingerprint===fingerprint(r))||fingerprint(x)===fingerprint(r)))reasons.push('Possível duplicidade já registrada');
+ return reasons;
+}
+function normalize(x){
+ return {date:String(x.date||x.data||''),target:String(x.target||x.frente||'').toUpperCase(),service:String(x.service||x.servico||''),phase:String(x.phase||x.etapa||'').toUpperCase(),status:String(x.status||x.situacao||''),qty:Number(x.qty??x.quantidade??0),element:String(x.element||x.elemento||''),rdo:String(x.rdo||x.evidencia||''),resource:String(x.resource||x.recurso||''),reason:String(x.reason||x.motivo||''),note:String(x.note||x.observacao||''),sourceText:String(x.sourceText||x.trecho||'')};
+}
+function draw(){
+ el('agentRows').innerHTML=proposals.map((p,i)=>{let errors=validate(p.r);if(proposals.slice(0,i).some(q=>fingerprint(q.r)===fingerprint(p.r)))errors.push('Duplicidade dentro do lote');p.errors=errors;return '<tr><td><input type="checkbox" data-agent-row="'+i+'" '+(p.selected&&!errors.length?'checked':'')+(errors.length?' disabled':'')+'></td><td>'+escapeText(p.r.date)+'</td><td>'+escapeText(p.r.target)+'</td><td>'+escapeText(p.r.service)+' / '+escapeText(p.r.phase)+'</td><td>'+escapeText(p.r.status)+'</td><td>'+escapeText(p.r.qty)+'</td><td>'+escapeText(p.r.rdo+' '+p.r.note+' '+p.r.sourceText)+'</td><td>'+(errors.length?'<span class="err">'+escapeText(errors.join('; '))+'</span>':'<span class="success">Pronto para revisão</span>')+'</td></tr>'}).join('');
+ el('agentReview').classList.remove('hidden');
+ el('agentFeedback').textContent=proposals.length+' proposta(s); '+proposals.filter(p=>!p.errors.length).length+' candidata(s) válida(s).';
+}
+el('agentParse').onclick=()=>{
+ try{
+  const root=JSON.parse(el('agentJson').value);
+  const arr=Array.isArray(root)?root:root.atividades||root.records;
+  if(!Array.isArray(arr)||arr.length>500)throw Error('Informe um array de até 500 atividades em "atividades".');
+  proposals=arr.map(x=>({r:normalize(x),selected:true,errors:[]}));
+  draw();
+ }catch(e){proposals=[];el('agentReview').classList.add('hidden');el('agentFeedback').textContent='Não foi possível interpretar: '+e.message}
+};
+el('agentRows').onchange=e=>{if(e.target.matches('[data-agent-row]'))proposals[Number(e.target.dataset.agentRow)].selected=e.target.checked};
+el('agentCancel').onclick=()=>{proposals=[];el('agentReview').classList.add('hidden');el('agentFeedback').textContent='Lote cancelado.'};
+el('agentConfirm').onclick=()=>{
+ let added=0,rejected=0,working=records.slice();
+ for(const p of proposals){
+  if(!p.selected)continue;
+  const r=p.r,errors=validate(r);
+  if(working.some(x=>x.agentFingerprint===fingerprint(r)))errors.push('Duplicidade no lote');
+  const sel=validTarget(r.target)?targetSelection(r.target):null;
+  if(sel&&SERVICES[r.service]&&r.status==='produziu'&&r.phase===SERVICES[r.service].final){
+   const max=totalFor(r.service,sel);
+   const base=historicFor(r.service,sel);
+   const increment=working.filter(x=>x.target===r.target&&x.service===r.service&&x.phase===r.phase&&x.status==='produziu').reduce((n,x)=>n+Number(x.qty||0),0);
+   if(max<=0||base+increment+r.qty>max)errors.push('Excede o saldo físico disponível');
+  }
+  if(errors.length){rejected++;continue}
+  working.push({...r,id:(crypto.randomUUID?crypto.randomUUID():String(Date.now()+Math.random())),origin:'agente_conversa',validated:true,agentFingerprint:fingerprint(r),sourceText:r.sourceText});added++;
+ }
+ if(added){records=working;save();renderModel();renderHistory()}
+ el('agentFeedback').textContent='Registrados: '+added+'; rejeitados por validação: '+rejected+'. Dados mantidos neste navegador; exporte backup na aba Dados.';
+ proposals=[];el('agentReview').classList.add('hidden');
+};
+el('agentPrompt').onclick=async()=>{
+ const instruction='Converta o relato da obra da Ponte UFPI em JSON puro com a chave "atividades" (array). Cada item deve ter date (YYYY-MM-DD), target (E01–E09, V01–V08 ou FAB), service (estacas, bloco, pilar, travessa, longarina, tabuleiro, prelaje), phase (código da etapa do sistema), status (produziu, andamento, parado, nao_programado), qty (inteiro positivo em produziu; zero nos demais), element, rdo, resource, reason, note e sourceText (trecho literal que fundamenta o registro). Não inferir quantidades nem datas ausentes, não distribuir produção agregada entre elementos individuais, não duplicar dados históricos e não registrar avanço físico apenas por serviço iniciado. Se faltar dado essencial, não inventar: listar em "pendencias" fora de "atividades". Utilizar os códigos de fase: '+JSON.stringify(Object.fromEntries(Object.entries(SERVICES).map(([k,v])=>[k,v.phases])))+'. Responda somente JSON.';
+ try{await navigator.clipboard.writeText(instruction);el('agentFeedback').textContent='Instruções copiadas.'}catch{el('agentFeedback').textContent='Cópia indisponível no navegador.'}
+};
+})();
+</script>
+</body></html>
