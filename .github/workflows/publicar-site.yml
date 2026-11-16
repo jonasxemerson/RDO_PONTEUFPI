@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "index.html"
+      - "painel-cliente.html"
       - "data/**"
       - "scripts/**"
       - ".github/workflows/publicar-site.yml"
@@ -20,12 +21,45 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validar dados versionados
-        run: python3 scripts/validar_dados.py
+      - name: Validar dados versionados e gerar pacote público
+        run: |
+          python3 scripts/validar_dados.py
+          python3 scripts/testar_conciliacao.py
+          python3 -m py_compile scripts/gerar_site_publico.py
+          python3 scripts/gerar_site_publico.py
+          test -f site/index.html
+          test -f site/scripts/modelo-4d-publico.js
+          test ! -f site/scripts/github-dados.js
+          test ! -f site/painel-cliente.html
+          node --check site/scripts/modelo-4d-publico.js
+          python3 -c 'from pathlib import Path; html=Path("site/index.html").read_text(encoding="utf-8"); assert "<script>" in html, "Script JS inline ausente"; Path("/tmp/certare-inline.js").write_text(html.split("<script>",1)[1].split("</script>",1)[0], encoding="utf-8")'
+          node --check /tmp/certare-inline.js
+
+  testar_visual:
+    needs: validar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gerar pacote para teste
+        run: python3 scripts/gerar_site_publico.py
+      - name: Instalar Chromium para teste visual
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install playwright
+          .venv/bin/python -m playwright install --with-deps chromium
+      - name: Testar navegação 4D desktop e mobile
+        run: .venv/bin/python scripts/testar_painel_visual.py
+      - name: Arquivar capturas de tela
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capturas-painel-institucional
+          path: screenshots-ci/
+          if-no-files-found: ignore
 
   publicar:
     if: github.event_name != 'pull_request'
-    needs: validar
+    needs: [validar, testar_visual]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -40,14 +74,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - name: Preparar arquivos públicos do painel
-        run: |
-          mkdir -p site/scripts site/data
-          cp index.html site/index.html
-          cp scripts/github-dados.js site/scripts/github-dados.js
-          cp data/manifest.json site/data/manifest.json
-          cp data/observacoes-*.json site/data/
-          touch site/.nojekyll
+      - name: Gerar distribuição institucional validada
+        run: python3 scripts/gerar_site_publico.py
       - uses: actions/upload-pages-artifact@v4
         with:
           path: "site"
