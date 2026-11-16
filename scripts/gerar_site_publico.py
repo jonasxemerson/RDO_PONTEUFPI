@@ -14,6 +14,7 @@ if DEST.exists():
 (DEST / "data").mkdir(parents=True)
 shutil.copy2(ROOT / "painel-cliente.html", DEST / "index.html")
 shutil.copy2(ROOT / "scripts/modelo-4d-publico.js", DEST / "scripts/modelo-4d-publico.js")
+shutil.copy2(ROOT / "scripts/painel-v2.js", DEST / "scripts/painel-v2.js")
 (DEST / ".nojekyll").write_text("", encoding="utf-8")
 
 manifest = json.loads((ROOT / "data/manifest.json").read_text(encoding="utf-8"))
