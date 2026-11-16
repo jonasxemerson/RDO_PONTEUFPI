@@ -7,8 +7,11 @@ root=Path(__file__).resolve().parents[1]
 doc=json.loads((root/"data/observacoes-2026-11.json").read_text(encoding="utf-8"))
 events=doc["events"]
 assert len(events)==len({x["id"] for x in events}), "IDs duplicados"
-expected=[24,32,32,37,37,37,37,32,24]
-historical=[24,32,32,0,0,0,4,11,8]
+cfg=json.loads((root/"data/indicadores-historicos.json").read_text(encoding="utf-8"))
+expected=cfg["estacas"]["previstas_por_eixo"]
+historical=cfg["estacas"]["historicas_por_eixo"]
+assert cfg["classification"]=="referencia_historica_nao_homologada"
+assert len(expected)==len(historical)==cfg["eixos"]==9
 assert sum(expected)==292, "Total de estacas divergente"
 assert sum(historical)==111, "Baseline histórica divergente"
 assert all(a<=b for a,b in zip(historical,expected))
@@ -26,6 +29,9 @@ assert historical[8] != snapshots["E09"], "Snapshot E09 não deve substituir con
 assert historical[6] != snapshots["E07"], "Snapshot E07 não deve substituir concretadas"
 html=(root/"painel-cliente.html").read_text(encoding="utf-8")
 engine=(root/"scripts/modelo-4d-publico.js").read_text(encoding="utf-8")
-assert "111 / 292" in html and "2 / 9" in html and "4 / 36" in html
-assert "24,32,32,0,0,0,4,11,8" in html and "24,32,32,0,0,0,4,11,8" in engine
+assert "<!-- CERTARE_CONFIG -->" in html
+assert "CONFIG.estacas.previstas_por_eixo" in html
+assert "cfg.estacas.previstas_por_eixo" in engine
+assert "111 / 292" not in html, "KPI duplicado no HTML"
+assert "24,32,32,0,0,0,4,11,8" not in engine, "Estacas duplicadas no motor geométrico"
 print(f"OK: base histórica {sum(historical)}/{sum(expected)}; {len(events)} relatos pendentes; E07={snapshots['E07']}, E09={snapshots['E09']} (etapa desconhecida).")

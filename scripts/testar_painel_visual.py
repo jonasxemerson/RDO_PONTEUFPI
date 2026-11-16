@@ -30,7 +30,13 @@ with sync_playwright() as p:
         assert page.locator("canvas#bridge4d").evaluate("(e) => e.width > 0 && e.height > 0")
         assert page.evaluate("typeof window.Certare4D?.setSelection === 'function'")
         assert page.locator("#axisTitle").inner_text() == "Eixo 07"
-        assert page.locator("nav a").count() == 5
+        assert page.locator("nav a").count() == 6
+        assert page.locator("#kpiEstacas").inner_text() == "111 / 292"
+        assert page.locator("#kpiBlocos").inner_text() == "2 / 9"
+        assert page.locator("#kpiPilares").inner_text() == "4 / 36"
+        assert page.locator("#noticePending").is_visible()
+        assert page.locator(".summary-row").count() == 0
+        assert page.evaluate("() => !!document.getElementById('certare-config')")
         assert page.locator("#axisProgress button").count() == 9
         assert page.locator("#axisChooser button").count() == 9
         assert page.locator("#timelineSelect").is_disabled()
@@ -48,6 +54,11 @@ with sync_playwright() as p:
         page.locator("#axisChooser button[data-axis=\"9\"]").click()
         assert page.locator("#axisTitle").inner_text() == "Eixo 09"
         assert page.locator("#axisProgress button[data-axis=\"9\"]").get_attribute("aria-pressed") == "true"
+        page.locator('[data-model-view="superior"]').click()
+        assert page.locator('[data-model-view="superior"]').get_attribute("aria-pressed") == "true"
+        page.locator("#bridge4d").focus()
+        page.keyboard.press("ArrowRight")
+        page.keyboard.press("Home")
         page.locator("#modelZoomIn").click()
         page.locator('[data-model-layer="fundacoes"]').click()
         assert page.locator('[data-model-layer="fundacoes"]').get_attribute("aria-pressed") == "true"

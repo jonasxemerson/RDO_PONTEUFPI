@@ -1,15 +1,17 @@
 /* CERTARE | motor 4D público, isolado do ambiente operacional. Fonte geométrica: V5. */
 (function(){'use strict';
-const AX=[24,32,32,37,37,37,37,32,24],HIST=[24,32,32,0,0,0,4,11,8];
+const cfg=JSON.parse(document.getElementById('certare-config').textContent);
+const AX=cfg.estacas.previstas_por_eixo,HIST=cfg.estacas.historicas_por_eixo;
 const records=[]; let selected={kind:'eixo',index:7},layer='todos';
 const pad=n=>String(n).padStart(2,'0');
 const totalFor=(s,sel)=>sel.kind==='eixo'?(s==='estacas'?AX[sel.index-1]:s==='pilar'?4:s==='bloco'||s==='travessa'?1:0):sel.kind==='vao'?(s==='longarina'?8:s==='tabuleiro'?1:0):0;
-const historicFor=(s,sel)=>sel.kind==='eixo'?(s==='estacas'?HIST[sel.index-1]:s==='bloco'&&[2,3].includes(sel.index)?1:s==='pilar'&&sel.index===2?4:0):0;
+const historicFor=(s,sel)=>sel.kind==='eixo'?(s==='estacas'?HIST[sel.index-1]:s==='bloco'?cfg.blocos.historicos_por_eixo[sel.index-1]:s==='pilar'?cfg.pilares.historicos_por_eixo[sel.index-1]:0):0;
 const count=(s,sel)=>historicFor(s,sel);
 const target=sel=>sel.kind==='eixo'?'E'+pad(sel.index):sel.kind==='vao'?'V'+pad(sel.index):'FAB';
 const SERVICES={estacas:{final:'CON'},bloco:{final:'CON'},pilar:{final:'CON'},travessa:{final:'CON'},longarina:{final:'CON'},tabuleiro:{final:'LIB'}};
 const cv=document.getElementById('bridge4d');if(!cv)return;const ctx=cv.getContext('2d');if(!ctx)return;
 let yaw=-.39,tilt=.39,scale=1,drag=null,hit=[],zoomFactor=1;
+const VIEWS={perspectiva:[-.39,.39],lateral:[0,.13],superior:[0,1.48],frontal:[-Math.PI/2,.18]};
 const geo={span:78,width:64,waterY:-17};
 function projection(pt,W,H){let [x,y,z]=pt;let X=x*Math.cos(yaw)-z*Math.sin(yaw),Z=x*Math.sin(yaw)+z*Math.cos(yaw);return [W/2+X*scale*.88,H*.54+(-y*Math.cos(tilt)+Z*Math.sin(tilt))*scale*.88-Z*Math.cos(tilt)*scale*.15]}
 const POINTS={};function cylinder(axisX,z,base,top,r,faces=9){let verts=[];for(let i=0;i<faces;i++){let a=Math.PI*2*i/faces;verts.push([axisX+Math.cos(a)*r,base,z+Math.sin(a)*r])}for(let i=0;i<faces;i++){let a=Math.PI*2*i/faces;verts.push([axisX+Math.cos(a)*r,top,z+Math.sin(a)*r])}let f=[];for(let i=0;i<faces;i++)f.push([i,(i+1)%faces,(i+1)%faces+faces,i+faces]);f.push(Array.from({length:faces},(_,i)=>i+faces));return [verts,f]}
@@ -67,13 +69,27 @@ let onSelect=()=>{};
 function applySelection(kind,index,service){selected={kind,index};paint();onSelect(kind,index);window.dispatchEvent(new CustomEvent('certare:select',{detail:{kind,index,service}}))}
 function screenEvent(ev){let r=cv.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top]}
 cv.addEventListener('pointerdown',ev=>{drag={x:ev.clientX,y:ev.clientY,sx:ev.clientX,sy:ev.clientY};cv.setPointerCapture(ev.pointerId)});
-cv.addEventListener('pointermove',ev=>{if(!drag)return;let dx=ev.clientX-drag.x,dy=ev.clientY-drag.y;yaw+=dx*.005;tilt=Math.max(.1,Math.min(.9,tilt+dy*.003));drag.x=ev.clientX;drag.y=ev.clientY;paint()});
+cv.addEventListener('pointermove',ev=>{if(!drag)return;let dx=ev.clientX-drag.x,dy=ev.clientY-drag.y;yaw+=dx*.005;tilt=Math.max(.04,Math.min(1.55,tilt+dy*.003));drag.x=ev.clientX;drag.y=ev.clientY;paint()});
 cv.addEventListener('pointercancel',()=>{drag=null});
 cv.addEventListener('pointerup',ev=>{if(!drag)return;let d=Math.hypot(ev.clientX-drag.sx,ev.clientY-drag.sy);drag=null;if(d>6)return;let p=screenEvent(ev);for(let i=hit.length-1;i>=0;i--){if(pointInPoly(p,hit[i].pts)){let obj=hit[i].meta;applySelection(obj.kind,obj.index,obj.service);return}}});
 cv.addEventListener('wheel',ev=>{ev.preventDefault();zoomFactor=Math.min(2.4,Math.max(.4,zoomFactor*(ev.deltaY>0?.91:1.09)));paint()},{passive:false});
-const actions={zoomIn:()=>{zoomFactor=Math.min(2.4,zoomFactor*1.15);paint()},zoomOut:()=>{zoomFactor=Math.max(.4,zoomFactor/1.15);paint()},reset:()=>{yaw=-.39;tilt=.39;zoomFactor=1;paint()},layer:x=>{if(['todos','fundacoes','meso','super'].includes(x)){layer=x;paint()}},ground:()=>{showGround=!showGround;paint()}};
+function setView(name){if(!VIEWS[name])return;[yaw,tilt]=VIEWS[name];paint();document.querySelectorAll('[data-model-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.modelView===name)));}
+cv.addEventListener('keydown',e=>{
+ let ok=true;
+ if(e.key==='ArrowLeft')yaw-=.12;
+ else if(e.key==='ArrowRight')yaw+=.12;
+ else if(e.key==='ArrowUp')tilt=Math.min(1.55,tilt+.10);
+ else if(e.key==='ArrowDown')tilt=Math.max(.04,tilt-.10);
+ else if(e.key==='+'||e.key==='=')zoomFactor=Math.min(2.4,zoomFactor*1.12);
+ else if(e.key==='-')zoomFactor=Math.max(.4,zoomFactor/1.12);
+ else if(e.key==='Home'){[yaw,tilt]=VIEWS.perspectiva;zoomFactor=1;}
+ else ok=false;
+ if(ok){e.preventDefault();paint()}
+});
+document.querySelectorAll('[data-model-view]').forEach(el=>el.addEventListener('click',()=>setView(el.dataset.modelView)));
+const actions={zoomIn:()=>{zoomFactor=Math.min(2.4,zoomFactor*1.15);paint()},zoomOut:()=>{zoomFactor=Math.max(.4,zoomFactor/1.15);paint()},reset:()=>{zoomFactor=1;setView('perspectiva')},layer:x=>{if(['todos','fundacoes','meso','super'].includes(x)){layer=x;paint()}},ground:()=>{showGround=!showGround;paint()}};
 Object.entries({'modelZoomIn':'zoomIn','modelZoomOut':'zoomOut','modelReset':'reset','modelGround':'ground'}).forEach(([id,key])=>document.getElementById(id)?.addEventListener('click',actions[key]));
 document.querySelectorAll('[data-model-layer]').forEach(el=>el.addEventListener('click',()=>{actions.layer(el.dataset.modelLayer);document.querySelectorAll('[data-model-layer]').forEach(item=>item.setAttribute('aria-pressed',String(item===el)))}));
-window.Certare4D={init:fn=>{if(typeof fn==='function')onSelect=fn;paint()},setSelection:(index)=>{if(Number.isInteger(index)&&index>=1&&index<=9){selected={kind:'eixo',index};paint()}},resize:paint};
+window.Certare4D={init:fn=>{if(typeof fn==='function')onSelect=fn;paint()},setSelection:(index)=>{if(Number.isInteger(index)&&index>=1&&index<=9){selected={kind:'eixo',index};paint()}},resize:paint,setView};
 window.addEventListener('resize',paint);requestAnimationFrame(paint);
 })();
