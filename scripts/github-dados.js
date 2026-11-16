@@ -29,6 +29,15 @@
     Novos registros devem ser inseridos por commit ou Pull Request, nunca com token de escrita embutido no site.</div>
   </div>`;
   main.appendChild(page);
+  const mainKpis = main.querySelector(':scope > .kpis');
+  if (mainKpis) {
+    const notice = document.createElement('div');
+    notice.id = 'ghMainSummary';
+    notice.className = 'callout';
+    notice.style.margin = '0 0 16px';
+    notice.textContent = 'GitHub: aguardando leitura do registro de campo versionado.';
+    mainKpis.insertAdjacentElement('afterend', notice);
+  }
 
   const $ = id => document.getElementById(id);
   const safe = value => String(value ?? '').replace(/[&<>"']/g, c => ({
@@ -50,6 +59,11 @@
       .slice(-1)[0];
     const e7 = latest('E07', 'estacas'), e9 = latest('E09', 'estacas');
     const validated = events.filter(e => e.validation === 'validado_campo').length;
+    const notice = $('ghMainSummary');
+    if (notice) notice.textContent = 'Atualização GitHub: ' + events.length + ' registros técnicos. Eixo 9: ' +
+      (e9 ? e9.quantity + ' estacas “feitas” (' + date(e9.date) + ')' : 'sem dados') +
+      ' · Eixo 7: ' + (e7 ? e7.quantity + ' estacas relatadas (' + date(e7.date) + ')' : 'sem dados') +
+      '. Etapa exata pendente de validação; não incluída automaticamente nas estacas concretadas.';
     $('ghStatus').innerHTML = `<div class="warning"><b>Situação:</b> ${safe(data.approval_state)}
       · ${events.length} observações · ${inferences.length} inferência(s).
       Sem registro não significa obra paralisada.</div>`;
@@ -80,14 +94,36 @@
   async function refresh() {
     $('ghStatus').textContent = 'Lendo repositório GitHub...';
     try {
-      const url = new URL('data/observacoes-2026-11.json', document.baseURI);
-      url.searchParams.set('t', String(Date.now()));
-      const result = await fetch(url.toString(), { cache: 'no-store' });
-      if (!result.ok) throw new Error('HTTP ' + result.status);
-      const incoming = await result.json();
-      if (incoming.schema_version !== 1 || !Array.isArray(incoming.events)) {
-        throw new Error('Estrutura de dados não reconhecida');
+      const makeUrl = path => {
+        const url = new URL(path, document.baseURI);
+        url.searchParams.set('t', String(Date.now()));
+        return url.toString();
+      };
+      const listing = await fetch(makeUrl('data/manifest.json'), { cache: 'no-store' });
+      if (!listing.ok) throw new Error('Manifesto HTTP ' + listing.status);
+      const manifest = await listing.json();
+      if (manifest.schema_version !== 1 || !Array.isArray(manifest.files)) {
+        throw new Error('Manifesto inválido');
       }
+      const files = await Promise.all(manifest.files.map(async path => {
+        if (typeof path !== 'string' || !/^data\/observacoes-\d{4}-\d{2}\.json$/.test(path)) {
+          throw new Error('Caminho de dados não permitido');
+        }
+        const result = await fetch(makeUrl(path), { cache: 'no-store' });
+        if (!result.ok) throw new Error(path + ' HTTP ' + result.status);
+        const doc = await result.json();
+        if (doc.schema_version !== 1 || !Array.isArray(doc.events)) {
+          throw new Error('Estrutura inesperada em ' + path);
+        }
+        return doc;
+      }));
+      const incoming = {
+        schema_version: 1,
+        approval_state: files.some(d => d.approval_state === 'revisao_pendente') ?
+          'revisao_pendente' : 'registros_publicados',
+        events: files.flatMap(d => d.events),
+        inferences: files.flatMap(d => d.inferences || [])
+      };
       data = incoming;
       render();
     } catch (error) {
