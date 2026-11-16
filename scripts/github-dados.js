@@ -13,7 +13,7 @@
   const page = document.createElement('section');
   page.id = 'page-github';
   page.className = 'view';
-  page.innerHTML = \`<div class="panel">
+  page.innerHTML = `<div class="panel">
     <div class="row"><div><h2>Dados versionados no GitHub</h2>
       <p class="sub">Observações técnicas com origem e situação de validação.</p></div>
       <button class="btn" id="ghRefresh">Atualizar leitura</button></div>
@@ -27,7 +27,7 @@
     <div class="section"><h3>Etapas inferidas</h3><div id="ghInferences" class="list section"></div></div>
     <div class="callout section">Fonte central: arquivos data/ do GitHub. A base local legada permanece separada até reconciliação.
     Novos registros devem ser inseridos por commit ou Pull Request, nunca com token de escrita embutido no site.</div>
-  </div>\`;
+  </div>`;
   main.appendChild(page);
 
   const $ = id => document.getElementById(id);
@@ -50,30 +50,30 @@
       .slice(-1)[0];
     const e7 = latest('E07', 'estacas'), e9 = latest('E09', 'estacas');
     const validated = events.filter(e => e.validation === 'validado_campo').length;
-    $('ghStatus').innerHTML = \`<div class="warning"><b>Situação:</b> \${safe(data.approval_state)}
-      · \${events.length} observações · \${inferences.length} inferência(s).
-      Sem registro não significa obra paralisada.</div>\`;
+    $('ghStatus').innerHTML = `<div class="warning"><b>Situação:</b> ${safe(data.approval_state)}
+      · ${events.length} observações · ${inferences.length} inferência(s).
+      Sem registro não significa obra paralisada.</div>`;
     const kpis = [
       ['Eixo 9', e9 ? e9.quantity : '—', e9 ? '“Feitas”, etapa não definida — ' + date(e9.date) : 'Sem dado'],
       ['Eixo 7', e7 ? e7.quantity : '—', e7 ? 'Informadas, etapa não definida — ' + date(e7.date) : 'Sem dado'],
       ['Observações', events.length, 'Histórico registrado no GitHub'],
       ['Validadas em campo', validated, 'Relatos não homologados ficam separados']
     ];
-    $('ghCards').innerHTML = kpis.map(k => \`<div class="kpi"><div class="label">\${safe(k[0])}</div>
-      <div class="num">\${safe(k[1])}</div><div class="mini">\${safe(k[2])}</div></div>\`).join('');
+    $('ghCards').innerHTML = kpis.map(k => `<div class="kpi"><div class="label">${safe(k[0])}</div>
+      <div class="num">${safe(k[1])}</div><div class="mini">${safe(k[2])}</div></div>`).join('');
     $('ghRows').innerHTML = events.slice().sort((a, b) =>
       (b.date + b.time).localeCompare(a.date + a.time)).map(e => {
       const qty = e.quantity == null ? '—' : safe(e.quantity) + ' (' + safe(e.quantity_kind) + ')';
-      return \`<tr><td>\${safe(date(e.date))}<div class="mini">\${safe(e.time)}</div></td>
-        <td>\${safe(e.target)}<div class="mini">\${safe(e.element || '')}</div></td>
-        <td>\${safe(e.activity)}</td><td><span class="badge">\${safe(e.state)}</span></td>
-        <td>\${qty}</td><td>\${safe(e.detail || '')}
-        \${e.review ? '<div class="mini">Revisão pendente</div>' : ''}</td></tr>\`;
+      return `<tr><td>${safe(date(e.date))}<div class="mini">${safe(e.time)}</div></td>
+        <td>${safe(e.target)}<div class="mini">${safe(e.element || '')}</div></td>
+        <td>${safe(e.activity)}</td><td><span class="badge">${safe(e.state)}</span></td>
+        <td>${qty}</td><td>${safe(e.detail || '')}
+        ${e.review ? '<div class="mini">Revisão pendente</div>' : ''}</td></tr>`;
     }).join('');
     $('ghInferences').innerHTML = inferences.length ? inferences.map(e =>
-      \`<div class="item"><b>\${safe(e.element)} · \${safe(e.activity)}</b>
-        <p>Concluída por inferência até \${safe(date(e.completed_no_later_than))};
-        data exata desconhecida. \${safe(e.reason || '')}</p></div>\`).join('') :
+      `<div class="item"><b>${safe(e.element)} · ${safe(e.activity)}</b>
+        <p>Concluída por inferência até ${safe(date(e.completed_no_later_than))};
+        data exata desconhecida. ${safe(e.reason || '')}</p></div>`).join('') :
       '<div class="empty">Nenhuma inferência registrada.</div>';
   }
 
@@ -91,9 +91,9 @@
       data = incoming;
       render();
     } catch (error) {
-      $('ghStatus').innerHTML = \`<div class="warning">Não foi possível ler a fonte central
-        (\${safe(error.message)}). Publique o repositório completo no GitHub Pages.
-        A aba não altera seus registros locais.</div>\`;
+      $('ghStatus').innerHTML = `<div class="warning">Não foi possível ler a fonte central
+        (${safe(error.message)}). Publique o repositório completo no GitHub Pages.
+        A aba não altera seus registros locais.</div>`;
     }
   }
   $('ghRefresh').addEventListener('click', refresh);
