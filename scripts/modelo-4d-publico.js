@@ -111,7 +111,7 @@ function paint(){
 }
 
 let onSelect=()=>{};
-function applySelection(kind,index,service){selected={kind,index,service};paint();onSelect(kind,index);window.dispatchEvent(new CustomEvent('certare:select',{detail:{kind,index,service}}))}
+function applySelection(kind,index,service){onSelect(kind,index);selected={kind,index,service};paint();window.dispatchEvent(new CustomEvent('certare:select',{detail:{kind,index,service}}))}
 function screenEvent(ev){let r=cv.getBoundingClientRect();return [ev.clientX-r.left,ev.clientY-r.top]}
 cv.addEventListener('pointerdown',ev=>{drag={x:ev.clientX,y:ev.clientY,sx:ev.clientX,sy:ev.clientY};cv.setPointerCapture(ev.pointerId)});
 cv.addEventListener('pointermove',ev=>{if(!drag)return;let dx=ev.clientX-drag.x,dy=ev.clientY-drag.y;yaw+=dx*.005;tilt=Math.max(.04,Math.min(1.55,tilt+dy*.003));drag.x=ev.clientX;drag.y=ev.clientY;paint()});
@@ -134,6 +134,7 @@ cv.addEventListener('keydown',e=>{
 document.querySelectorAll('[data-model-view]').forEach(el=>el.addEventListener('click',()=>setView(el.dataset.modelView)));
 const modelContainer=document.querySelector('.card:has(#bridge4d)');
 const presentationBtn=document.getElementById('modelPresentation');
+document.getElementById('modelFocusAxis')?.addEventListener('click',()=>window.Certare4D?.focusAxis(selected.kind==='eixo'?selected.index:7));
 function togglePresentation(force){
  const active=typeof force==='boolean'?force:!modelContainer?.classList.contains('model-presentation');
  if(!modelContainer)return;
