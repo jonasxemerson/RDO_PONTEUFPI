@@ -33,7 +33,7 @@ with sync_playwright() as p:
         assert page.locator("nav a").count() == 4
         assert page.get_by_text("Importar RDO").count() == 0
         assert page.get_by_text("Agente de atividades").count() == 0
-        assert page.evaluate("() => document.documentElement.scrollWidth <= innerWidth + 3"), "Transbordamento horizontal"
+        assert page.evaluate("() => document.documentElement.scrollWidth <= innerWidth + 3"), ("Transbordamento horizontal: " + str(page.evaluate("""() => ({width:document.documentElement.scrollWidth, viewport:innerWidth, offenders:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+3).slice(0,12).map(e=>({tag:e.tagName,id:e.id,cls:e.className?.baseVal||e.className,right:Math.round(e.getBoundingClientRect().right)}))})""")))
         # Integridade visual: pixels opacos pintados no canvas.
         painted = page.locator("#bridge4d").evaluate("""canvas => {
           const ctx=canvas.getContext('2d'),d=ctx.getImageData(0,0,canvas.width,canvas.height).data;
