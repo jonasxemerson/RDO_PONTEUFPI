@@ -27,6 +27,11 @@ with sync_playwright() as p:
         assert response.status == 200, f"HTTP {response.status}"
         assert page.title().startswith("Ponte da UFPI")
         assert page.locator("#bridge4d").is_visible()
+        assert page.locator("#modelPresentation").is_visible()
+        assert page.locator("#modelFocusAxis").is_visible()
+        assert page.evaluate("window.Certare4D.inspect().conceptual === true")
+        assert page.evaluate("window.Certare4D.inspect().piles === 292")
+        assert page.evaluate("window.Certare4D.inspect().axes === 9")
         assert page.locator("canvas#bridge4d").evaluate("(e) => e.width > 0 && e.height > 0")
         assert page.evaluate("typeof window.Certare4D?.setSelection === 'function'")
         assert page.locator("#axisTitle").inner_text() == "Eixo 07"
@@ -60,6 +65,17 @@ with sync_playwright() as p:
         page.keyboard.press("ArrowRight")
         page.keyboard.press("Home")
         page.locator("#modelZoomIn").click()
+        page.locator("#modelFocusAxis").click()
+        assert page.evaluate("window.Certare4D.inspect().focusX !== 0")
+        page.locator("#modelReset").click()
+        assert page.evaluate("window.Certare4D.inspect().focusX === 0")
+        page.locator("#modelPresentation").click()
+        assert page.locator("#modelPresentation").get_attribute("aria-pressed") == "true"
+        assert page.locator(".model-presentation").count() == 1
+        page.screenshot(path=str(out / f"modelo-apresentacao-{name}.png"))
+        page.keyboard.press("Escape")
+        assert page.locator(".model-presentation").count() == 0
+        assert page.locator("#modelPresentation").get_attribute("aria-pressed") == "false"
         page.locator('[data-model-layer="fundacoes"]').click()
         assert page.locator('[data-model-layer="fundacoes"]').get_attribute("aria-pressed") == "true"
         page.evaluate("window.Certare4D.setSelection(9)")
