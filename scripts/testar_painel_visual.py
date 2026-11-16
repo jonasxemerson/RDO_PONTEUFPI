@@ -50,16 +50,26 @@ with sync_playwright() as p:
         assert page.get_by_text("Importar RDO").count() == 0
         assert page.get_by_text("Agente de atividades").count() == 0
         assert page.evaluate("() => document.documentElement.scrollWidth <= innerWidth + 3"), ("Transbordamento horizontal: " + str(page.evaluate("""() => ({width:document.documentElement.scrollWidth, viewport:innerWidth, offenders:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+3).slice(0,12).map(e=>({tag:e.tagName,id:e.id,cls:e.className?.baseVal||e.className,right:Math.round(e.getBoundingClientRect().right)}))})""")))
-        # Integridade visual: pixels opacos pintados no canvas.
+        # Verificação real de WebGL: contexto, framebuffer e pixels renderizados.
+        assert page.evaluate("window.Certare4D.inspect().renderer === 'webgl'")
         painted = page.locator("#bridge4d").evaluate("""canvas => {
-          const ctx=canvas.getContext('2d'),d=ctx.getImageData(0,0,canvas.width,canvas.height).data;
-          let n=0;for(let i=3;i<d.length;i+=257*4){if(d[i]>0)n++}return n
+          const gl=canvas.getContext('webgl'),pixel=new Uint8Array(4);
+          if(!gl)return 0;
+          let n=0;
+          for(let i=2;i<28;i++)for(let j=2;j<15;j++){
+            gl.readPixels(Math.floor(canvas.width*i/30),Math.floor(canvas.height*j/17),1,1,gl.RGBA,gl.UNSIGNED_BYTE,pixel);
+            if(pixel[3]>0)n++;
+          }
+          return n;
         }""")
-        assert painted > 5, f"Canvas vazio ({painted})"
+        assert painted > 10, f"WebGL sem geometria visível ({painted} amostras)"
+        assert page.evaluate("window.Certare4D.inspect().lastVertices > 1000")
+        assert page.locator("#modelMarkers .axis-marker").count() > 0
         page.locator("#axisChooser button[data-axis=\"9\"]").click()
         assert page.locator("#axisTitle").inner_text() == "Eixo 09"
         assert page.locator("#axisProgress button[data-axis=\"9\"]").get_attribute("aria-pressed") == "true"
         page.locator('[data-model-view="superior"]').click()
+        assert page.evaluate("window.Certare4D.inspect().view === 'superior'")
         assert page.locator('[data-model-view="superior"]').get_attribute("aria-pressed") == "true"
         page.locator("#bridge4d").focus()
         page.keyboard.press("ArrowRight")
@@ -70,6 +80,7 @@ with sync_playwright() as p:
         page.locator("#modelReset").click()
         assert page.evaluate("window.Certare4D.inspect().focusX === 0")
         page.locator("#modelPresentation").click()
+        assert page.locator("#modelMarkers .axis-marker").count() > 0
         assert page.locator("#modelPresentation").get_attribute("aria-pressed") == "true"
         assert page.locator(".model-presentation").count() == 1
         page.screenshot(path=str(out / f"modelo-apresentacao-{name}.png"))
@@ -85,6 +96,6 @@ with sync_playwright() as p:
         assert not errors, "Erros JavaScript: " + "; ".join(errors)
         assert page.locator("#elementInspector").is_visible()
         page.close()
-        print(f"OK: Chromium {name}, canvas {painted} amostras pintadas, sem erros JS")
+        print(f"OK: Chromium {name}, WebGL {painted} amostras opacas, sem erros JS")
     browser.close()
 server.shutdown()
