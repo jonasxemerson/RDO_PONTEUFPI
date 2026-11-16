@@ -12,7 +12,21 @@ if DEST.exists():
     shutil.rmtree(DEST)
 (DEST / "scripts").mkdir(parents=True)
 (DEST / "data").mkdir(parents=True)
-shutil.copy2(ROOT / "painel-cliente.html", DEST / "index.html")
+# Fonte única e auditável para indicadores de referência, incorporada no HTML.
+cfg = json.loads((ROOT / "data/indicadores-historicos.json").read_text(encoding="utf-8"))
+ax = cfg["estacas"]["previstas_por_eixo"]
+hist = cfg["estacas"]["historicas_por_eixo"]
+assert len(ax) == len(hist) == cfg["eixos"] == 9
+assert all(isinstance(x, int) and x > 0 for x in ax)
+assert all(isinstance(x, int) and 0 <= x <= a for x, a in zip(hist, ax))
+assert len(cfg["blocos"]["historicos_por_eixo"]) == cfg["eixos"]
+assert len(cfg["pilares"]["historicos_por_eixo"]) == cfg["eixos"]
+assert cfg["classification"] == "referencia_historica_nao_homologada"
+html = (ROOT / "painel-cliente.html").read_text(encoding="utf-8")
+assert "<!-- CERTARE_CONFIG -->" in html
+payload = json.dumps(cfg, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
+html = html.replace("<!-- CERTARE_CONFIG -->", '<script id="certare-config" type="application/json">' + payload + "</script>")
+(DEST / "index.html").write_text(html, encoding="utf-8")
 shutil.copy2(ROOT / "scripts/modelo-4d-publico.js", DEST / "scripts/modelo-4d-publico.js")
 shutil.copy2(ROOT / "scripts/painel-v2.js", DEST / "scripts/painel-v2.js")
 (DEST / ".nojekyll").write_text("", encoding="utf-8")
