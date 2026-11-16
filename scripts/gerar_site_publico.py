@@ -24,7 +24,8 @@ for path in manifest.get("files", []):
         raise ValueError(f"Arquivo de dados inesperado: {path!r}")
     doc = json.loads((ROOT / path).read_text(encoding="utf-8"))
     # Nenhum dado pendente de homologação deve ser publicado no painel institucional.
-    approved = doc.get("approval_state") != "revisao_pendente"
+    approved = doc.get("approval_state") == "homologado"
+    # Status desconhecido nunca equivale a autorização de publicação.
     items = []
     for row in doc.get("events", []):
         if not approved or row.get("validation") != "validado_campo" or row.get("review", False):
