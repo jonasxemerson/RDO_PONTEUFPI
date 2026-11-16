@@ -1,7 +1,8 @@
 /* CERTARE V2: interface documental sem criar datas, quantidades ou aceites. */
 (function(){
 'use strict';
-const AX=[24,32,32,37,37,37,37,32,24], HIST=[24,32,32,0,0,0,4,11,8];
+const CFG=JSON.parse(document.getElementById('certare-config').textContent);
+const AX=CFG.estacas.previstas_por_eixo,HIST=CFG.estacas.historicas_por_eixo;
 const $=id=>document.getElementById(id);
 let currentAxis=7, currentService='estacas';
 const label={estacas:'Estacas',bloco:'Blocos',pilar:'Pilares',travessa:'Travessas',longarina:'Longarinas',tabuleiro:'Tabuleiro'};
@@ -15,6 +16,18 @@ function syncAxis(n,fromModel=false){
  if(!fromModel){window.Certare4D?.setSelection(n); if(typeof window.selectAxis==='function')window.selectAxis(n);}
  document.querySelectorAll('.axis-chooser button, .axis-progress button').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.axis)===n)));
  drawEvidence();
+}
+function renderSummary(){
+ const sum=a=>a.reduce((x,y)=>x+y,0);
+ const values=[
+ ['kpiEixos',String(CFG.eixos)+' eixos'],
+ ['metaVaos',String(CFG.vaos)+' vãos no modelo'],
+ ['kpiEstacas',sum(HIST)+' / '+sum(AX)],
+ ['kpiBlocos',sum(CFG.blocos.historicos_por_eixo)+' / '+CFG.blocos.previstos_total],
+ ['kpiPilares',sum(CFG.pilares.historicos_por_eixo)+' / '+CFG.eixos*CFG.pilares.previstos_por_eixo],
+ ['progressContext','Base histórica: '+sum(HIST)+' estacas registradas de '+sum(AX)+' previstas no modelo. Não representa curva temporal nem progresso contratual.']
+ ];
+ for(const [id,value] of values){let el=$(id);if(el)el.textContent=value}
 }
 function makeBars(){
  const root=$('axisProgress');if(!root)return;
@@ -32,7 +45,7 @@ function makeChooser(){
 function drawEvidence(){
  const root=$('evidenceRows');if(!root)return;
  const n=currentAxis, code=axisCode(n), published=currentEvents().filter(e=>e.target===code);
- const systemRows=[['Estacas (referência histórica)',HIST[n-1]+' / '+AX[n-1]],['Blocos (referência histórica)',[2,3].includes(n)?'1 / 1':'0 / 1'],['Pilares (referência histórica)',n===2?'4 / 4':'0 / 4'],['Eventos homologados vinculados',String(published.length)]];
+ const systemRows=[['Estacas (referência histórica)',HIST[n-1]+' / '+AX[n-1]],['Blocos (referência histórica)',CFG.blocos.historicos_por_eixo[n-1]+' / 1'],['Pilares (referência histórica)',CFG.pilares.historicos_por_eixo[n-1]+' / '+CFG.pilares.previstos_por_eixo],['Eventos homologados vinculados',String(published.length)]];
  root.innerHTML='<p class="small-note">Eixo '+String(n).padStart(2,'0')+' · unidades conhecidas somente por agrupamento, sem posição individual confirmada.</p>'+systemRows.map(([a,b])=>'<div class="evidence-item"><span>'+a+'</span><strong>'+b+'</strong></div>').join('')+
  (published.length?published.map(e=>'<div class="evidence-item"><span>'+escapeHTML(dateBR(e.date))+' · '+escapeHTML(e.activity)+'</span><strong>Homologado</strong></div>').join(''):'<p class="small-note">Nenhum evento novo homologado para esta frente. Ausência de publicação não indica paralisação.</p>');
 }
@@ -58,7 +71,7 @@ function onSelection(e){
    inspector.textContent=area+' · '+(label[currentService]||'Sistema estrutural')+'. Seleção geométrica ilustrativa: não há identificação individual nem atesto da peça representada.';
  }
 }
-makeBars();makeChooser();
+renderSummary();makeBars();makeChooser();
 const sel=$('timelineSelect');if(sel)sel.addEventListener('change',redrawTimeline);
 window.addEventListener('certare:select',onSelection);
 window.addEventListener('certare:public-data',()=>{redrawTimeline();drawEvidence()});
