@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "index.html"
+      - "painel-cliente.html"
       - "data/**"
       - "scripts/**"
       - ".github/workflows/publicar-site.yml"
@@ -40,14 +41,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - name: Preparar arquivos públicos do painel
-        run: |
-          mkdir -p site/scripts site/data
-          cp index.html site/index.html
-          cp scripts/github-dados.js site/scripts/github-dados.js
-          cp data/manifest.json site/data/manifest.json
-          cp data/observacoes-*.json site/data/
-          touch site/.nojekyll
+      - name: Gerar distribuição institucional validada
+        run: python3 scripts/gerar_site_publico.py
       - uses: actions/upload-pages-artifact@v4
         with:
           path: "site"
