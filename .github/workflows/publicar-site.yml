@@ -29,9 +29,11 @@ jobs:
           python3 scripts/gerar_site_publico.py
           test -f site/index.html
           test -f site/scripts/modelo-4d-publico.js
+          test -f site/scripts/painel-v2.js
           test ! -f site/scripts/github-dados.js
           test ! -f site/painel-cliente.html
           node --check site/scripts/modelo-4d-publico.js
+          node --check site/scripts/painel-v2.js
           python3 -c 'from pathlib import Path; html=Path("site/index.html").read_text(encoding="utf-8"); assert "<script>" in html, "Script JS inline ausente"; Path("/tmp/certare-inline.js").write_text(html.split("<script>",1)[1].split("</script>",1)[0], encoding="utf-8")'
           node --check /tmp/certare-inline.js
 
