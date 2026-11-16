@@ -24,6 +24,7 @@ jobs:
       - name: Validar dados versionados e gerar pacote público
         run: |
           python3 scripts/validar_dados.py
+          python3 scripts/testar_conciliacao.py
           python3 -m py_compile scripts/gerar_site_publico.py
           python3 scripts/gerar_site_publico.py
           test -f site/index.html
