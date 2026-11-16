@@ -34,9 +34,30 @@ jobs:
           python3 -c 'from pathlib import Path; html=Path("site/index.html").read_text(encoding="utf-8"); assert "<script>" in html, "Script JS inline ausente"; Path("/tmp/certare-inline.js").write_text(html.split("<script>",1)[1].split("</script>",1)[0], encoding="utf-8")'
           node --check /tmp/certare-inline.js
 
+  testar_visual:
+    needs: validar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gerar pacote para teste
+        run: python3 scripts/gerar_site_publico.py
+      - name: Instalar Chromium para teste visual
+        run: |
+          python3 -m pip install --user playwright
+          python3 -m playwright install --with-deps chromium
+      - name: Testar navegação 4D desktop e mobile
+        run: python3 scripts/testar_painel_visual.py
+      - name: Arquivar capturas de tela
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: capturas-painel-institucional
+          path: screenshots-ci/
+          if-no-files-found: ignore
+
   publicar:
     if: github.event_name != 'pull_request'
-    needs: validar
+    needs: [validar, testar_visual]
     runs-on: ubuntu-latest
     permissions:
       contents: read
