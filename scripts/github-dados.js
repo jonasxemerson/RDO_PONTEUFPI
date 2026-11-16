@@ -70,8 +70,10 @@
     const kpis = [
       ['Eixo 9', e9 ? e9.quantity : '—', e9 ? '“Feitas”, etapa não definida — ' + date(e9.date) : 'Sem dado'],
       ['Eixo 7', e7 ? e7.quantity : '—', e7 ? 'Informadas, etapa não definida — ' + date(e7.date) : 'Sem dado'],
-      ['Observações', events.length, 'Histórico registrado no GitHub'],
-      ['Validadas em campo', validated, 'Relatos não homologados ficam separados']
+      ['Longarinas', '2ª', 'Desforma relatada em 16/11; não confundir com montagem'],
+      ['Pilares · Eixo 3', '2', 'Concretados conforme relato de 04/11, sem inclusão dupla'],
+      ['Pré-lajes', '136 / 82', 'Acréscimos relatados em 04/11 e 06/11; não são estoque total'],
+      ['Observações', events.length, validated + ' validação(ões) de campo; restante pendente']
     ];
     $('ghCards').innerHTML = kpis.map(k => `<div class="kpi"><div class="label">${safe(k[0])}</div>
       <div class="num">${safe(k[1])}</div><div class="mini">${safe(k[2])}</div></div>`).join('');
