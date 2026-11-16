@@ -44,10 +44,11 @@ jobs:
         run: python3 scripts/gerar_site_publico.py
       - name: Instalar Chromium para teste visual
         run: |
-          python3 -m pip install --user playwright
-          python3 -m playwright install --with-deps chromium
+          python3 -m venv .venv
+          .venv/bin/pip install playwright
+          .venv/bin/python -m playwright install --with-deps chromium
       - name: Testar navegação 4D desktop e mobile
-        run: python3 scripts/testar_painel_visual.py
+        run: .venv/bin/python scripts/testar_painel_visual.py
       - name: Arquivar capturas de tela
         if: always()
         uses: actions/upload-artifact@v4
