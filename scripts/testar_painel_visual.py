@@ -30,7 +30,12 @@ with sync_playwright() as p:
         assert page.locator("canvas#bridge4d").evaluate("(e) => e.width > 0 && e.height > 0")
         assert page.evaluate("typeof window.Certare4D?.setSelection === 'function'")
         assert page.locator("#axisTitle").inner_text() == "Eixo 07"
-        assert page.locator("nav a").count() == 4
+        assert page.locator("nav a").count() == 5
+        assert page.locator("#axisProgress button").count() == 9
+        assert page.locator("#axisChooser button").count() == 9
+        assert page.locator("#timelineSelect").is_disabled()
+        assert "Não há série temporal validada" in page.locator("#timelineContent").inner_text()
+        assert "Nenhum evento" in page.locator("#timelineCount").inner_text()
         assert page.get_by_text("Importar RDO").count() == 0
         assert page.get_by_text("Agente de atividades").count() == 0
         assert page.evaluate("() => document.documentElement.scrollWidth <= innerWidth + 3"), ("Transbordamento horizontal: " + str(page.evaluate("""() => ({width:document.documentElement.scrollWidth, viewport:innerWidth, offenders:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+3).slice(0,12).map(e=>({tag:e.tagName,id:e.id,cls:e.className?.baseVal||e.className,right:Math.round(e.getBoundingClientRect().right)}))})""")))
@@ -40,6 +45,9 @@ with sync_playwright() as p:
           let n=0;for(let i=3;i<d.length;i+=257*4){if(d[i]>0)n++}return n
         }""")
         assert painted > 5, f"Canvas vazio ({painted})"
+        page.locator("#axisChooser button[data-axis=\"9\"]").click()
+        assert page.locator("#axisTitle").inner_text() == "Eixo 09"
+        assert page.locator("#axisProgress button[data-axis=\"9\"]").get_attribute("aria-pressed") == "true"
         page.locator("#modelZoomIn").click()
         page.locator('[data-model-layer="fundacoes"]').click()
         assert page.locator('[data-model-layer="fundacoes"]').get_attribute("aria-pressed") == "true"
@@ -48,6 +56,7 @@ with sync_playwright() as p:
         page.locator("#estrutura").scroll_into_view_if_needed()
         page.screenshot(path=str(out / f"painel-{name}.png"), full_page=True)
         assert not errors, "Erros JavaScript: " + "; ".join(errors)
+        assert page.locator("#elementInspector").is_visible()
         page.close()
         print(f"OK: Chromium {name}, canvas {painted} amostras pintadas, sem erros JS")
     browser.close()
