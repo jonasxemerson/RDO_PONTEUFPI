@@ -21,8 +21,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validar dados versionados
-        run: python3 scripts/validar_dados.py
+      - name: Validar dados versionados e gerar pacote público
+        run: |
+          python3 scripts/validar_dados.py
+          python3 -m py_compile scripts/gerar_site_publico.py
+          python3 scripts/gerar_site_publico.py
+          test -f site/index.html
+          test -f site/scripts/modelo-4d-publico.js
+          test ! -f site/scripts/github-dados.js
+          test ! -f site/painel-cliente.html
 
   publicar:
     if: github.event_name != 'pull_request'
