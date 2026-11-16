@@ -27,5 +27,5 @@ assert historical[6] != snapshots["E07"], "Snapshot E07 não deve substituir con
 html=(root/"painel-cliente.html").read_text(encoding="utf-8")
 engine=(root/"scripts/modelo-4d-publico.js").read_text(encoding="utf-8")
 assert "111 / 292" in html and "2 / 9" in html and "4 / 36" in html
-assert "24,32,32,0,0,0,4,11,8" in html and in engine
+assert "24,32,32,0,0,0,4,11,8" in html and "24,32,32,0,0,0,4,11,8" in engine
 print(f"OK: base histórica {sum(historical)}/{sum(expected)}; {len(events)} relatos pendentes; E07={snapshots['E07']}, E09={snapshots['E09']} (etapa desconhecida).")
