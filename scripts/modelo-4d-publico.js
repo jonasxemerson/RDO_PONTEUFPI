@@ -8,8 +8,8 @@ const cfg=JSON.parse(document.getElementById('certare-config').textContent);
 const AX=cfg.estacas.previstas_por_eixo,HIST=cfg.estacas.historicas_por_eixo;
 const pad=n=>String(n).padStart(2,'0');
 const cv=document.getElementById('bridge4d');if(!cv)return;
-const gl=cv.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false})||
-         cv.getContext('experimental-webgl',{alpha:true,antialias:true,premultipliedAlpha:false});
+const gl=cv.getContext('webgl',{alpha:true,antialias:true,preserveDrawingBuffer:true,premultipliedAlpha:false})||
+         cv.getContext('experimental-webgl',{alpha:true,antialias:true,preserveDrawingBuffer:true,premultipliedAlpha:false});
 const frame=cv.parentElement,markers=document.getElementById('modelMarkers');
 const status=document.getElementById('modelRenderStatus');
 if(!gl){
