@@ -5,7 +5,7 @@ from pathlib import Path
 from datetime import date
 
 allowed_targets = {"GERAL", "FAB"} | {f"E{i:02}" for i in range(1, 10)}
-allowed_services = {"estacas", "longarina", "equipamento", "ambiental", "canteiro", "bloco", "pilar", "travessa", "prelaje", "tabuleiro"}
+allowed_services = {"estacas", "longarina", "equipamento", "ambiental", "canteiro", "bloco", "pilar", "travessa", "prelaje", "tabuleiro", "qualidade", "seguranca"}
 manifest = json.loads(Path("data/manifest.json").read_text(encoding="utf-8"))
 assert manifest.get("schema_version") == 1, "Versão do manifesto inválida"
 declared_files = manifest.get("files")
