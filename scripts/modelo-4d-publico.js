@@ -139,7 +139,7 @@ function packEdges(list){
   if(!o.edges?.length||o.kind==='cenario')continue;
   const active=o.kind===selected.kind&&o.index===selected.index&&(!selected.service||selected.service===o.service);
   const color=parseHex(active?ACTIVE_EDGE:EDGE);
-  for(let i=0;i<o.edges.length;i+=3)output.push(...o.edges.slice(i,i+3),0,1,0,...color,active?.92:.28);
+  for(let i=0;i<o.edges.length;i+=3)output.push(...o.edges.slice(i,i+3),0,1,0,...color,active ? 0.92 : 0.28);
  }
  return new Float32Array(output);
 }
