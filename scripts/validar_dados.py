@@ -35,8 +35,20 @@ for path in sorted(Path("data").glob("observacoes-*.json")):
             assert event.get("quantity_kind") == "total_reportado", f"{eid}: snapshot sem total_reportado"
         if qty is not None:
             assert event.get("quantity_kind"), f"{eid}: quantidade sem tipo"
+        if event.get("metric") is not None:
+            assert event.get("state") == "snapshot", f"{eid}: métrica acumulada fora de snapshot"
+            assert event.get("quantity_kind") == "total_reportado", f"{eid}: métrica sem total_reportado"
+        if event.get("quantity_kind") == "ordinal_em_execucao":
+            assert event.get("state") == "em_andamento", f"{eid}: ordinal não pode virar total concluído"
+            assert event.get("service") == "estacas", f"{eid}: ordinal incompatível"
         count += 1
     for inf in doc.get("inferences", []):
         assert inf.get("based_on_event") in seen, f"Referência da inferência inválida: {inf.get('id')}"
         assert inf.get("exact_date") is None, "Inferência não pode inventar data de execução"
+    for req in doc.get("planning_requests", []):
+        rid = req.get("id")
+        assert isinstance(rid, str) and rid and rid not in seen, f"{path}: pendência duplicada: {rid!r}"
+        seen.add(rid)
+        date.fromisoformat(req["date"])
+        assert req.get("title"), f"{rid}: título ausente"
 print(f"OK: {count} observações e IDs únicos em data/.")
