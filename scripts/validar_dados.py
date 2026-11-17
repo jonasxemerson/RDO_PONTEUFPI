@@ -19,6 +19,10 @@ for path in sorted(Path("data").glob("observacoes-*.json")):
     doc = json.loads(path.read_text(encoding="utf-8"))
     assert doc.get("schema_version") == 1, f"{path}: schema_version inválida"
     assert isinstance(doc.get("events"), list), f"{path}: sem array events"
+    if doc.get("approval_state") == "homologado_com_ressalvas":
+        auth = doc.get("homologacao", {})
+        assert auth.get("data") and auth.get("escopo"), f"{path}: homologação sem rastreio"
+        date.fromisoformat(auth["data"])
     for event in doc["events"]:
         eid = event.get("id")
         assert isinstance(eid, str) and eid and eid not in seen, f"{path}: ID duplicado/inválido: {eid!r}"
@@ -28,7 +32,7 @@ for path in sorted(Path("data").glob("observacoes-*.json")):
         assert event.get("target") in allowed_targets, f"{eid}: frente inválida"
         assert event.get("service") in allowed_services, f"{eid}: serviço inválido"
         assert isinstance(event.get("activity"), str) and event["activity"], f"{eid}: atividade vazia"
-        assert event.get("validation") in {"relato_nao_homologado", "validado_campo", "inferido"}, f"{eid}: validação inválida"
+        assert event.get("validation") in {"relato_nao_homologado", "validado_campo", "inferido", "homologado_responsavel", "pendente_esclarecimento"}, f"{eid}: validação inválida"
         qty = event.get("quantity")
         assert qty is None or (isinstance(qty, int) and qty >= 0), f"{eid}: quantidade inválida"
         if event.get("state") == "snapshot":
@@ -45,10 +49,16 @@ for path in sorted(Path("data").glob("observacoes-*.json")):
     for inf in doc.get("inferences", []):
         assert inf.get("based_on_event") in seen, f"Referência da inferência inválida: {inf.get('id')}"
         assert inf.get("exact_date") is None, "Inferência não pode inventar data de execução"
+        assert inf.get("validation") in {"inferencia_tecnica_pendente_validacao",
+                                         "homologada_por_inferencia"}, "Classificação de inferência inválida"
     for req in doc.get("planning_requests", []):
         rid = req.get("id")
         assert isinstance(rid, str) and rid and rid not in seen, f"{path}: pendência duplicada: {rid!r}"
         seen.add(rid)
         date.fromisoformat(req["date"])
         assert req.get("title"), f"{rid}: título ausente"
-print(f"OK: {count} observações e IDs únicos em data/.")
+from consolidar_dados import build_state
+state = build_state()
+assert state["consolidacao"]["registros_totais"] == count
+assert state["consolidacao"]["registros_homologados"] + state["consolidacao"]["registros_pendentes"] == count
+print(f"OK: {count} observações, homologação tipada e reconciliação reconstituível.")
