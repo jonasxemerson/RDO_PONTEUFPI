@@ -42,15 +42,20 @@ with sync_playwright() as p:
         assert page.locator("nav a").count() == 6
         assert page.locator("#kpiEstacas").inner_text() == "111 / 292"
         assert page.locator("#kpiBlocos").inner_text() == "2 / 9"
-        assert page.locator("#kpiPilares").inner_text() == "4 / 36"
-        assert page.locator("#noticePending").is_visible()
+        assert page.locator("#kpiPilares").inner_text() == "6 / 36"
+        assert page.locator("#noticePending").is_hidden()
         assert page.locator(".summary-row").count() == 0
         assert page.evaluate("() => !!document.getElementById('certare-config')")
         assert page.locator("#axisProgress button").count() == 9
+        assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).estacas.historicas_por_eixo[7] === 11")
         assert page.locator("#axisChooser button").count() == 9
-        assert page.locator("#timelineSelect").is_disabled()
-        assert "Não há série temporal validada" in page.locator("#timelineContent").inner_text()
-        assert "Nenhum evento" in page.locator("#timelineCount").inner_text()
+        assert page.locator("#timelineSelect").is_enabled()
+        assert page.locator("#timelineContent .timeline-event").count() > 0
+        assert page.evaluate("window.CertarePublicEvents.length > 20")
+        assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).consolidacao.registros_homologados >= 41")
+        assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).consolidacao.longarinas_concretadas_inferidas === 1")
+        assert "Camisas" not in page.locator("#kpiEstacas").inner_text()
+        assert "registros nesta data" in page.locator("#timelineCount").inner_text()
         assert page.get_by_text("Importar RDO").count() == 0
         assert page.get_by_text("Agente de atividades").count() == 0
         assert page.evaluate("() => document.documentElement.scrollWidth <= innerWidth + 3"), ("Transbordamento horizontal: " + str(page.evaluate("""() => ({width:document.documentElement.scrollWidth, viewport:innerWidth, offenders:[...document.querySelectorAll('body *')].filter(e=>e.getBoundingClientRect().right>innerWidth+3).slice(0,12).map(e=>({tag:e.tagName,id:e.id,cls:e.className?.baseVal||e.className,right:Math.round(e.getBoundingClientRect().right)}))})""")))
@@ -71,6 +76,8 @@ with sync_playwright() as p:
         assert page.locator("#modelMarkers .axis-marker").count() > 0
         page.locator("#axisChooser button[data-axis=\"9\"]").click()
         assert page.locator("#axisTitle").inner_text() == "Eixo 09"
+        assert "Concretadas" in page.locator("#axisRows").inner_text()
+        assert "não concluída" in page.locator("#axisRows").inner_text()
         assert page.locator("#axisProgress button[data-axis=\"9\"]").get_attribute("aria-pressed") == "true"
         page.locator('[data-model-view="superior"]').click()
         assert page.evaluate("window.Certare4D.inspect().view === 'superior'")
