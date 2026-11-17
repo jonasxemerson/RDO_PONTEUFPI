@@ -5,6 +5,7 @@ Não é mecanismo de sigilo do repositório: dados privados NÃO podem ser commi
 from pathlib import Path
 import json
 import shutil
+from consolidar_dados import build_state, APPROVED
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / "site"
@@ -13,7 +14,7 @@ if DEST.exists():
 (DEST / "scripts").mkdir(parents=True)
 (DEST / "data").mkdir(parents=True)
 # Fonte única e auditável para indicadores de referência, incorporada no HTML.
-cfg = json.loads((ROOT / "data/indicadores-historicos.json").read_text(encoding="utf-8"))
+cfg = build_state(ROOT)
 ax = cfg["estacas"]["previstas_por_eixo"]
 hist = cfg["estacas"]["historicas_por_eixo"]
 assert len(ax) == len(hist) == cfg["eixos"] == 9
@@ -21,7 +22,7 @@ assert all(isinstance(x, int) and x > 0 for x in ax)
 assert all(isinstance(x, int) and 0 <= x <= a for x, a in zip(hist, ax))
 assert len(cfg["blocos"]["historicos_por_eixo"]) == cfg["eixos"]
 assert len(cfg["pilares"]["historicos_por_eixo"]) == cfg["eixos"]
-assert cfg["classification"] == "referencia_historica_nao_homologada"
+assert cfg["classification"] == "consolidacao_parcial_para_acompanhamento"
 html = (ROOT / "painel-cliente.html").read_text(encoding="utf-8")
 assert "<!-- CERTARE_CONFIG -->" in html
 payload = json.dumps(cfg, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
@@ -38,23 +39,39 @@ for path in manifest.get("files", []):
     if not isinstance(path, str) or not path.startswith("data/observacoes-") or not path.endswith(".json") or "/" in path[5:]:
         raise ValueError(f"Arquivo de dados inesperado: {path!r}")
     doc = json.loads((ROOT / path).read_text(encoding="utf-8"))
-    # Nenhum dado pendente de homologação deve ser publicado no painel institucional.
-    approved = doc.get("approval_state") == "homologado"
-    # Status desconhecido nunca equivale a autorização de publicação.
+    # Homologação individual por autorização do responsável: não equivale a laudo ou atesto de serviço.
+    # Evitar exibir mensagens de qualidade, acidentes, alegações ambientais ou nomes pessoais.
     items = []
     for row in doc.get("events", []):
-        if not approved or row.get("validation") != "validado_campo" or row.get("review", False):
+        if row.get("validation") not in APPROVED:
             continue
-        if row.get("service") in ("seguranca", "qualidade", "equipamento"):
+        if row.get("service") in ("seguranca", "qualidade", "equipamento", "ambiental"):
             continue
         uid = row.get("id")
         if not uid or uid in seen:
             continue
         seen.add(uid)
-        # Allowlist de campos: nenhum campo textual de evidência, mensagens ou identidade é exportado.
-        items.append({key: row.get(key) for key in ("id", "date", "time", "target", "element", "service", "activity", "state", "quantity", "quantity_kind")})
-    output = {"schema_version": 1, "approval_state": "publicado", "events": items, "inferences": []}
+        keys = ("id", "date", "time", "target", "element", "service",
+                "activity", "state", "quantity", "quantity_kind", "metric")
+        items.append({key: row.get(key) for key in keys})
+    # Pré-requisitos em dados distintos e rotulados: não podem virar serviço medido.
+    safe_inferences = []
+    for inf in doc.get("inferences", []):
+        if inf.get("validation") != "homologada_por_inferencia":
+            continue
+        if inf.get("based_on_event") not in {x.get("id") for x in doc.get("events", [])
+                                             if x.get("validation") in APPROVED}:
+            continue
+        safe_inferences.append({key: inf.get(key) for key in
+            ("id", "target", "element", "service", "activity", "state",
+             "exact_date", "completed_no_later_than")})
+    output = {"schema_version": 1, "approval_state": "homologado_com_ressalvas",
+              "events": items, "inferences": safe_inferences}
     (DEST / path).write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     exported.append(path)
 (DEST / "data/manifest.json").write_text(json.dumps({"schema_version": 1, "files": exported}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-print(f"Publicação institucional: {len(exported)} arquivos; {len(seen)} eventos homologados.")
+(DEST / "data/estado_consolidado.json").write_text(
+    json.dumps(cfg, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+print(f"Publicação institucional: {len(exported)} arquivos; {len(seen)} eventos homologados; "
+      f"{cfg['consolidacao']['total_estacas_concretadas_base_mais_snapshots']} estacas e "
+      f"{cfg['consolidacao']['total_pilares_concretados_base_mais_snapshots']} pilares na consolidação.")

@@ -25,7 +25,7 @@ function renderSummary(){
  ['kpiEstacas',sum(HIST)+' / '+sum(AX)],
  ['kpiBlocos',sum(CFG.blocos.historicos_por_eixo)+' / '+CFG.blocos.previstos_total],
  ['kpiPilares',sum(CFG.pilares.historicos_por_eixo)+' / '+CFG.eixos*CFG.pilares.previstos_por_eixo],
- ['progressContext','Base histórica: '+sum(HIST)+' estacas registradas de '+sum(AX)+' previstas no modelo. Não representa curva temporal nem progresso contratual.']
+ ['progressContext','Base parcialmente conciliada: '+sum(HIST)+' estacas concretadas registradas de '+sum(AX)+' previstas no modelo. Não equivale a medição nem curva de avanço contratual.']
  ];
  for(const [id,value] of values){let el=$(id);if(el)el.textContent=value}
 }
@@ -45,22 +45,22 @@ function makeChooser(){
 function drawEvidence(){
  const root=$('evidenceRows');if(!root)return;
  const n=currentAxis, code=axisCode(n), published=currentEvents().filter(e=>e.target===code);
- const systemRows=[['Estacas (referência histórica)',HIST[n-1]+' / '+AX[n-1]],['Blocos (referência histórica)',CFG.blocos.historicos_por_eixo[n-1]+' / 1'],['Pilares (referência histórica)',CFG.pilares.historicos_por_eixo[n-1]+' / '+CFG.pilares.previstos_por_eixo],['Eventos homologados vinculados',String(published.length)]];
+ const systemRows=[['Estacas concretadas (base reconciliada)',HIST[n-1]+' / '+AX[n-1]],['Blocos (referência histórica)',CFG.blocos.historicos_por_eixo[n-1]+' / 1'],['Pilares concretados (base reconciliada)',CFG.pilares.historicos_por_eixo[n-1]+' / '+CFG.pilares.previstos_por_eixo],['Eventos homologados para acompanhamento',String(published.length)]];
  root.innerHTML='<p class="small-note">Eixo '+String(n).padStart(2,'0')+' · unidades conhecidas somente por agrupamento, sem posição individual confirmada.</p>'+systemRows.map(([a,b])=>'<div class="evidence-item"><span>'+a+'</span><strong>'+b+'</strong></div>').join('')+
- (published.length?published.map(e=>'<div class="evidence-item"><span>'+escapeHTML(dateBR(e.date))+' · '+escapeHTML(e.activity)+'</span><strong>Homologado</strong></div>').join(''):'<p class="small-note">Nenhum evento novo homologado para esta frente. Ausência de publicação não indica paralisação.</p>');
+ (published.length?published.map(e=>'<div class="evidence-item"><span>'+escapeHTML(dateBR(e.date))+' · '+escapeHTML(e.activity)+'</span><strong>Registro homologado</strong></div>').join(''):'<p class="small-note">Nenhum evento homologado publicado para esta frente. Ausência de publicação não indica paralisação.</p>');
 }
 function redrawTimeline(){
  const sel=$('timelineSelect'), root=$('timelineContent'), count=$('timelineCount');if(!sel||!root||!count)return;
  const events=currentEvents().filter(e=>/^\d{4}-\d{2}-\d{2}$/.test(e.date));
  const dates=[...new Set(events.map(e=>e.date))].sort();
  const previous=sel.value;
- sel.innerHTML=dates.length?dates.map(d=>'<option value="'+d+'">'+dateBR(d)+'</option>').join(''):'<option value="">Sem datas homologadas</option>';
+ sel.innerHTML=dates.length?dates.map(d=>'<option value="'+d+'">'+dateBR(d)+'</option>').join(''):'<option value="">Sem datas de registros homologados</option>';
  sel.disabled=!dates.length;
  if(previous&&dates.includes(previous))sel.value=previous;
  const chosen=sel.value, listed=events.filter(e=>e.date===chosen);
  count.textContent=dates.length?listed.length+' registros nesta data':'Nenhum evento homologado';
  root.className=dates.length?'timeline-items':'timeline-empty';
- root.innerHTML=dates.length?(listed.length?listed.map(e=>'<div class="timeline-event"><time>'+escapeHTML(e.time||'Data confirmada')+'</time><span>'+escapeHTML(e.target)+' · '+escapeHTML(e.service)+' · '+escapeHTML(e.activity)+'</span></div>').join(''):'<p>Sem eventos homologados para esta data.</p>'):'Não há série temporal validada para reconstruir a obra em datas anteriores. O painel não interpola visitas ausentes e não apresenta uma animação 4D fictícia.';
+ root.innerHTML=dates.length?(listed.length?listed.map(e=>'<div class="timeline-event"><time>'+escapeHTML(e.time||'Data confirmada')+'</time><span>'+escapeHTML(e.target)+' · '+escapeHTML(e.service)+' · '+escapeHTML(e.activity)+'</span></div>').join(''):'<p>Sem eventos homologados para esta data.</p>'):'Não há registros homologados suficientes para reconstruir a obra em datas anteriores. O painel não interpola visitas ausentes e não apresenta uma animação 4D fictícia.';
 }
 function onSelection(e){
  let d=e.detail||{};if(d.kind==='eixo'&&Number.isInteger(d.index))syncAxis(d.index,true);
