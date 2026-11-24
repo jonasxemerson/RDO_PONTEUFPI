@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17443a"><meta name="referrer" content="no-referrer">
+<title>CERTARE | RDO Móvel — Administração</title>
+<style>
+:root{color-scheme:light;--bg:#f5f8f7;--white:#fff;--ink:#102821;--text:#253e34;--muted:#65786e;--line:#dce7e2;--green:#205d4b;--dark:#173f35;--light:#e7f3ed;--gold:#9f7127;--shadow:0 12px 32px #07291a11}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:linear-gradient(180deg,#f8faf9,#f1f6f3);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink);line-height:1.46}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:#1d7153}button:disabled{opacity:.55;cursor:not-allowed}[hidden]{display:none!important}.app-header{background:var(--dark);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 6px 22px #07291a20}.header-inner{max-width:1040px;margin:auto;padding:11px 18px;display:flex;justify-content:space-between;gap:12px;align-items:center}.wordmark{display:flex;gap:10px;align-items:center;font-size:16px;letter-spacing:.08em}.wordmark small{display:block;letter-spacing:0;font-weight:500;font-size:11px;opacity:.75}.symbol{height:37px;width:37px;background:#eef8ef;border-radius:10px;color:#195544;display:grid;place-items:center;font-weight:900}.small-status{font-size:11px;color:#d6eadf;white-space:nowrap}.shell{max-width:1040px;margin:auto;padding:18px 18px 60px}.auth-card{max-width:520px;margin:5vh auto 0;background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow)}.lock-icon{font-size:35px}.auth-card h1{font-size:24px;line-height:1.18;margin:13px 0}.auth-card p{color:var(--muted);font-size:14px}.stack{display:grid;gap:13px}.welcome{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.welcome h1{font-size:24px;margin:2px 0 4px}.eyebrow{font-size:10px;color:#558873;font-weight:800;letter-spacing:.12em;margin:0}.muted{color:var(--muted);font-size:12px;margin:0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:16px 0}.tabs button{border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 6px;font-weight:750;font-size:12px;color:#50675c;min-width:0}.tabs button[aria-selected=true]{background:#17473a;color:#fff;border-color:#17473a;box-shadow:0 6px 12px #102b1d17}.count{padding:2px 5px;border-radius:20px;background:#e8efe9;color:#436354;font-size:10px}.tab-view{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}.section-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:20px}.section-head h2{margin:0;font-size:19px}.pill{font-size:11px;font-weight:750;border-radius:999px;color:#267057;background:var(--light);padding:7px 10px;white-space:nowrap}label{display:block;font-size:12px;font-weight:750;color:#3a5549;margin-bottom:12px}label input:not([type=checkbox]):not([type=file]),label select,label textarea{display:block;width:100%;margin-top:6px;border:1px solid #cdded5;border-radius:10px;background:#fbfdfb;color:#17372c;padding:12px 11px;min-height:44px;outline-offset:2px;font-size:15px;font-weight:500}label textarea{resize:vertical}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}.button-row{display:flex;justify-content:flex-end;gap:9px;margin-top:14px}.button-row.wrap{justify-content:flex-start;flex-wrap:wrap}.button{border:1px solid #cddbd2;border-radius:11px;background:#fff;color:#25483a;padding:11px 15px;min-height:44px;font-weight:800;font-size:13px}.button.primary{background:var(--green);border-color:var(--green);color:#fff}.button.subtle{background:#fff}.button.danger{color:#a43c34;border-color:#efcec8}.button.wide{width:100%;margin:12px 0}.note{color:#687c70;font-size:12px;line-height:1.55}.feedback{font-size:13px;min-height:20px;word-break:break-word}.feedback.error{color:#a53535}.feedback.ok{color:#216d49}.safeguard{border:1px solid #d9dfcb;border-radius:13px;background:#f9fbef;color:#52623d;padding:12px 14px;font-size:12px;margin:14px 0;line-height:1.5}.sub-card{border:1px solid var(--line);border-radius:15px;background:#fbfcfb;padding:16px;margin-top:16px}.sub-card h3{margin:0 0 15px;font-size:16px}.stack-list{display:grid;gap:9px}.front-card{display:flex;justify-content:space-between;gap:10px;border:1px solid #e0e9e4;padding:13px;border-radius:12px;background:#fff}.front-card p{margin:4px 0;color:var(--muted);font-size:12px;line-height:1.4;overflow-wrap:anywhere}.front-card h3{font-size:14px;margin:0}.front-card button{background:#fff;border:1px solid #dce4dc;border-radius:8px;padding:6px 8px;font-size:12px;margin-left:4px;color:#3b5d4c}.empty{width:100%;padding:24px;text-align:center;border:1px dashed #c7dbce;border-radius:12px;color:#678074;font-size:13px}.photo-chooser{display:grid;grid-template-columns:1fr 1fr;gap:10px}.camera-action{display:grid;place-items:center;text-align:center;min-height:72px;font-size:15px;border:1px dashed #9fbaaa;border-radius:13px;background:#edf8f0;color:#1b5a41;cursor:pointer}.photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px}.photo-card{border:1px solid var(--line);border-radius:13px;background:#fff;overflow:hidden}.photo-card img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#e7f0eb;display:block}.photo-card-details{padding:10px}.photo-card label{font-size:11px;margin-bottom:6px}.photo-card input,.photo-card select{font-size:13px!important;padding:8px!important;min-height:36px!important}.photo-card button{font-size:11px;color:#99413b;border:0;background:transparent;padding:7px 0}.review-card{padding:15px;border:1px solid var(--line);background:#f9fcfa;border-radius:13px;font-size:13px}.review-card h3{margin:0 0 9px;font-size:15px}.review-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #e4eee7}.review-row:last-child{border:0}.review-row b{max-width:63%;text-align:right}.confirm{display:flex;align-items:flex-start;gap:9px;color:#334e42;font-size:13px;margin:20px 0 2px}.confirm input{width:20px;height:20px;flex-shrink:0;margin:1px 0 0}.success{background:#ebf8ef;color:#195d38;border-radius:12px;padding:14px;font-size:13px}.page-footer{text-align:center;font-size:11px;color:#81948a;padding:12px}.auth-card .note{background:#f8faf9;border-radius:8px;padding:9px}.stack .button{width:100%}@media(max-width:650px){.shell{padding:14px 10px 100px}.header-inner{padding:9px 12px}.auth-card{margin:24px 0 0;padding:20px}.small-status{font-size:10px}.tab-view{padding:14px;border-radius:14px}.welcome h1{font-size:20px}.tabs{position:sticky;top:53px;z-index:12;background:#f5f8f7;padding:7px 0;margin:8px 0 12px;gap:4px}.tabs button{font-size:10px;padding:11px 2px;min-height:50px}.form-grid{grid-template-columns:1fr}.section-head h2{font-size:17px}.pill{font-size:10px}.photo-grid{grid-template-columns:1fr 1fr}.photo-card-details{padding:7px}.photo-card label{margin-bottom:8px}.front-card{display:block}.front-actions{margin-top:10px}.button-row .button{flex:1}.button-row.wrap .button{min-width:45%}}
+
+</style>
+</head>
+<body>
+<header class="app-header"><div class="header-inner"><div class="wordmark"><div class="symbol">C</div><div><b>CERTARE</b><small>Fiscalização · Ponte da UFPI</small></div></div><div id="authIndicator" class="small-status">Acesso restrito</div></div></header>
+<main class="shell">
+  <section id="authGate" class="auth-card">
+    <div class="lock-icon" aria-hidden="true">🔒</div>
+    <h1>RDO móvel — área administrativa</h1>
+    <p>Os RDOs e as fotos são armazenados no repositório privado <strong>RDO_CERTARE</strong>. Somente o administrador autorizado consegue consultar ou gravar dados.</p>
+    <form id="authForm" class="stack">
+      <label>Token GitHub de acesso restrito<input id="githubToken" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="github_pat_…" required></label>
+      <button type="submit" id="connectBtn" class="button primary">Conectar ao GitHub</button>
+    </form>
+    <p class="note">Use um <strong>fine-grained personal access token</strong> limitado ao repositório privado RDO_CERTARE, com Contents e Pull requests (leitura e escrita). O token fica somente na memória da página: não é salvo no HTML, no dispositivo nem nas fotos.</p>
+    <p class="note">O formulário só é habilitado depois da verificação da conta e da permissão de administrador pela API do GitHub. Esta página isolada não equivale a um sistema OAuth com sessão de servidor.</p>
+    <p id="authFeedback" class="feedback" role="status" aria-live="polite"></p>
+  </section>
+
+  <section id="workspace" hidden>
+    <div class="welcome"><div><p class="eyebrow">ÁREA RESTRITA · REGISTRO DE CAMPO</p><h1>RDO da Ponte da UFPI</h1><p id="sessionCaption" class="muted">—</p></div><button type="button" id="logout" class="button subtle">Sair</button></div>
+    <div class="safeguard">Registros enviados permanecem <strong>pendentes de revisão</strong>. Não alteram medições, quantidades homologadas nem liberam etapas automaticamente.</div>
+    <nav id="appTabs" class="tabs" role="tablist" aria-label="Cadastro de RDO">
+      <button type="button" role="tab" aria-selected="true" data-tab="rdo">01 RDO</button>
+      <button type="button" role="tab" aria-selected="false" data-tab="frentes">02 Frentes <span id="frontCount" class="count">0</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="fotos">03 Fotos <span id="photoCount" class="count">0</span></button>
+      <button type="button" role="tab" aria-selected="false" data-tab="revisao">04 Revisar</button>
+    </nav>
+
+    <section id="tab-rdo" class="tab-view">
+      <div class="section-head"><h2>Dados do relatório</h2><span class="pill">Dados do campo</span></div>
+      <div class="form-grid">
+        <label>Data da vistoria <input id="rdoDate" type="date" required></label>
+        <label>Turno <select id="rdoShift"><option value="manha">Manhã</option><option value="tarde">Tarde</option><option value="noite">Noite</option><option value="integral">Integral</option></select></label>
+        <label>Tipo de registro <select id="rdoType"><option value="vistoria">Vistoria de fiscalização</option><option value="rdo">RDO de obra</option><option value="ocorrencia">Registro de ocorrência</option></select></label>
+        <label>Condição climática (se observada) <select id="rdoWeather"><option value="nao_informado">Não informada</option><option value="sem_chuva">Sem chuva</option><option value="chuva_leve">Chuva leve</option><option value="chuva_forte">Chuva forte</option><option value="outra">Outra</option></select></label>
+        <label>Efetivo total observado <input id="rdoWorkers" type="number" min="0" step="1" placeholder="Sem contagem"></label>
+        <label>Equipamentos em operação (texto) <input id="rdoEquipment" maxlength="250" placeholder="Ex.: 2 perfuratrizes, 1 bomba"></label>
+      </div>
+      <label>Condições gerais, interferências e observações <textarea id="rdoNotes" rows="4" maxlength="4000" placeholder="Somente fatos observados ou relatados. Dia sem visita não significa paralisação."></textarea></label>
+      <div class="button-row"><button class="button primary" type="button" data-goto="frentes">Registrar frentes <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section id="tab-frentes" class="tab-view" hidden>
+      <div class="section-head"><h2>Frentes e serviços</h2><span class="pill">Uma ou várias por RDO</span></div>
+      <div class="stack-list" id="frontList" aria-live="polite"><div class="empty">Nenhum serviço adicionado.</div></div>
+      <form id="frontForm" class="sub-card">
+        <h3 id="frontFormTitle">Adicionar serviço observado</h3>
+        <div class="form-grid">
+          <label>Eixo ou frente <select id="frontAxis" required><option value="">Selecionar…</option><option>E01</option><option>E02</option><option>E03</option><option>E04</option><option>E05</option><option>E06</option><option>E07</option><option>E08</option><option>E09</option><option>FAB</option><option>GERAL</option></select></label>
+          <label>Serviço <select id="frontService" required><option value="">Selecionar…</option><option value="estacas">Estacas</option><option value="bloco">Blocos</option><option value="pilar">Pilares</option><option value="travessa">Travessas</option><option value="longarina">Longarinas</option><option value="prelaje">Pré-lajes</option><option value="tabuleiro">Tabuleiro</option><option value="equipamento">Equipamentos</option><option value="canteiro">Canteiro</option><option value="ambiental">Ambiental</option><option value="qualidade">Qualidade</option><option value="seguranca">Segurança</option></select></label>
+          <label>Etapa <select id="frontPhase"><option value="nao_especificada">Não especificada</option><option value="locacao">Locação</option><option value="perfuracao">Perfuração</option><option value="camisa_metalica">Camisa metálica</option><option value="armadura">Armadura</option><option value="formas">Fôrmas</option><option value="concretagem">Concretagem</option><option value="cura">Cura</option><option value="desforma">Desforma</option><option value="protensao">Protensão</option><option value="lancamento">Lançamento</option><option value="inspecao">Inspeção</option><option value="outra">Outra</option></select></label>
+          <label>Situação observada <select id="frontState"><option value="em_andamento">Em andamento</option><option value="executado">Concluído segundo relato</option><option value="parcial_executado">Parcialmente executado</option><option value="snapshot">Total acumulado relatado</option><option value="observado">Ocorrência observada</option><option value="mobilizado">Recurso mobilizado</option><option value="parado">Parada pontual registrada</option></select></label>
+          <label>Quantidade (opcional) <input id="frontQty" type="number" min="0" step="1" placeholder="Não informado"></label>
+          <label>Natureza da quantidade <select id="frontQtyKind"><option value="nao_informado">Não informada</option><option value="unidades_executadas">Unidades executadas neste relato</option><option value="total_reportado">Total acumulado (snapshot)</option><option value="ordinal_em_execucao">Ordinal (ex.: 20ª estaca)</option><option value="unidades_em_execucao">Unidades em andamento</option><option value="unidades_com_etapa_parcial">Etapa parcial</option><option value="equipamentos_reportados">Quantidade de equipamentos</option></select></label>
+          <label>Equipe observada na frente <input id="frontWorkers" type="number" min="0" step="1" placeholder="Não informado"></label>
+          <label>Identificação individual (se documentada) <input id="frontElement" maxlength="80" placeholder="Ex.: E03-P03; não inventar códigos"></label>
+          <label>Equipamentos na frente <input id="frontMachine" maxlength="250" placeholder="Ex.: perfuratriz operando"></label>
+        </div>
+        <label>Atividade executada / observada <textarea id="frontActivity" rows="3" required maxlength="2500" placeholder="Descreva objetivamente a atividade e seu estágio."></textarea></label>
+        <label>Observações técnicas ou impedimentos <textarea id="frontNote" rows="3" maxlength="2500" placeholder="Ensaios e liberações só são registrados se houver ato específico."></textarea></label>
+        <p class="note">Quantidades acumuladas não serão somadas como produção do dia. Um ordinal de estaca não comprova sua concretagem.</p>
+        <div class="button-row"><button type="button" id="cancelEdit" class="button subtle" hidden>Cancelar edição</button><button type="submit" class="button primary">Salvar serviço na lista</button></div>
+      </form>
+      <div class="button-row"><button type="button" class="button primary" data-goto="fotos">Adicionar fotos <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section id="tab-fotos" class="tab-view" hidden>
+      <div class="section-head"><h2>Registro fotográfico</h2><span class="pill">Armazenamento privado</span></div>
+      <p class="note">As imagens serão redimensionadas e convertidas para JPEG antes do envio, removendo metadados EXIF/GPS da foto original. Revise a presença de rostos, placas e informações sigilosas antes de compartilhar.</p>
+      <div class="photo-chooser"><label class="camera-action">📷 Fotografar <input id="takePhoto" type="file" accept="image/*" capture="environment" hidden></label><label class="camera-action">▧ Galeria <input id="pickPhotos" type="file" accept="image/*" multiple hidden></label></div>
+      <p class="note">Máximo de 10 fotos por RDO, com até 2 MB cada após compressão. No modo offline, mantenha o rascunho salvo neste dispositivo.</p>
+      <div class="photo-grid" id="photoGrid"><div class="empty">Nenhuma fotografia adicionada.</div></div>
+      <div class="button-row"><button type="button" class="button primary" data-goto="revisao">Conferir RDO <span aria-hidden="true">→</span></button></div>
+    </section>
+
+    <section id="tab-revisao" class="tab-view" hidden>
+      <div class="section-head"><h2>Conferir antes do envio</h2><span class="pill">Revisão humana</span></div>
+      <div id="reviewSummary" class="review-card" aria-live="polite"></div>
+      <div class="safeguard">Ao enviar, os arquivos são gravados em uma nova branch do repositório privado e uma Pull Request é aberta. A importação para o acompanhamento oficial exige análise posterior.</div>
+      <div class="button-row wrap"><button type="button" class="button subtle" id="saveDraft">Salvar rascunho offline</button><button type="button" class="button subtle" id="downloadDraft">Exportar JSON de conferência</button><button type="button" class="button danger" id="deleteDraft">Apagar rascunho local</button></div>
+      <label class="confirm"><input id="confirmSubmit" type="checkbox"> Conferi as frentes, quantidades, fotos e dados pessoais. Autorizo o envio ao repositório privado.</label>
+      <button class="button primary wide" type="button" id="submitGithub">Enviar para revisão no GitHub</button>
+      <p id="submitFeedback" class="feedback" role="status" aria-live="polite"></p>
+      <div id="submittedResult" hidden class="success"></div>
+    </section>
+  </section>
+</main>
+<footer class="page-footer">CERTARE · RDO móvel · dados da Ponte da UFPI · protótipo administrativo v1</footer>
+<script>
+(() => {
+'use strict';
+const OWNER='jonasxemerson';
+const REPO='RDO_CERTARE';
+const API='https://api.github.com';
+const MAX_PHOTOS=10;
+const MAX_PHOTO_BYTES=2*1024*1024;
+const VERSION='1.0.0';
+const $=id=>document.getElementById(id);
+const state={token:null,login:null,authorized:false,id:randomId(),fronts:[],photos:[],editId:null,sentPr:null};
+const PHOTO_URLS=[];
+const FIELDS=['rdoDate','rdoShift','rdoType','rdoWeather','rdoWorkers','rdoEquipment','rdoNotes'];
+const FRONT_FIELDS={target:'frontAxis',service:'frontService',phase:'frontPhase',state:'frontState',quantity:'frontQty',quantity_kind:'frontQtyKind',workers:'frontWorkers',element:'frontElement',equipment:'frontMachine',activity:'frontActivity',notes:'frontNote'};
+let pending=false;
+let autosaveTimer=null;
+function scheduleDraft(){if(!state.authorized||state.sentPr)return;clearTimeout(autosaveTimer);autosaveTimer=setTimeout(()=>saveLocal().catch(()=>{}),700);}
+function randomId(){if(globalThis.crypto?.randomUUID)return crypto.randomUUID();return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2,12)}`;}
+function safe(s){return String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function isoLocal(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+function isValidDate(v){if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return false;const d=new Date(v+'T12:00:00');return !Number.isNaN(d.getTime())&&d.getFullYear()===+v.slice(0,4)&&d.getMonth()===+v.slice(5,7)-1&&d.getDate()===+v.slice(8,10);}
+function textStatus(id,msg,type=''){const el=$(id);el.textContent=msg;el.className='feedback '+type;}
+function feedback(msg,type=''){textStatus('submitFeedback',msg,type);}
+function setBusy(busy){pending=busy;$('submitGithub').disabled=busy;$('connectBtn').disabled=busy;}
+async function github(path,{method='GET',body,token=state.token}={}){
+ if(!token)throw new Error('Autenticação necessária.');
+ const res=await fetch(`${API}${path}`,{
+  method,cache:'no-store',referrerPolicy:'no-referrer',
+  headers:{'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Authorization':`Bearer ${token}`,...(body?{'Content-Type':'application/json'}:{})},
+  ...(body?{body:JSON.stringify(body)}:{})
+ });
+ const content=await res.text();let data={};try{data=JSON.parse(content)}catch{}
+ if(!res.ok){
+  const reason=res.status===401?'Token inválido ou expirado.':res.status===403?'Sem permissão GitHub para este recurso.':res.status===404?'Repositório privado inacessível por esta credencial.':`GitHub recusou a operação (${res.status}).`;
+  const error=new Error(reason);error.status=res.status;error.info=data.message||'';throw error;
+ }
+ return data;
+}
+async function authorize(token){
+ const user=await github('/user',{token});
+ if(user.login!==OWNER)throw new Error('A conta autenticada não é o administrador autorizado.');
+ const repo=await github(`/repos/${OWNER}/${REPO}`,{token});
+ if(repo.private!==true||repo.permissions?.admin!==true||repo.full_name!==`${OWNER}/${REPO}`){
+  throw new Error('É necessário acesso de administrador ao repositório privado RDO_CERTARE.');
+ }
+ return {login:user.login,repo:repo.full_name};
+}
+$('authForm').addEventListener('submit',async ev=>{
+ ev.preventDefault();if(pending)return;
+ const token=$('githubToken').value.trim();if(!token){textStatus('authFeedback','Informe o token.','error');return;}
+ setBusy(true);textStatus('authFeedback','Conferindo identidade e permissão no GitHub...');
+ try{
+  const session=await authorize(token);
+  state.token=token;state.login=session.login;state.authorized=true;
+  $('githubToken').value=''; $('authGate').hidden=true;$('workspace').hidden=false;
+  $('authIndicator').textContent=`Admin · ${state.login}`;
+  $('sessionCaption').textContent=`Autenticado como ${state.login} · destino privado: ${session.repo}`;
+  await restoreDraft();renderAll();
+ }catch(err){state.token=null;state.authorized=false;textStatus('authFeedback',err.message,'error');}
+ finally{setBusy(false);}
+});
+$('logout').addEventListener('click',()=>{
+ state.token=null;state.login=null;state.authorized=false;
+ $('workspace').hidden=true;$('authGate').hidden=false;$('authIndicator').textContent='Acesso restrito';
+ textStatus('authFeedback','Sessão encerrada. Rascunho local mantido neste dispositivo.');
+});
+
+function showTab(tab){
+ for(const t of ['rdo','frentes','fotos','revisao']){
+  $(`tab-${t}`).hidden=t!==tab;
+  document.querySelector(`[data-tab="${t}"]`).setAttribute('aria-selected',String(t===tab));
+ }
+ if(tab==='revisao')renderReview();
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+$('appTabs').addEventListener('click',ev=>{const b=ev.target.closest('[data-tab]');if(b)showTab(b.dataset.tab);});
+document.addEventListener('click',ev=>{const b=ev.target.closest('[data-goto]');if(b&&state.authorized)showTab(b.dataset.goto);});
+function getMeta(){
+ return {
+  date:$('rdoDate').value,shift:$('rdoShift').value,type:$('rdoType').value,
+  weather:$('rdoWeather').value,
+  workers:$('rdoWorkers').value===''?null:Number($('rdoWorkers').value),
+  equipment:$('rdoEquipment').value.trim(),notes:$('rdoNotes').value.trim()
+ };
+}
+function readFront(){
+ const o={};for(const [k,id] of Object.entries(FRONT_FIELDS))o[k]=$(id).value.trim();
+ o.quantity=o.quantity===''?null:Number(o.quantity);
+ o.workers=o.workers===''?null:Number(o.workers);
+ o.element=o.element||null;
+ return o;
+}
+function validateFront(f){
+ if(!/^(E0[1-9]|FAB|GERAL)$/.test(f.target))throw new Error('Selecione um eixo ou frente válida.');
+ if(!/^(estacas|bloco|pilar|travessa|longarina|prelaje|tabuleiro|equipamento|canteiro|ambiental|qualidade|seguranca)$/.test(f.service))throw new Error('Selecione um serviço válido.');
+ if(!f.activity||f.activity.length>2500)throw new Error('Descreva a atividade observada.');
+ if(f.quantity!==null&&(!Number.isSafeInteger(f.quantity)||f.quantity<0))throw new Error('Quantidade deve ser um inteiro não negativo.');
+ if(f.workers!==null&&(!Number.isSafeInteger(f.workers)||f.workers<0))throw new Error('Efetivo deve ser inteiro não negativo.');
+ if(f.state==='snapshot'&&(!(f.quantity>=0)||f.quantity_kind!=='total_reportado'))throw new Error('Total acumulado exige quantidade e natureza "total acumulado".');
+ if(f.quantity_kind==='total_reportado'&&f.state!=='snapshot')throw new Error('Total acumulado exige situação "Total acumulado relatado".');
+ if(f.quantity_kind==='ordinal_em_execucao'&&f.state==='executado')throw new Error('Ordinal em execução não pode comprovar conclusão da peça.');
+ if(f.quantity===null&&f.quantity_kind!=='nao_informado')throw new Error('Informe a quantidade ou selecione "Não informada".');
+ if(f.quantity!==null&&f.quantity_kind==='nao_informado')throw new Error('Indique a natureza da quantidade.');
+ return true;
+}
+function resetFrontForm(){state.editId=null;$('frontForm').reset();$('frontFormTitle').textContent='Adicionar serviço observado';$('cancelEdit').hidden=true;}
+$('frontForm').addEventListener('submit',ev=>{
+ ev.preventDefault();
+ try{
+  const f=readFront();validateFront(f);
+  if(state.editId){const index=state.fronts.findIndex(x=>x.id===state.editId);if(index<0)throw new Error('Registro de frente não localizado.');state.fronts[index]={...f,id:state.editId};}
+  else state.fronts.push({...f,id:`fr-${randomId().slice(0,18)}`});
+  resetFrontForm();renderFronts();renderPhotos();scheduleDraft();textStatus('submitFeedback','');
+ }catch(err){alert(err.message);}
+});
+$('cancelEdit').addEventListener('click',resetFrontForm);
+$('frontList').addEventListener('click',ev=>{
+ const btn=ev.target.closest('button[data-id]');if(!btn)return;
+ const f=state.fronts.find(x=>x.id===btn.dataset.id);if(!f)return;
+ if(btn.dataset.action==='edit'){
+  for(const [key,id] of Object.entries(FRONT_FIELDS))$(id).value=f[key]??'';
+  state.editId=f.id;$('frontFormTitle').textContent=`Editando ${f.target} · ${f.service}`;$('cancelEdit').hidden=false;
+  $('frontForm').scrollIntoView({behavior:'smooth',block:'start'});
+ }else if(btn.dataset.action==='remove'){
+  if(!confirm('Excluir este serviço do rascunho?'))return;
+  state.fronts=state.fronts.filter(x=>x.id!==f.id);
+  for(const p of state.photos)if(p.front_ref===f.id)p.front_ref=null;
+  if(state.editId===f.id)resetFrontForm();renderFronts();renderPhotos();scheduleDraft();
+ }
+});
+function renderFronts(){
+ $('frontCount').textContent=String(state.fronts.length);
+ $('frontList').innerHTML=state.fronts.length?state.fronts.map(f=>`
+  <article class="front-card"><div><h3>${safe(f.target)} · ${safe(f.service)} · ${safe(f.phase)}</h3><p>${safe(f.activity)}</p><p>Situação: ${safe(f.state)} · Quantidade: ${f.quantity===null?'não informada':safe(f.quantity+' ('+f.quantity_kind+')')}</p></div>
+  <div class="front-actions"><button type="button" data-action="edit" data-id="${safe(f.id)}">Editar</button><button type="button" data-action="remove" data-id="${safe(f.id)}">Remover</button></div></article>`).join(''):'<div class="empty">Nenhum serviço adicionado.</div>';
+}
+function canvasBlob(canvas,quality){return new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality));}
+async function compressPhoto(file){
+ if(!file.type.startsWith('image/'))throw new Error('O arquivo deve ser uma imagem.');
+ if(file.size>25*1024*1024)throw new Error('Arquivo original maior que 25 MB.');
+ const url=URL.createObjectURL(file);
+ try{
+  const img=new Image();img.decoding='async';img.src=url;
+  await new Promise((ok,fail)=>{img.onload=ok;img.onerror=()=>fail(new Error('Não foi possível ler esta foto.'));});
+  const ratio=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));
+  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*ratio));canvas.height=Math.max(1,Math.round(img.naturalHeight*ratio));
+  canvas.getContext('2d',{alpha:false}).drawImage(img,0,0,canvas.width,canvas.height);
+  let blob=await canvasBlob(canvas,.82);
+  if(blob?.size>MAX_PHOTO_BYTES)blob=await canvasBlob(canvas,.64);
+  if(!blob||blob.size>MAX_PHOTO_BYTES)throw new Error('Imagem excede 2 MB após compressão; escolha outra foto.');
+  return blob;
+ }finally{URL.revokeObjectURL(url);}
+}
+async function selectPhotos(ev){
+ const files=Array.from(ev.target.files||[]);ev.target.value='';
+ if(state.photos.length+files.length>MAX_PHOTOS){alert(`Limite de ${MAX_PHOTOS} fotos por RDO.`);return;}
+ for(const file of files){
+  try{
+   const blob=await compressPhoto(file);
+   state.photos.push({id:`ph-${randomId().slice(0,18)}`,blob,filename:file.name,caption:'',front_ref:null,mime:'image/jpeg'});
+  }catch(err){alert(`${file.name}: ${err.message}`);}
+ }
+ renderPhotos();scheduleDraft();
+}
+$('takePhoto').addEventListener('change',selectPhotos);
+$('pickPhotos').addEventListener('change',selectPhotos);
+$('photoGrid').addEventListener('input',ev=>{
+ const el=ev.target.closest('[data-photo-id]');if(!el)return;
+ const p=state.photos.find(x=>x.id===el.dataset.photoId);if(!p)return;
+ if(el.dataset.field==='caption')p.caption=el.value.slice(0,200);
+ if(el.dataset.field==='front_ref')p.front_ref=el.value||null;
+ scheduleDraft();
+});
+$('photoGrid').addEventListener('click',ev=>{
+ const b=ev.target.closest('button[data-remove-photo]');if(!b)return;
+ state.photos=state.photos.filter(p=>p.id!==b.dataset.removePhoto);
+ renderPhotos();scheduleDraft();
+});
+function renderPhotos(){
+ for(const url of PHOTO_URLS)URL.revokeObjectURL(url);PHOTO_URLS.length=0;
+ $('photoCount').textContent=String(state.photos.length);
+ $('photoGrid').innerHTML=state.photos.length?state.photos.map((p,i)=>{
+  const url=URL.createObjectURL(p.blob);PHOTO_URLS.push(url);
+  return `<article class="photo-card"><img src="${url}" alt="Foto ${i+1} do RDO"><div class="photo-card-details"><label>Legenda<input data-photo-id="${safe(p.id)}" data-field="caption" maxlength="200" value="${safe(p.caption)}" placeholder="Descreva o registro"></label>
+    <label>Vincular a frente<select data-photo-id="${safe(p.id)}" data-field="front_ref"><option value="">Geral / não atribuída</option>${state.fronts.map(f=>`<option value="${safe(f.id)}" ${p.front_ref===f.id?'selected':''}>${safe(f.target)} · ${safe(f.service)}</option>`).join('')}</select></label>
+    <button type="button" data-remove-photo="${safe(p.id)}">Excluir foto</button></div></article>`;
+ }).join(''):'<div class="empty">Nenhuma fotografia adicionada.</div>';
+}
+function renderReview(){
+ const meta=getMeta(),count=state.fronts.length;
+ $('reviewSummary').innerHTML=`<h3>RDO em conferência</h3>
+ <div class="review-row"><span>Data e turno</span><b>${safe(meta.date)} · ${safe(meta.shift)}</b></div>
+ <div class="review-row"><span>Tipo</span><b>${safe(meta.type)}</b></div>
+ <div class="review-row"><span>Serviços lançados</span><b>${count}</b></div>
+ <div class="review-row"><span>Frentes envolvidas</span><b>${safe([...new Set(state.fronts.map(f=>f.target))].join(', ')||'—')}</b></div>
+ <div class="review-row"><span>Fotos com legenda</span><b>${state.photos.filter(p=>p.caption).length} / ${state.photos.length}</b></div>
+ <div class="review-row"><span>Liberação técnica</span><b>Não avaliada</b></div>
+ <div class="review-row"><span>Medição contratual</span><b>Não avaliada</b></div>`;
+}
+function validateRdo(){
+ if(!state.authorized||!state.token||state.login!==OWNER)throw new Error('Sessão administrativa necessária.');
+ const meta=getMeta();
+ if(!isValidDate(meta.date))throw new Error('Informe uma data válida para o relatório.');
+ if(meta.date>isoLocal())throw new Error('Data futura não é permitida neste registro de campo.');
+ if(meta.workers!==null&&(!Number.isSafeInteger(meta.workers)||meta.workers<0))throw new Error('Efetivo total inválido.');
+ if(!state.fronts.length)throw new Error('Adicione ao menos um serviço da frente de obra.');
+ state.fronts.forEach(validateFront);
+ if(state.photos.length>MAX_PHOTOS)throw new Error('Limite de fotos excedido.');
+ for(const p of state.photos){
+  if(p.blob.size>MAX_PHOTO_BYTES)throw new Error('Imagem acima de 2 MB.');
+  if(!p.caption.trim())throw new Error('Inclua legenda em todas as fotografias.');
+  if(p.front_ref&&!state.fronts.some(f=>f.id===p.front_ref))throw new Error('Foto vinculada a frente removida.');
+ }
+ if(state.sentPr)throw new Error('Este rascunho já foi enviado. Crie um novo relatório.');
+ return meta;
+}
+async function blobBase64(blob){
+ return new Promise((resolve,reject)=>{
+  const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=()=>reject(new Error('Falha ao preparar fotografia.'));reader.readAsDataURL(blob);
+ });
+}
+async function digestBlob(blob){
+ if(!globalThis.crypto?.subtle)return null;
+ const raw=await blob.arrayBuffer();const hash=await crypto.subtle.digest('SHA-256',raw);
+ return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function jsonPayload(meta,photoRefs){
+ const createTime=new Date().toISOString();
+ return {
+  schema_version:'rdo-mobile/1.0.0',id:`rdo-${meta.date}-${state.id}`,project:'ponte-ufpi',
+  privacy:'privado',status:'submetido_para_revisao',validation:'proposto_revisao',
+  created_at:createTime,created_by:state.login,local_reference:state.id,
+  source:'interface_administrativa_rdo_movel',
+  model_link:{model_schema:'1.0.0',project_id:'ponte-ufpi',approval_required:true},
+  header:meta,
+  records:state.fronts.map((f,i)=>({
+   id:`rdom-${state.id}-${String(i+1).padStart(2,'0')}`,front_ref:f.id,
+   date:meta.date,target:f.target,service:f.service,phase:f.phase,state:f.state,
+   quantity:f.quantity,quantity_kind:f.quantity_kind,element:f.element,
+   workers:f.workers,equipment:f.equipment,activity:f.activity,notes:f.notes,
+   validation:'proposto_revisao',review:true,
+   status_tech:'nao_avaliado',hold_point:'nao_configurado',medicao:'nao_avaliada',
+   original_source_ref:`rdo-${meta.date}-${state.id}`
+  })),
+  photos:photoRefs
+ };
+}
+async function publishPrivate(meta){
+ // Acesso e permissão verificados novamente no servidor antes da gravação.
+ await authorize(state.token);
+ const date=meta.date;
+ const branch=`rdo/${date}/${state.id.replace(/[^a-zA-Z0-9-]/g,'').slice(0,46)}`;
+ const folder=`rdos/${date.slice(0,7)}`;
+ const photoFolder=`anexos/${date.slice(0,7)}/${state.id}`;
+ feedback('Preparando arquivo e fotos para o repositório privado...');
+ const treeEntries=[];const refs=[];
+ for(let i=0;i<state.photos.length;i++){
+  const p=state.photos[i];
+  const filename=`foto-${String(i+1).padStart(2,'0')}.jpg`;
+  const path=`${photoFolder}/${filename}`;
+  const sha256=await digestBlob(p.blob);
+  const gitBlob=await github(`/repos/${OWNER}/${REPO}/git/blobs`,{
+   method:'POST',body:{content:await blobBase64(p.blob),encoding:'base64'}
+  });
+  treeEntries.push({path,mode:'100644',type:'blob',sha:gitBlob.sha});
+  const front=state.fronts.find(f=>f.id===p.front_ref);
+  refs.push({id:p.id,path,caption:p.caption.trim(),record_ref:front?`rdom-${state.id}-${String(state.fronts.indexOf(front)+1).padStart(2,'0')}`:null,
+   target:front?.target||'GERAL',mime_type:'image/jpeg',size_bytes:p.blob.size,sha256,privacy:'privado'});
+  feedback(`Fotografias preparadas: ${i+1}/${state.photos.length}`);
+ }
+ const payload=jsonPayload(meta,refs);
+ const jsonPath=`${folder}/${payload.id}.json`;
+ const dataBlob=await github(`/repos/${OWNER}/${REPO}/git/blobs`,{method:'POST',body:{content:JSON.stringify(payload,null,2)+'\n',encoding:'utf-8'}});
+ treeEntries.push({path:jsonPath,mode:'100644',type:'blob',sha:dataBlob.sha});
+ const head=await github(`/repos/${OWNER}/${REPO}/git/ref/heads/main`);
+ const headSha=head.object.sha;
+ const latest=await github(`/repos/${OWNER}/${REPO}/git/commits/${headSha}`);
+ const tree=await github(`/repos/${OWNER}/${REPO}/git/trees`,{
+  method:'POST',body:{base_tree:latest.tree.sha,tree:treeEntries}
+ });
+ const commit=await github(`/repos/${OWNER}/${REPO}/git/commits`,{
+  method:'POST',body:{message:`RDO móvel ${date} · ${state.fronts.length} frentes · ${state.photos.length} fotos [revisão]`,tree:tree.sha,parents:[headSha]}
+ });
+ feedback('Criando branch privada de revisão...');
+ await github(`/repos/${OWNER}/${REPO}/git/refs`,{method:'POST',body:{ref:`refs/heads/${branch}`,sha:commit.sha}});
+ let pr;
+ try{
+  pr=await github(`/repos/${OWNER}/${REPO}/pulls`,{
+   method:'POST',body:{title:`RDO ${date} · ${state.fronts.length} frentes · revisar`,head:branch,base:'main',draft:true,
+    body:`Relatório de campo enviado por ${state.login} via RDO móvel.\n\n- **Data:** ${date}\n- **Frentes:** ${[...new Set(state.fronts.map(f=>f.target))].join(', ')}\n- **Serviços:** ${state.fronts.length}\n- **Fotos privadas:** ${state.photos.length}\n- **Arquivo:** \`${jsonPath}\`\n\n**Pendências de validação:** conferir classificação, identificação de elementos, quantidades, fotografias e publicabilidade. Este registro **não** implica aceite técnico, liberação de etapa ou medição.`}
+  });
+ }catch(err){err.message+=` O commit privado foi criado na branch ${branch}; verifique manualmente a Pull Request.`;throw err;}
+ return {url:pr.html_url||`https://github.com/${OWNER}/${REPO}/pull/${pr.number}`,number:pr.number,branch,jsonPath};
+}
+$('submitGithub').addEventListener('click',async()=>{
+ if(pending)return;
+ try{
+  const meta=validateRdo();
+  if(!$('confirmSubmit').checked)throw new Error('Marque a confirmação de revisão antes de enviar.');
+  setBusy(true);
+  const pr=await publishPrivate(meta);
+  state.sentPr=pr;
+  await saveLocal();
+  feedback('RDO enviado para revisão no repositório privado.','ok');
+  $('submittedResult').hidden=false;
+  $('submittedResult').innerHTML=`Proposta privada criada: <a target="_blank" rel="noopener noreferrer" href="${safe(pr.url)}">Pull Request #${safe(pr.number)}</a>. Nenhum dado foi publicado automaticamente.`;
+  $('submitGithub').disabled=true;
+ }catch(err){feedback(err.message,'error');}
+ finally{setBusy(false);}
+});
+function storageReady(){return typeof indexedDB!=='undefined';}
+function openDb(){return new Promise((resolve,reject)=>{
+ if(!storageReady()){reject(new Error('Armazenamento offline indisponível neste navegador.'));return;}
+ const request=indexedDB.open('certare_rdo_mobile_v1',1);
+ request.onupgradeneeded=()=>{const db=request.result;if(!db.objectStoreNames.contains('drafts'))db.createObjectStore('drafts');};
+ request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error||new Error('IndexedDB indisponível'));
+});}
+async function useDb(mode,fn){const db=await openDb();try{return await new Promise((resolve,reject)=>{
+ const tx=db.transaction('drafts',mode);const req=fn(tx.objectStore('drafts'));
+ req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+ });}finally{db.close();}}
+async function saveLocal(){
+ const draft={id:state.id,meta:getMeta(),fronts:state.fronts,photos:state.photos,sentPr:state.sentPr};
+ await useDb('readwrite',store=>store.put(draft,'latest'));
+}
+async function restoreDraft(){
+ let draft;try{draft=await useDb('readonly',store=>store.get('latest'));}catch(err){return;}
+ if(!draft)return;
+ state.id=draft.id||randomId();state.fronts=draft.fronts||[];state.photos=draft.photos||[];state.sentPr=draft.sentPr||null;
+ for(const [id,value] of Object.entries({
+  rdoDate:draft.meta?.date,rdoShift:draft.meta?.shift,rdoType:draft.meta?.type,rdoWeather:draft.meta?.weather,
+  rdoWorkers:draft.meta?.workers??'',rdoEquipment:draft.meta?.equipment,rdoNotes:draft.meta?.notes})){
+  if(value!==undefined&&value!==null&&$(id))$(id).value=value;
+ }
+ if(state.sentPr){$('submittedResult').hidden=false;$('submittedResult').textContent=`RDO já enviado para revisão: ${state.sentPr.url}`;$('submitGithub').disabled=true;}
+}
+$('saveDraft').addEventListener('click',async()=>{
+ try{await saveLocal();feedback('Rascunho e fotos salvos neste dispositivo.','ok');}catch(err){feedback(err.message,'error');}
+});
+function exportJson(){
+ const info=getMeta();const photos=state.photos.map(p=>({id:p.id,caption:p.caption,front_ref:p.front_ref,filename:p.filename,bytes:p.blob.size,nota:'Imagem não incluída na exportação JSON; use o envio seguro para incluir as fotos.'}));
+ return JSON.stringify({draft:true,date:info.date,header:info,fronts:state.fronts,photos},null,2)+'\n';
+}
+$('downloadDraft').addEventListener('click',()=>{
+ const blob=new Blob([exportJson()],{type:'application/json'});const url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=url;a.download=`RDO_rascunho_${getMeta().date||'sem-data'}.json`;a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);feedback('JSON de conferência exportado. Fotos são enviadas apenas via GitHub.','ok');
+});
+$('deleteDraft').addEventListener('click',async()=>{
+ if(!confirm('Apagar rascunho, frentes e fotos deste dispositivo? O RDO já enviado ao GitHub não será alterado.'))return;
+ try{await useDb('readwrite',store=>store.delete('latest'));}catch{}
+ state.id=randomId();state.fronts=[];state.photos=[];state.sentPr=null;
+ for(const id of FIELDS)$(id).value='';$('rdoDate').value=isoLocal();$('rdoShift').value='manha';$('rdoType').value='vistoria';$('rdoWeather').value='nao_informado';
+ $('confirmSubmit').checked=false;$('submittedResult').hidden=true;$('submitGithub').disabled=false;
+ resetFrontForm();renderAll();feedback('Rascunho local apagado.','ok');showTab('rdo');
+});
+function renderAll(){renderFronts();renderPhotos();renderReview();}
+$('rdoDate').value=isoLocal();
+for(const id of FIELDS){$(id).addEventListener('input',scheduleDraft);$(id).addEventListener('change',scheduleDraft);}
+window.addEventListener('pagehide',()=>{for(const url of PHOTO_URLS)URL.revokeObjectURL(url)});
+// Sem token no localStorage, IndexedDB, JSON, URL, logs ou código do repositório.
+})();
+
+</script>
+</body>
+</html>
