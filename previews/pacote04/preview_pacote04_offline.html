@@ -264,6 +264,10 @@ body{background:linear-gradient(180deg,#f8fbfe 0%,#f7f9fc 55%,#f3f7fb 100%)}
 }
 @media(max-width:390px){.kpi strong{font-size:16px}.status-chip{display:none}.axis-drawer-toggle{bottom:106px}}
 
+
+/* Gaveta fixa: evita que o cabeçalho sticky intercepte o botão fechar ao rolar. */
+.side-panel{position:fixed;top:82px;right:max(14px,calc((100vw - 1550px)/2 + 14px));bottom:16px;max-height:calc(100vh - 98px)}
+@media(max-width:980px){.side-panel{top:72px;right:14px;bottom:14px;max-height:calc(100vh - 86px)}}
 </style>
 </head>
 <body>
