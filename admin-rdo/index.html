@@ -52,6 +52,7 @@
 
     <section id="tab-frentes" class="tab-view" hidden>
       <div class="section-head"><h2>Frentes e serviços</h2><span class="pill">Uma ou várias por RDO</span></div>
+      <div class="sub-card" id="frontDashboard" aria-live="polite"><h3>Resumo das frentes deste RDO</h3><p class="note">Contagem de registros observados, sem acumular snapshots ou ordinais. Ainda não homologado.</p><div id="frontDashboardContent" class="stack-list"><div class="empty">Nenhuma frente registrada.</div></div></div>
       <div class="stack-list" id="frontList" aria-live="polite"><div class="empty">Nenhum serviço adicionado.</div></div>
       <form id="frontForm" class="sub-card">
         <h3 id="frontFormTitle">Adicionar serviço observado</h3>
@@ -307,7 +308,32 @@ $('frontList').addEventListener('click',ev=>{
   if(state.editId===f.id)resetFrontForm();renderFronts();renderPhotos();scheduleDraft();
  }
 });
+function summarizeFronts(fronts, photos){
+ const result=new Map();
+ for(const front of fronts){
+  if(!/^(E0[1-9]|FAB|GERAL)$/.test(front.target))continue;
+  let row=result.get(front.target);
+  if(!row){row={target:front.target,entries:0,services:new Set(),phases:new Set(),ongoing:0,partial:0,completed:0,individual:0,qtyKinds:new Set(),photos:0};result.set(front.target,row);}
+  row.entries++;row.services.add(front.service);row.phases.add(front.phase);
+  if(front.state==='em_andamento')row.ongoing++;
+  if(front.state==='parcial_executado')row.partial++;
+  if(front.state==='executado')row.completed++;
+  if(front.element)row.individual++;
+  if(front.quantity_kind!=='nao_informado')row.qtyKinds.add(front.quantity_kind);
+ }
+ for(const photo of photos){const found=fronts.find(x=>x.id===photo.front_ref);if(found&&result.has(found.target))result.get(found.target).photos++;}
+ return [...result.values()].sort((a,b)=>a.target.localeCompare(b.target));
+}
+function renderFrontDashboard(){
+ const values=summarizeFronts(state.fronts,state.photos);
+ $('frontDashboardContent').innerHTML=values.length?values.map(x=>`<article class="front-card">
+ <div><h3>${safe(x.target)} · ${x.entries} lançamento(s)</h3>
+ <p>Serviços: ${safe([...x.services].join(', '))} · fotos vinculadas: ${x.photos}</p>
+ <p>Em andamento: ${x.ongoing} · parciais: ${x.partial} · concluídos segundo relato: ${x.completed}</p>
+ <p>${x.individual} registro(s) com peça identificada · ${safe([...x.qtyKinds].join(', ')||'sem quantitativos informados')}</p></div></article>`).join(''):'<div class="empty">Nenhuma frente registrada.</div>';
+}
 function renderFronts(){
+ renderFrontDashboard();
  $('frontCount').textContent=String(state.fronts.length);
  $('frontList').innerHTML=state.fronts.length?state.fronts.map(f=>`
   <article class="front-card"><div><h3>${safe(f.target)} · ${safe(f.service)} · ${safe(f.phase)}</h3><p>${safe(f.activity)}</p><p>Situação: ${safe(f.state)} · Quantidade: ${f.quantity===null?'não informada':safe(f.quantity+' ('+f.quantity_kind+')')}</p></div>
@@ -533,7 +559,7 @@ $('deleteDraft').addEventListener('click',async()=>{
  $('confirmSubmit').checked=false;$('submittedResult').hidden=true;$('submitGithub').disabled=false;
  resetFrontForm();renderAll();feedback('Rascunho local apagado.','ok');showTab('rdo');
 });
-function renderAll(){renderFronts();renderPhotos();renderReview();}
+function renderAll(){renderFronts();renderPhotos();renderFrontDashboard();renderReview();}
 if(!TRUSTED_ORIGIN){$('connectBtn').disabled=true;textStatus('authFeedback','Prévia somente visual: não informe token em domínio de terceiros.','error');}
 $('rdoDate').value=isoLocal();
 for(const id of FIELDS){$(id).addEventListener('input',scheduleDraft);$(id).addEventListener('change',scheduleDraft);}
