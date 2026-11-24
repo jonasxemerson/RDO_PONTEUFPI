@@ -35,6 +35,13 @@ with sync_playwright() as p:
             assert page.locator(selector).evaluate("(img) => img.complete && img.naturalWidth > 0")
             assert page.locator(selector).get_attribute("src").startswith("assets/")
         assert page.locator(".brand-certare").get_attribute("src") == "assets/logo-grupo-certare-oficial.svg"
+        sdu_svg=(ROOT/"assets/sdu-norte-identificacao.svg").read_text(encoding="utf-8")
+        assert 'viewBox="0 0 420 92"' in sdu_svg
+        assert 'fill="#2057A6"' in sdu_svg
+        assert '<rect' not in sdu_svg and '<path' not in sdu_svg, "Placa ou fundo retangular reapareceu"
+        assert 'Superintendência de Desenvolvimento' in sdu_svg
+        assert 'Urbano • Norte — Teresina/PI' in sdu_svg
+
         assert page.locator(".brand-logos").evaluate(
             "(el) => el.closest('header') !== null && el.getBoundingClientRect().left < 60"
         )
