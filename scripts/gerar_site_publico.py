@@ -13,6 +13,7 @@ if DEST.exists():
     shutil.rmtree(DEST)
 (DEST / "scripts").mkdir(parents=True)
 (DEST / "data").mkdir(parents=True)
+(DEST / "assets").mkdir(parents=True)
 # Fonte única e auditável para indicadores de referência, incorporada no HTML.
 cfg = build_state(ROOT)
 ax = cfg["estacas"]["previstas_por_eixo"]
@@ -28,6 +29,7 @@ assert "<!-- CERTARE_CONFIG -->" in html
 payload = json.dumps(cfg, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
 html = html.replace("<!-- CERTARE_CONFIG -->", '<script id="certare-config" type="application/json">' + payload + "</script>")
 (DEST / "index.html").write_text(html, encoding="utf-8")
+shutil.copy2(ROOT / "assets/sdu-norte-identificacao.svg", DEST / "assets/sdu-norte-identificacao.svg")
 shutil.copy2(ROOT / "scripts/modelo-4d-publico.js", DEST / "scripts/modelo-4d-publico.js")
 shutil.copy2(ROOT / "scripts/painel-v2.js", DEST / "scripts/painel-v2.js")
 (DEST / ".nojekyll").write_text("", encoding="utf-8")
