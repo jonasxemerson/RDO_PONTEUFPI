@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "classification": "referencia_historica_nao_homologada",
+  "data_referencia": "nao_determinada",
+  "source_note": "Base histórica previamente apresentada no painel; pendente de conciliação com evidências de campo.",
+  "eixos": 9,
+  "vaos": 8,
+  "estacas": {
+    "previstas_por_eixo": [
+      24,
+      32,
+      32,
+      37,
+      37,
+      37,
+      37,
+      32,
+      24
+    ],
+    "historicas_por_eixo": [
+      24,
+      32,
+      32,
+      0,
+      0,
+      0,
+      4,
+      11,
+      8
+    ]
+  },
+  "blocos": {
+    "previstos_total": 9,
+    "historicos_por_eixo": [
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "pilares": {
+    "previstos_por_eixo": 4,
+    "historicos_por_eixo": [
+      0,
+      4,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  }
+}
