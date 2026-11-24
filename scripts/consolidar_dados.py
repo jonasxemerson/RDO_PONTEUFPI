@@ -103,26 +103,32 @@ def build_state(root=ROOT):
         return matches[-1] if matches else None
 
     field_piles = {}
-    field_metrics = {
-        "E07": "estacas_executadas_etapa_a_verificar",
-        "E08": "estacas_executadas_etapa_a_verificar",
-        "E09": "estacas_finalizadas_etapa_a_verificar",
+    # Um snapshot de execução é a última fotografia acumulada homologada, por eixo,
+    # e não o somatório das mensagens de vários dias. Aplicável também a eixos
+    # que receberem registros novos em meses posteriores.
+    pile_status_metrics = {
+        "estacas_executadas_etapa_a_verificar": "nao_especificada",
+        "estacas_finalizadas_etapa_a_verificar": "finalizadas_sem_etapa_detalhada",
     }
-    for axis, metric in field_metrics.items():
-        row = latest_approved_metric(axis, metric)
-        if not row:
+    for axis_index in range(legacy["eixos"]):
+        axis = f"E{axis_index + 1:02d}"
+        matches = [e for e in approved if e.get("target") == axis and
+                   e.get("metric") in pile_status_metrics and
+                   e.get("state") == "snapshot" and
+                   e.get("quantity_kind") == "total_reportado"]
+        if not matches:
             continue
-        index = int(axis[1:]) - 1
-        planned_number = planned[index]
+        row = matches[-1]
+        planned_number = planned[axis_index]
         executed = row["quantity"]
         field_piles[axis] = {
             "executadas_em_campo": executed,
             "previstas_projeto": planned_number,
             "diferenca_executado_menos_previsto": executed - planned_number,
-            "concretadas_na_base_anterior": piles[index],
+            "concretadas_na_base_anterior": piles[axis_index],
             "data": row["date"],
             "evento_origem": row["id"],
-            "etapa_de_conclusao": "nao_especificada" if axis != "E09" else "finalizadas_sem_etapa_detalhada",
+            "etapa_de_conclusao": pile_status_metrics[row["metric"]],
             "locacao_conforme_projeto": "nao_verificada",
             "participacao_na_resistencia": "nao_determinada",
             "status": "executado_em_campo_homologado",
