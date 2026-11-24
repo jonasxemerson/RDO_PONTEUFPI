@@ -224,12 +224,12 @@ async function loadPrivateHistory(){
    inspected++;
    textStatus('historyFeedback',`Conferindo proposta ${inspected}/${candidates.length}...`);
    const tree=await github(`/repos/${OWNER}/${REPO}/git/trees/${encodeURIComponent(pr.head.sha)}?recursive=1`);
-   const files=(tree.tree||[]).filter(f=>f.type==='blob'&&/^rdos\\/\\d{4}-\\d{2}\\/rdo-[A-Za-z0-9-]+\\.json$/.test(f.path));
+   const files=(tree.tree||[]).filter(f=>f.type==='blob'&&/^rdos\/\d{4}-\d{2}\/rdo-[A-Za-z0-9-]+\.json$/.test(f.path));
    if(tree.truncated)throw new Error('Listagem de arquivos incompleta; não é seguro apresentar o histórico como completo.');
    for(const file of files){
     const data=await github(`/repos/${OWNER}/${REPO}/git/blobs/${file.sha}`);
     if(data.encoding!=='base64'||typeof data.content!=='string')throw new Error('Conteúdo de RDO indisponível.');
-    const bytes=Uint8Array.from(atob(data.content.replace(/\\s/g,'')),c=>c.charCodeAt(0));
+    const bytes=Uint8Array.from(atob(data.content.replace(/\s/g,'')),c=>c.charCodeAt(0));
     const rdo=JSON.parse(new TextDecoder().decode(bytes));
     if(rdo.project!=='ponte-ufpi'||!Array.isArray(rdo.records)||!Array.isArray(rdo.photos))continue;
     const rows=rdo.records.filter(x=>target==='TODOS'||x.target===target);
