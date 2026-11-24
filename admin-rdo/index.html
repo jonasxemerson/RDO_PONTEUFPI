@@ -174,7 +174,7 @@ function showTab(tab){
   document.querySelector(`[data-tab="${t}"]`).setAttribute('aria-selected',String(t===tab));
  }
  if(tab==='revisao')renderReview();
- window.scrollTo({top:0,behavior:'smooth'});
+ window.scrollTo({top:0,behavior:'instant'});
 }
 $('appTabs').addEventListener('click',ev=>{const b=ev.target.closest('[data-tab]');if(b)showTab(b.dataset.tab);});
 document.addEventListener('click',ev=>{const b=ev.target.closest('[data-goto]');if(b&&state.authorized)showTab(b.dataset.goto);});
