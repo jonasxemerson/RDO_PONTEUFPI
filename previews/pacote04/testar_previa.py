@@ -48,6 +48,7 @@ with sync_playwright() as pw:
   assert page.locator("#axisDrawer").get_attribute("aria-hidden")=="true"
   assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 2"), "layout overflow at "+screen
   assert not any(r.startswith(("http://","https://")) for r in requests), requests
+  page.screenshot(path=str(OUT/f"pacote04-inicial-{screen}.png"),full_page=True,animations="disabled")
   # KPIs extras preserved, hidden by default.
   page.locator("#toggleKpis").click()
   assert page.locator(".kpis .kpi:visible").count()==6
