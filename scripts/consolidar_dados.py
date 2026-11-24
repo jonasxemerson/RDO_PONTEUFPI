@@ -103,26 +103,32 @@ def build_state(root=ROOT):
         return matches[-1] if matches else None
 
     field_piles = {}
-    field_metrics = {
-        "E07": "estacas_executadas_etapa_a_verificar",
-        "E08": "estacas_executadas_etapa_a_verificar",
-        "E09": "estacas_finalizadas_etapa_a_verificar",
+    # Um snapshot de execução é a última fotografia acumulada homologada, por eixo,
+    # e não o somatório das mensagens de vários dias. Aplicável também a eixos
+    # que receberem registros novos em meses posteriores.
+    pile_status_metrics = {
+        "estacas_executadas_etapa_a_verificar": "nao_especificada",
+        "estacas_finalizadas_etapa_a_verificar": "finalizadas_sem_etapa_detalhada",
     }
-    for axis, metric in field_metrics.items():
-        row = latest_approved_metric(axis, metric)
-        if not row:
+    for axis_index in range(legacy["eixos"]):
+        axis = f"E{axis_index + 1:02d}"
+        matches = [e for e in approved if e.get("target") == axis and
+                   e.get("metric") in pile_status_metrics and
+                   e.get("state") == "snapshot" and
+                   e.get("quantity_kind") == "total_reportado"]
+        if not matches:
             continue
-        index = int(axis[1:]) - 1
-        planned_number = planned[index]
+        row = matches[-1]
+        planned_number = planned[axis_index]
         executed = row["quantity"]
         field_piles[axis] = {
             "executadas_em_campo": executed,
             "previstas_projeto": planned_number,
             "diferenca_executado_menos_previsto": executed - planned_number,
-            "concretadas_na_base_anterior": piles[index],
+            "concretadas_na_base_anterior": piles[axis_index],
             "data": row["date"],
             "evento_origem": row["id"],
-            "etapa_de_conclusao": "nao_especificada" if axis != "E09" else "finalizadas_sem_etapa_detalhada",
+            "etapa_de_conclusao": pile_status_metrics[row["metric"]],
             "locacao_conforme_projeto": "nao_verificada",
             "participacao_na_resistencia": "nao_determinada",
             "status": "executado_em_campo_homologado",
@@ -146,14 +152,73 @@ def build_state(root=ROOT):
         "data": partial_pillars[-1]["date"],
     } if partial_pillars else None)
 
+    # Projeção da evolução física: uma única referência por eixo.
+    # Snapshot homologado mais recente da execução de campo prevalece sobre a base
+    # histórica APENAS na leitura "execução"; a série "concretagem" fica separada.
+    # E09: 25 peças executadas versus 24 de projeto, sem corte em 100% ou descarte.
+    progress_axes = []
+    for i, project_count in enumerate(planned):
+        axis = f"E{i + 1:02d}"
+        field = field_piles.get(axis)
+        concrete_count = piles[i]
+        observed_count = field["executadas_em_campo"] if field is not None else concrete_count
+        if observed_count < concrete_count:
+            raise ValueError(f"{axis}: execução homologada inferior à concretagem registrada")
+        progress_axes.append({
+            "eixo": axis,
+            "previstas_projeto": project_count,
+            "executadas_registradas": observed_count,
+            "concretadas_identificadas": concrete_count,
+            "origem_execucao": "campo_homologado" if field is not None else "base_historica",
+            "data_execucao_campo": field["data"] if field is not None else None,
+            "evento_origem": field["evento_origem"] if field is not None else None,
+            "etapa_execucao": field["etapa_de_conclusao"] if field is not None else
+                              "concretagem_base_historica",
+            "excedente_executado": max(0, observed_count - project_count),
+            "locacao_conforme_projeto": field["locacao_conforme_projeto"] if field is not None else
+                                        "nao_auditada_individualmente",
+            "participacao_resistente": field["participacao_na_resistencia"] if field is not None else
+                                      "nao_auditada_individualmente",
+        })
+    additional_preslabs = sum(
+        e["quantity"] for e in approved
+        if e.get("service") == "prelaje"
+        and e.get("quantity_kind") == "acrescimo_reportado"
+        and e.get("state") == "incremento_reportado"
+        and isinstance(e.get("quantity"), int)
+    )
+    evolution = {
+        "data_referencia": max((e["date"] for e in approved), default=None),
+        "estacas_por_eixo": progress_axes,
+        "total_estacas_execucao_registrada": sum(row["executadas_registradas"] for row in progress_axes),
+        "total_estacas_previstas_projeto": sum(row["previstas_projeto"] for row in progress_axes),
+        "total_estacas_concretadas_identificadas": sum(row["concretadas_identificadas"] for row in progress_axes),
+        "indicador_execucao_etapas_mistas": True,
+        "total_blocos_concluidos_registrados": sum(blocks),
+        "total_pilares_integralmente_concretados_registrados": sum(pillars),
+        "pilares_E03_concretagem_parcial": field_pillar_status,
+        "total_longarinas_concretadas_em_campo": field_longarinas["concretadas_em_campo"] if field_longarinas else None,
+        "prelajes_acrescimos_reportados_novembro": additional_preslabs,
+        "prelajes_estoque_total": None,
+        "precaucoes": [
+            "Estacas executadas em etapa não especificada não devem ser rotuladas como concretadas.",
+            "Eixo 09 tem 25 estacas finalizadas em campo contra 24 previstas em projeto.",
+            "A soma de execução por eixo agrega base histórica e apontamentos homologados; não é avanço contratual homogêneo.",
+            "Pilares E03-P03/P04 possuem somente a parte inferior concretada, sem confirmação dos topos.",
+            "Pré-lajes registradas como incrementos não permitem total de estoque sem conciliar a base anterior.",
+            "Nenhum conjunto de estacas pode ser colorido como elementos individuais concluídos sem locação validada.",
+        ],
+    }
+
     state = copy.deepcopy(legacy)
     state["schema_version"] = 2
     state["classification"] = "consolidacao_parcial_para_acompanhamento"
     # A data do estado homologado deve refletir só o último evento aprovado.
     # Novos relatos não homologados são indicados separadamente.
     state["data_referencia"] = max((e["date"] for e in approved), default="nao_determinada")
-    state["source_note"] = ("Base histórica preservada; homologação dos apontamentos pelo responsável "
-                            "não equivale a aceite ou medição. E08 foi revalidado sem nova soma; E03 atualizado por snapshot.")
+    state["source_note"] = ("Indicadores de concretagem preservam a base histórica. Na leitura de execução física, "
+                            "o último total de campo homologado prevalece por eixo. As etapas são distintas: "
+                            "o total de execução não constitui medição nem aceite. Não há atribuição por estaca.")
     state["estacas"]["historicas_por_eixo"] = piles
     state["pilares"]["historicos_por_eixo"] = pillars
     state["blocos"]["historicos_por_eixo"] = blocks
@@ -171,6 +236,7 @@ def build_state(root=ROOT):
         "longarinas_concretadas_inferidas": 1 if beam_2_event and beam_2_inferred else 0,
         "inferencia_longarina_2_data_exata": None,
         "detalhes": other,
+        "evolucao_fisica": evolution,
         "execucao_em_campo": {
             "estacas_por_eixo": field_piles,
             "longarinas": field_longarinas,

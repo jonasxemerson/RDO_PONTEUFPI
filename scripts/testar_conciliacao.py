@@ -35,6 +35,33 @@ assert piles["E09"]["participacao_na_resistencia"] == "nao_determinada"
 assert field["longarinas"]["concretadas_em_campo"] == 3
 assert field["pilares_parciais_E03"]["metades_inferiores_concretadas"] == 2
 assert field["pilares_parciais_E03"]["concretagem_superior_confirmada"] is False
+
+# O indicador de evolução usa a última execução homologada por eixo, jamais somente
+# os 111 da base histórica ou a soma indiscriminada dos totais de diferentes dias.
+evo=c["evolucao_fisica"]
+assert len(evo["estacas_por_eixo"])==9
+assert evo["total_estacas_execucao_registrada"] == 145, evo
+assert evo["total_estacas_previstas_projeto"] == 292
+assert evo["total_estacas_concretadas_identificadas"] == 111
+assert evo["indicador_execucao_etapas_mistas"] is True
+observed=[x["executadas_registradas"] for x in evo["estacas_por_eixo"]]
+assert observed == [24,32,32,0,0,0,19,13,25], observed
+concreted=[x["concretadas_identificadas"] for x in evo["estacas_por_eixo"]]
+assert concreted == [24,32,32,0,0,0,4,11,8], concreted
+assert [x["origem_execucao"] for x in evo["estacas_por_eixo"][6:]] == ["campo_homologado"]*3
+assert [x["origem_execucao"] for x in evo["estacas_por_eixo"][:6]] == ["base_historica"]*6
+assert evo["estacas_por_eixo"][8]["excedente_executado"] == 1
+assert evo["estacas_por_eixo"][8]["participacao_resistente"] == "nao_determinada"
+assert evo["total_longarinas_concretadas_em_campo"] == 3
+assert evo["total_pilares_integralmente_concretados_registrados"] == 6
+assert evo["total_blocos_concluidos_registrados"] == 2
+assert evo["pilares_E03_concretagem_parcial"]["concretagem_superior_confirmada"] is False
+assert evo["prelajes_acrescimos_reportados_novembro"] == 218
+assert evo["prelajes_estoque_total"] is None
+assert len({x["eixo"] for x in evo["estacas_por_eixo"]}) == 9
+assert all(x["concretadas_identificadas"]<=x["executadas_registradas"]
+           for x in evo["estacas_por_eixo"])
+
 assert state["estacas"]["historicas_por_eixo"][7] == 11, "E08 contou duas vezes"
 assert state["pilares"]["historicos_por_eixo"][2] >= 2, "Dois pilares E03 não consolidados"
 assert c["total_estacas_concretadas_base_mais_snapshots"] >= 111

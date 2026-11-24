@@ -40,13 +40,17 @@ with sync_playwright() as p:
         assert page.evaluate("typeof window.Certare4D?.setSelection === 'function'")
         assert page.locator("#axisTitle").inner_text() == "Eixo 07"
         assert page.locator("nav a").count() == 6
-        assert page.locator("#kpiEstacas").inner_text() == "111 / 292"
+        assert page.locator("#kpiEstacas").inner_text() == "145 / 292"
+        assert page.locator("#kpiConcretadas").inner_text() == "111 / 292"
+        assert page.locator("#kpiLongarinas").inner_text() == "3 / 64"
         assert page.locator("#kpiBlocos").inner_text() == "2 / 9"
         assert page.locator("#kpiPilares").inner_text() == "6 / 36"
         assert page.locator("#noticePending").is_hidden()
         assert page.locator(".summary-row").count() == 0
         assert page.evaluate("() => !!document.getElementById('certare-config')")
-        assert page.locator("#fieldProgress .progress-card").count() == 4
+        assert page.locator("#fieldProgress .progress-card").count() == 6
+        assert "+218" in page.locator("#fieldProgress").inner_text()
+        assert "2 parciais" in page.locator("#fieldProgress").inner_text()
         assert "25 / 24" in page.locator("#fieldProgress").inner_text()
         assert "19 / 37" in page.locator("#fieldProgress").inner_text()
         assert "13 / 32" in page.locator("#fieldProgress").inner_text()
@@ -54,10 +58,28 @@ with sync_playwright() as p:
         assert "não prova erro de locação" in page.locator("#fieldCaveat").inner_text()
         assert page.evaluate("JSON.parse(document.getElementById('certare-config').textContent).consolidacao.registros_homologados === 59")
         assert page.locator("#axisProgress button").count() == 9
+        assert page.locator('[data-progress-mode="execucao"]').get_attribute("aria-pressed") == "true"
+        assert page.locator("#axisProgress button[data-axis='7'] .axis-progress-count").inner_text() == "19 / 37"
+        assert page.locator("#axisProgress button[data-axis='8'] .axis-progress-count").inner_text() == "13 / 32"
+        assert "25 / 24" in page.locator("#axisProgress button[data-axis='9'] .axis-progress-count").inner_text()
+        assert "+1 além do previsto" in page.locator("#axisProgress button[data-axis='9'] .axis-progress-count").inner_text()
+        assert page.locator("#axisProgress button[data-axis='9']").get_attribute("data-source") == "campo_homologado"
+        assert page.locator("#axisProgress button[data-axis='9']").get_attribute("data-excess") == "true"
+        assert page.locator("#axisProgress button[data-axis='9'] .axis-progress-concrete").count() == 1
+        assert "145 estacas" in page.locator("#progressContext").inner_text()
+        page.locator('[data-progress-mode="concretagem"]').click()
+        assert page.locator('[data-progress-mode="concretagem"]').get_attribute("aria-pressed") == "true"
+        assert page.locator("#axisProgress button[data-axis='7'] .axis-progress-count").inner_text() == "4 / 37"
+        assert page.locator("#axisProgress button[data-axis='8'] .axis-progress-count").inner_text() == "11 / 32"
+        assert page.locator("#axisProgress button[data-axis='9'] .axis-progress-count").inner_text() == "8 / 24"
+        assert "111 estacas" in page.locator("#progressContext").inner_text()
+        page.locator('[data-progress-mode="execucao"]').click()
+        assert page.locator('#axisProgress button[data-axis="9"] .axis-progress-count').inner_text().startswith("25 / 24")
         assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).estacas.historicas_por_eixo[7] === 11")
         assert page.locator("#axisChooser button").count() == 9
         assert page.locator("#timelineSelect").is_enabled()
         assert page.locator("#timelineContent .timeline-event").count() > 0
+        assert page.locator("#timelineSelect").input_value() == "2026-11-24"
         assert page.evaluate("window.CertarePublicEvents.length > 20")
         assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).consolidacao.registros_homologados >= 41")
         assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).consolidacao.longarinas_concretadas_inferidas === 1")
@@ -81,12 +103,13 @@ with sync_playwright() as p:
         assert painted > 10, f"WebGL sem geometria visível ({painted} amostras)"
         assert page.evaluate("window.Certare4D.inspect().lastVertices > 1000")
         assert page.locator("#modelMarkers .axis-marker").count() > 0
+        assert page.locator("#modelMarkers .axis-marker[data-progress]").count() >= 1
         page.locator("#axisChooser button[data-axis=\"9\"]").click()
         assert page.locator("#axisTitle").inner_text() == "Eixo 09"
-        assert "Concretadas" in page.locator("#axisRows").inner_text()
+        assert "Concretagem identificada" in page.locator("#axisRows").inner_text()
         assert "25" in page.locator("#axisRows").inner_text()
-        assert "Diferença executado" in page.locator("#axisRows").inner_text()
-        assert "não concluída" in page.locator("#axisRows").inner_text()
+        assert "Excedente de execução sobre projeto" in page.locator("#axisRows").inner_text()
+        assert "registro anterior, não é estágio atual" in page.locator("#axisRows").inner_text()
         assert page.locator("#axisProgress button[data-axis=\"9\"]").get_attribute("aria-pressed") == "true"
         page.locator('[data-model-view="superior"]').click()
         assert page.evaluate("window.Certare4D.inspect().view === 'superior'")

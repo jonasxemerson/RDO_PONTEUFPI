@@ -183,7 +183,18 @@ function axisMarkers(){
  for(const {txt,p,i} of entries){
   const [px,py]=proj(p);if(px<25||px>width-25||py<42||py>height-25)continue;
   const el=document.createElement('button');el.type='button';el.textContent=txt;el.className='axis-marker';
-  el.setAttribute('aria-label','Selecionar eixo '+pad(i));
+  const stage=cfg.consolidacao?.evolucao_fisica?.estacas_por_eixo?.[i-1];
+  if(stage&&stage.origem_execucao==='campo_homologado'){
+    // Indicador por eixo, sem colorir estacas geométricas individuais como executadas.
+    el.dataset.progress=stage.executadas_registradas+'/'+stage.previstas_projeto;
+    el.setAttribute('aria-label','Selecionar eixo '+pad(i)+', '+
+      stage.executadas_registradas+' estacas com execução registrada de '+
+      stage.previstas_projeto+' previstas'+
+      (stage.excedente_executado?' — excedente de '+stage.excedente_executado:''));
+    el.title='Registro agregado de campo · '+stage.data_execucao_campo+
+      '. Locação de estacas individuais não vinculada à geometria.';
+  }else el.setAttribute('aria-label','Selecionar eixo '+pad(i)+
+    ', base histórica sem locação individual confirmada');
   if(selected.kind==='eixo'&&selected.index===i)el.classList.add('is-active');
   el.style.left=px+'px';el.style.top=py+'px';
   el.addEventListener('click',e=>{e.stopPropagation();select('eixo',i,'pilar')});
