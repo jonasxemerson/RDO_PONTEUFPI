@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Browser smoke test sem credencial real. Faz mock de toda a API GitHub."""
-import io,json,os
+import io,json,os,base64
 from pathlib import Path
 from PIL import Image
 from playwright.sync_api import sync_playwright
@@ -25,7 +25,21 @@ def run():
                 key=q.url.split("https://api.github.com")[-1]
                 body=q.post_data_json if q.post_data and "application/json" in q.headers.get("content-type","") else None
                 calls.append((q.method,key,body))
-                if key=="/user":v={"login":"jonasxemerson"}
+                if "/pulls?state=" in key and q.method=="GET":
+                    v=[{"number":51,"state":"open","draft":True,"merged_at":None,
+                        "head":{"ref":"rdo/2026-11-24/teste","sha":"e"*40}}]
+                elif "/git/trees/" in key and q.method=="GET":
+                    v={"truncated":False,"tree":[{"type":"blob",
+                       "path":"rdos/2026-11/rdo-2026-11-24-teste.json","sha":"f"*40}]}
+                elif key.endswith("/git/blobs/"+"f"*40) and q.method=="GET":
+                    fake={"project":"ponte-ufpi","header":{"date":"2026-11-24"},
+                          "records":[{"target":"E09","service":"estacas","phase":"concretagem",
+                                      "activity":"Histórico privado de teste","state":"observado",
+                                      "quantity":None,"quantity_kind":"nao_informado"}],
+                          "photos":[{"target":"E09"}]}
+                    v={"encoding":"base64","content":base64.b64encode(
+                       json.dumps(fake).encode()).decode()}
+                elif key=="/user":v={"login":"jonasxemerson"}
                 elif key=="/repos/jonasxemerson/RDO_CERTARE":v={"private":True,"full_name":"jonasxemerson/RDO_CERTARE","permissions":{"admin":True}}
                 elif key.endswith("/git/ref/heads/main"):v={"object":{"sha":"c"*40}}
                 elif "/git/commits/" in key and q.method=="GET":v={"tree":{"sha":"d"*40}}
@@ -46,6 +60,15 @@ def run():
             page.locator("#connectBtn").click()
             page.locator("#workspace").wait_for(state="visible")
             assert page.locator("#githubToken").input_value()==""
+            page.locator('[data-tab="historico"]').click()
+            assert page.locator("#historyAxis").is_visible()
+            page.locator("#historyAxis").select_option("E09")
+            page.locator("#loadHistory").click()
+            page.wait_for_function("() => document.querySelector('#historyFeedback').textContent.includes('1 registros')",timeout=15000)
+            assert "Histórico privado de teste" in page.locator("#historyList").inner_text()
+            assert "revisão" in page.locator("#historyList").inner_text()
+            assert "https://github.com/jonasxemerson/RDO_CERTARE/pull/51" in page.locator("#historyList a").get_attribute("href")
+            page.screenshot(path=str(OUT/f"{label}-historico.png"),full_page=True)
             page.locator("#rdoDate").fill("2026-11-24")
             page.locator('[data-tab="frentes"]').click()
             page.locator("#frontAxis").select_option("E09")
@@ -79,7 +102,7 @@ def run():
             assert len(prs)==1 and prs[0]["draft"] is True
             assert page.evaluate("document.documentElement.scrollWidth <= innerWidth + 2")
             assert not errors,errors
-            captures.append({"tela":label,"autenticacao":True,"RDO":True,"fotos":True,"PR":True})
+            captures.append({"tela":label,"autenticacao":True,"RDO":True,"fotos":True,"PR":True,"historico":True})
             page.close()
         # Autorização negada sem admin.
         page=browser.new_page()
