@@ -8,6 +8,7 @@ on:
       - "painel-cliente.html"
       - "data/**"
       - "scripts/**"
+      - "assets/**"
       - ".github/workflows/publicar-site.yml"
   pull_request:
     branches: [main]
@@ -30,6 +31,7 @@ jobs:
           test -f site/index.html
           test -f site/scripts/modelo-4d-publico.js
           test -f site/scripts/painel-v2.js
+          test -f site/assets/sdu-norte-identificacao.svg
           test ! -f site/scripts/github-dados.js
           test ! -f site/painel-cliente.html
           node --check site/scripts/modelo-4d-publico.js
@@ -81,6 +83,11 @@ jobs:
       - uses: actions/upload-pages-artifact@v4
         with:
           path: "site"
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Aguardar indexação do artefato
+        run: sleep 8
       - name: Publicar site estático
         id: deploy
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
