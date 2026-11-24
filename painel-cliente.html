@@ -178,7 +178,7 @@ function selectAxis(i){
  $('#axisTitle').textContent='Eixo '+String(i).padStart(2,'0');
  const code='E'+String(i).padStart(2,'0'),specific=events.filter(e=>e.target===code);
  const axis=CONFIG.consolidacao?.evolucao_fisica?.estacas_por_eixo?.[i-1]||null;
- const byDate=(a,b)=>String(a.date+' '+(a.time||'')).localeCompare(String(b.date+' '+(b.time||''));
+ const byDate=(a,b)=>String(a.date+' '+(a.time||'')).localeCompare(String(b.date+' '+(b.time||'')));
  const recent=(metric)=>specific.filter(e=>e.state==='snapshot'&&e.metric===metric).sort(byDate).at(-1);
  const concrete=recent('estacas_concretadas'),undefinedStep=recent('estacas_feitas_etapa_indefinida');
  const sleeves=recent('camisas_sem_concretagem');
