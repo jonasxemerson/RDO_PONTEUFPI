@@ -147,3 +147,11 @@ h1{font-size:clamp(25px,2.6vw,38px);line-height:1.17;margin:4px 0 5px;letter-spa
 @media(max-width:980px){.workspace,.lower-grid{grid-template-columns:minmax(0,1fr)}.viewer-surface{height:clamp(440px,63vh,650px)}.side-panel{display:grid;grid-template-columns:1fr 1fr}.side-panel .axis-pills{grid-column:1/-1}.side-notes{grid-column:1/-1}}
 @media(max-width:720px){.container{width:calc(100% - 24px)}.topbar-inner{min-height:66px;flex-wrap:wrap;padding:9px 0}.identity{gap:8px}.identity .logo-certare{width:113px}.identity .logo-sdu{width:128px}.logo-divider{height:29px}.top-actions{gap:5px}.status-chip{font-size:9px;padding:6px}.top-actions .button{padding:7px;font-size:10px}.navbar{width:100%;overflow:auto;white-space:nowrap;padding:2px 0 9px}.page-heading{align-items:flex-start}.source-tag{display:none}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.kpi{padding:11px}.kpi strong{font-size:24px}.viewer-top{padding:10px}.viewer-surface{height:clamp(410px,58vh,600px)}.viewer-controls{right:8px;top:50px}.viewer-pill{left:8px;top:8px}.viewer-footer{font-size:9px}.side-panel{display:block}.axis-pills{margin-top:10px}.side-notes{margin-top:10px}.viewer-system{bottom:57px}.chart-row{grid-template-columns:38px minmax(0,1fr) 78px}.page{padding-top:15px}}
 @media(max-width:380px){.identity .logo-certare{width:96px}.identity .logo-sdu{width:104px}.top-actions .status-chip{display:none}.top-actions .button{font-size:9px}}
+
+/* Correção de teste visual 390px: ações do cabeçalho nunca extrapolam a largura. */
+@media(max-width:720px){
+ .top-actions{margin-left:0;flex-basis:100%;width:100%;max-width:100%;justify-content:flex-start;flex-wrap:wrap;gap:6px}
+ .top-actions .status-chip{max-width:100%;white-space:normal}
+ .top-actions .button{max-width:100%;white-space:normal}
+ .navbar{width:100%;max-width:100%;min-width:0;overflow-x:auto}
+}
