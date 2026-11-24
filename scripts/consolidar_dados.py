@@ -95,7 +95,9 @@ def build_state(root=ROOT):
     state = copy.deepcopy(legacy)
     state["schema_version"] = 2
     state["classification"] = "consolidacao_parcial_para_acompanhamento"
-    state["data_referencia"] = max((e["date"] for e in ordered), default="nao_determinada")
+    # A data do estado homologado deve refletir só o último evento aprovado.
+    # Novos relatos não homologados são indicados separadamente.
+    state["data_referencia"] = max((e["date"] for e in approved), default="nao_determinada")
     state["source_note"] = ("Base histórica preservada; homologação dos apontamentos pelo responsável "
                             "não equivale a aceite ou medição. E08 foi revalidado sem nova soma; E03 atualizado por snapshot.")
     state["estacas"]["historicas_por_eixo"] = piles
@@ -105,6 +107,7 @@ def build_state(root=ROOT):
         "registros_totais": len(ordered),
         "registros_homologados": len(approved),
         "registros_pendentes": len(pending),
+        "ultimo_relato_pendente": max((e["date"] for e in pending), default=None),
         "eventos_pendentes_ids": [e["id"] for e in pending],
         "metodo": "maximo_por_etapa_e_eixo_entre_base_historica_e_ultimo_snapshot_homologado",
         "total_estacas_concretadas_base_mais_snapshots": sum(piles),
