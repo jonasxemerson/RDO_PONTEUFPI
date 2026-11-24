@@ -90,6 +90,7 @@ def run():
         page.goto((ROOT/"admin-rdo/index.html").as_uri())
         page.locator("#githubToken").fill("sem-acesso")
         page.locator("#connectBtn").click()
+        page.wait_for_function("() => document.querySelector(\"#authFeedback\").textContent.includes(\"não é o administrador\")",timeout=10000)
         assert "não é o administrador" in page.locator("#authFeedback").inner_text()
         assert not page.locator("#workspace").is_visible()
         browser.close()
