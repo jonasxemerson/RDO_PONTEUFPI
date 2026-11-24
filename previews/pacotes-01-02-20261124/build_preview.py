@@ -7,6 +7,7 @@ A prévia contém um retrato dos registros publicáveis, não dados privados dos
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
 import zipfile
@@ -110,6 +111,13 @@ assert 'https://fonts.googleapis.com' not in html
 assert "data/estado_consolidado.json" in html  # Código de produção preservado, bypass offline via snapshot.
 
 OUT.write_text(html, encoding="utf-8")
+
+# Candidato de produção executável em servidor estático, usando a mesma saída
+# pública da publicação atual; sem inserir dados privados e sem alterar main.
+shutil.copytree(ROOT / "site/data", CAND / "data", dirs_exist_ok=True)
+(CAND / "assets").mkdir(exist_ok=True)
+for asset_name in ("logo-grupo-certare-oficial.svg", "sdu-norte-identificacao.svg"):
+    shutil.copy2(ROOT / "assets" / asset_name, CAND / "assets" / asset_name)
 
 with zipfile.ZipFile(HERE / "PACOTES_01_02_backup_preview.zip", "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
     zf.write(OUT, "preview_offline.html")
