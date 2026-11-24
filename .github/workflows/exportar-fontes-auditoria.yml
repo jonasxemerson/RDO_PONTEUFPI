@@ -1,0 +1,37 @@
+name: Exportação de fontes para auditoria — sem publicação
+on:
+  push:
+    branches:
+      - "auditoria/dados-2026-11-24"
+    paths:
+      - ".github/workflows/exportar-fontes-auditoria.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Exportar fontes versionadas e calcular referência independente
+        shell: bash
+        run: |
+          mkdir -p auditoria-fontes/data auditoria-fontes/scripts auditoria-fontes/docs
+          cp data/*.json auditoria-fontes/data/
+          cp scripts/consolidar_dados.py scripts/validar_dados.py auditoria-fontes/scripts/
+          cp docs/PARECER_INDICADORES_2026-11-16.md docs/ACESSO_ADMIN_E_PUBLICACAO.md auditoria-fontes/docs/
+          python3 scripts/consolidar_dados.py > auditoria-fontes/consolidado_recalculado.json
+          python3 scripts/validar_dados.py > auditoria-fontes/validacao.txt
+          git rev-parse HEAD > auditoria-fontes/revisao_git.txt
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          d=pathlib.Path('auditoria-fontes')
+          m={str(f.relative_to(d)): hashlib.sha256(f.read_bytes()).hexdigest() for f in sorted(d.rglob('*')) if f.is_file()}
+          (d/'manifesto_sha256.json').write_text(json.dumps(m,indent=2),encoding='utf-8')
+          print(json.dumps({'files':len(m)},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fontes-auditoria-ponte-ufpi-20261124
+          path: auditoria-fontes/
+          retention-days: 30
