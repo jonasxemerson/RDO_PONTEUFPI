@@ -18,3 +18,16 @@ for page in ["https://www.grupocertare.com/","https://www.grupocertare.com/quems
             print("IMAGE_TAG",html.unescape(source[match.start():match.end()])[:200])
     except Exception as exc:
         print("FETCH_ERROR",str(exc))
+
+# Exportação controlada da logomarca do cabeçalho oficial.
+import base64
+logo="https://static.wixstatic.com/media/b0723a_f5fc2b4a40314e1eb2609467d5b54c57~mv2.png/v1/fill/w_720,h_200,al_c,q_95/Logo-grupo-Certare-em-cinza.png"
+try:
+    rq=urllib.request.Request(logo,headers={"User-Agent":"Mozilla/5.0","Accept":"image/png"})
+    res=urllib.request.urlopen(rq,timeout=18)
+    data=res.read()
+    print("CERTARE_LOGO_CONTENT_TYPE",res.headers.get("Content-Type"),"SIZE",len(data))
+    assert data[:8]==b"\\x89PNG\\r\\n\\x1a\\n", "não é PNG"
+    print("CERTARE_LOGO_B64="+base64.b64encode(data).decode("ascii"))
+except Exception as exc:
+    print("CERTARE_LOGO_DOWNLOAD_ERROR",repr(exc))
