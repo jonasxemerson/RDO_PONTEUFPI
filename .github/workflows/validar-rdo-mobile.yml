@@ -51,8 +51,10 @@ jobs:
         with:
           name: rdo-mobile-admin-previa
           path: |
-            admin-rdo/index.html
+            admin-rdo/
             docs/FLUXO_RDO_MOBILE_ADMIN.md
+            scripts/conectar_rdo_gerencial.py
+            tests/test_rdo_mobile_browser.py
             tests/capturas/
           retention-days: 30
           if-no-files-found: warn
