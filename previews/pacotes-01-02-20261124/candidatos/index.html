@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#F8FAFC">
+<title>Ponte da UFPI | Cockpit de Fiscalização · Prévia de evolução CERTARE / SDU Norte</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="offlineBanner" class="offline-banner" hidden>PRÉVIA OFFLINE · dados homologados embutidos · não constitui medição nem sistema BIM homologado</div>
+<header class="topbar">
+ <div class="container">
+  <div class="topbar-inner">
+   <div class="identity" aria-label="Instituições">
+    <img class="logo-certare" src="assets/logo-grupo-certare-oficial.svg" alt="Grupo CERTARE">
+    <span class="logo-divider" aria-hidden="true"></span>
+    <img class="logo-sdu" src="assets/sdu-norte-identificacao.svg" alt="SDU Norte — Superintendência de Desenvolvimento Urbano Norte de Teresina">
+   </div>
+   <div class="product-label"><b>Ponte da UFPI</b><small>Fiscalização e acompanhamento estrutural</small></div>
+   <div class="top-actions">
+    <span class="status-chip">Registros homologados para acompanhamento</span>
+    <button type="button" class="button" id="openMethod" aria-haspopup="dialog">Critérios e Metodologia ⓘ</button>
+   </div>
+  </div>
+  <nav class="navbar" aria-label="Navegação do painel">
+   <a href="#viewer">Maquete 3D</a><a href="#progress">Evolução por eixo</a><a href="#timeline">Linha do tempo</a><a href="#evidence">Evidências</a>
+  </nav>
+ </div>
+</header>
+<main class="container page">
+ <div class="page-heading">
+  <div><div class="kicker">Cockpit de fiscalização · UFPI</div><h1>Acompanhamento executivo da ponte</h1><p>Projeto × execução em campo × concretagem identificada, com origem documental preservada e visualização esquemática.</p></div>
+  <span class="source-tag" id="referenceLabel">Consolidação em preparação</span>
+ </div>
+ <section class="kpis" aria-label="Indicadores rastreáveis">
+  <div class="kpi"><small>Estacas · execução registrada</small><strong id="kpi-exec">—</strong><em>Acumulado reconciliado por eixo*</em></div>
+  <div class="kpi"><small>Estacas · concretagem identificada</small><strong id="kpi-concrete">—</strong><em>Indicador independente</em></div>
+  <div class="kpi"><small>Estacas previstas · projeto</small><strong id="kpi-plan">—</strong><em>Não altera locação projetada</em></div>
+  <div class="kpi"><small>Blocos concluídos · base histórica</small><strong id="kpi-blocks">—</strong><em>Outros em preparação</em></div>
+  <div class="kpi"><small>Pilares integralmente concretados</small><strong id="kpi-pillars">—</strong><em>Parciais separados</em></div>
+  <div class="kpi"><small>Longarinas concretadas · acumulado</small><strong id="kpi-girders">—</strong><em>Não significa protendidas ou lançadas</em></div>
+ </section>
+ <div class="workspace">
+  <section class="card viewer-card" id="viewer" aria-label="Modelo 3D conceptual da ponte">
+   <div class="viewer-top">
+    <div class="section-name"><b>Maquete técnica · 9 eixos / 8 vãos</b><small>Three.js · geometria esquemática sem locação individual homologada</small></div>
+    <div class="segmented" role="group" aria-label="Visualização 3D">
+     <button type="button" data-viewer-mode="sistema" aria-pressed="true">Sistema estrutural</button>
+     <button type="button" data-viewer-mode="heatmap" aria-pressed="false">Heatmap de avanço</button>
+    </div>
+   </div>
+   <div class="viewer-surface" id="viewerSurface">
+    <canvas id="viewerCanvas" tabindex="0" role="img" aria-label="Maquete tridimensional esquemática; clique nas peças para selecionar o eixo e arraste para orbitar."></canvas>
+    <div class="axis-labels" id="axisLabels" aria-hidden="true"></div>
+    <div class="viewer-pill" id="scenePill">Visualização esquemática · dados do projeto</div>
+    <div class="viewer-controls" aria-label="Controles da câmera">
+     <button type="button" id="zoomIn" aria-label="Aproximar">+</button><button type="button" id="zoomOut" aria-label="Afastar">−</button>
+     <button type="button" id="focusSelected" aria-label="Focar no eixo selecionado">◎</button>
+     <button type="button" id="resetView" aria-label="Reiniciar câmera">↺</button>
+    </div>
+    <div class="viewer-system" role="group" aria-label="Filtrar sistema estrutural">
+     <button type="button" data-viewer-system="todos" aria-pressed="true">Todos</button>
+     <button type="button" data-viewer-system="fundacoes" aria-pressed="false">Fundações</button>
+     <button type="button" data-viewer-system="apoios" aria-pressed="false">Apoios</button>
+     <button type="button" data-viewer-system="superestrutura" aria-pressed="false">Superestrutura</button>
+    </div>
+    <div class="viewer-footer"><span>Arraste para orbitar · Scroll para zoom · Clique numa peça ou eixo</span><strong>Heatmap agregado — não identifica estacas ou pilares individualmente</strong></div>
+    <div class="tooltip" id="sceneTooltip" hidden role="status"></div>
+   </div>
+  </section>
+  <aside class="card side-panel" aria-label="Resumo do eixo selecionado">
+   <div class="side-title">Inspeção por eixo</div>
+   <div class="axis-head"><h2 id="axisName">E07</h2><span class="axis-status" id="axisSource">Em conferência</span></div>
+   <div class="axis-readout">
+    <div class="readout"><small>Executadas registradas</small><b id="axisExecuted">—</b></div>
+    <div class="readout"><small>Concretadas identificadas</small><b id="axisConcrete">—</b></div>
+    <div class="readout"><small>Previstas em projeto</small><b id="axisPlanned">—</b></div>
+    <div class="readout"><small>Origem da informação</small><b id="axisOrigin" style="font-size:12px;letter-spacing:0">—</b></div>
+    <div class="readout caveat"><small>Nota de conformidade</small><b id="axisCaveat">Sem confirmação de locação individual.</b></div>
+   </div>
+   <div class="side-title">Selecionar eixo</div>
+   <div id="axisPills" class="axis-pills"></div>
+   <button type="button" class="button primary" id="copyView">Copiar Link da Vista · ?eixo=07</button>
+   <div class="side-notes"><div class="side-title">Legenda semântica</div>
+    <p><span class="dot green"></span> Concretagem identificada, quando documentada</p>
+    <p><span class="dot amber"></span> Execução registrada sem etapa final especificada</p>
+    <p><span class="dot"></span> Base histórica, projeto ou sem observação datada</p>
+    <p>*Execução e concretagem são séries distintas; não se trata de porcentagem contratual.</p>
+   </div>
+  </aside>
+ </div>
+ <div class="lower-grid">
+  <section class="section" id="progress"><div class="section-head"><div><h2>Fundações por eixo</h2><p>Hover e clique vinculados à maquete 3D; valores acima do projeto permanecem visíveis.</p></div></div>
+   <div class="card chart-card">
+    <div id="chartRows" class="chart-rows" aria-label="Gráfico de barras interativo da execução por eixo"></div>
+    <div class="legend" style="margin-top:13px"><span><i class="dot green"></i>Concretagem identificada</span><span><i class="dot amber"></i>Execução registrada</span><span><i class="dot"></i>Previsto/base histórica</span></div>
+    <p class="chart-caption" id="chartCaption">Sem dados consolidados carregados.</p>
+   </div>
+  </section>
+  <section class="section" id="timeline"><div class="section-head"><div><h2>Linha do tempo documental</h2><p>Somente datas com registros; sem interpolação e sem transformar base histórica não datada em série.</p></div></div>
+   <div class="card timeline-card">
+    <div class="side-title">Marcos homologados</div>
+    <div class="timeline-list" id="timelineList"></div>
+    <div class="bulletin" id="bulletin"><b>Selecione um marco</b></div>
+    <div class="event-list" id="milestoneEvents"></div>
+   </div>
+  </section>
+ </div>
+ <section class="section" id="evidence">
+  <div class="section-head"><div><h2>Elementos e evidências publicáveis</h2><p>Os documentos disponíveis são os JSONs versionados, não os arquivos privados de mensagens ou fotos.</p></div><span class="source-tag" id="evidenceCount">—</span></div>
+  <div class="card evidence-card">
+   <div class="filters" id="evidenceFilters">
+    <button type="button" data-service="todos" aria-pressed="true">Todos</button><button type="button" data-service="estacas" aria-pressed="false">Estacas</button>
+    <button type="button" data-service="bloco" aria-pressed="false">Blocos</button><button type="button" data-service="pilar" aria-pressed="false">Pilares</button>
+    <button type="button" data-service="longarina" aria-pressed="false">Longarinas</button>
+   </div>
+   <div class="evidence-list" id="evidenceList"></div>
+  </div>
+ </section>
+ <div class="footer-note">Maquete ilustrativa sem validade de projeto executivo ou medição. Não inferir paralisação a partir de dias sem registro. Fontes visíveis por evento e classificações preservadas.</div>
+</main>
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+<aside class="drawer" id="methodDrawer" role="dialog" aria-modal="true" aria-label="Critérios e Metodologia" tabindex="-1">
+ <button type="button" class="button close" id="closeMethod">Fechar ✕</button>
+ <h2>Critérios e Metodologia</h2>
+ <h3>1. Origem e classificação</h3>
+ <p><strong>Base histórica:</strong> referência agregada sem data nem locação individual comprovada. <strong>Homologado:</strong> relato aceito pelo responsável como verdade do executado, sem atestar conformidade geométrica, capacidade resistente ou medição. <strong>Inferido:</strong> pré-requisito identificado por evidência posterior, com data exata não determinada.</p>
+ <h3>2. Leitura quantitativa</h3>
+ <p>Totais reportados são snapshots acumulados, não incrementos entre mensagens. Estacas “executadas” sem etapa final especificada não são contabilizadas automaticamente como concretadas. A ocorrência E09 de 25 executadas e 24 previstas é exibida sem desconsiderar estacas por hipótese.</p>
+ <h3>3. Modelo 3D e heatmap</h3>
+ <p>A geometria representa 9 eixos e 8 vãos com proporções esquemáticas. As cores de heatmap qualificam apenas o <strong>agregado do eixo</strong>: não pintam peças individualmente como executadas, aceitas ou resistentes. O modo raio-X destaca sistemas sem afirmar localização exata.</p>
+ <h3>4. Cronologia e limites</h3>
+ <p>Somente eventos datados e homologados formam os marcos. Não se interpola produção entre visitas, nem se retroage a base histórica cuja data é desconhecida. Fotografias não associadas ao JSON público permanecem como slots vazios. A ausência de observação não caracteriza paralisação.</p>
+ <h3>5. Fonte e atualização</h3><p id="methodSource">Fonte: arquivos JSON versionados no repositório RDO_PONTEUFPI. A prévia funciona com amostra embutida; o candidato de produção lê os mesmos arquivos públicos gerados pelo fluxo atual.</p>
+</aside>
+<script src="vendor/three.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
