@@ -57,3 +57,11 @@ O resultado **privado** contém atividades, observações e referências privada
 ## Restrições para implantação
 
 O **site público continua inalterado** e a interface é entregue apenas em branch de prévia. O acesso por celular via link HTTPS depende de publicação futura da página estática e de que a requisição ao GitHub API funcione no navegador. Para substituir o token por login de verdade, será preciso configurar OAuth (servidor ou provedor). Não colocar tokens em GitHub Pages. Não tentar criar senha fixa em JavaScript, que seria uma proteção falsa.
+
+## Evolução: histórico privado por frente (prévia)
+
+A quinta aba **Histórico** permite selecionar E01–E09, FAB, GERAL ou todas as frentes e consultar registros existentes nas propostas de RDO do repositório privado. O filtro de situação considera o estado da Pull Request. A API retorna até **20 PRs mais recentes** por consulta, sendo exibidas somente as branches no padrão `rdo/` com arquivos RDO no formato esperado. O resultado **não equivale a um inventário histórico exaustivo**. Consultas são read-only e exigem a autenticação GitHub existente.
+
+A tela apresenta data, eixo, serviço, fase, atividade, natureza da quantidade, contagem de fotos associadas e link para a PR privada. Não baixa fotografias para o painel e não registra imagens em cache persistente. A classificação da PR (draft/aberta/fechada/mesclada) **não é homologação de campo**, aceite técnico nem liberação contratual. Propostas encerradas sem mesclagem também permanecem distinguíveis. Ausência de registro não indica paralisação.
+
+O teste de navegação usa API simulada para verificar filtro E09, leitura de JSON da branch privada, indicação de revisão e link privado em desktop e celular. **Integração real com PAT não executada**. Ficam pendentes: paginação para histórico completo, consulta independente de fotos e vínculos documentais, gestão da homologação com assinatura e perfis institucionais e ensaios de segurança em hospedagem aprovada. Nenhuma alteração em `main` ou no painel público.
