@@ -4,7 +4,10 @@
 const CFG=JSON.parse(document.getElementById('certare-config').textContent);
 const AX=CFG.estacas.previstas_por_eixo,HIST=CFG.estacas.historicas_por_eixo;
 const $=id=>document.getElementById(id);
-let currentAxis=7, currentService='estacas';
+let currentAxis=7, currentService='estacas', progressMode='execucao';
+const EVOLUTION=CFG.consolidacao?.evolucao_fisica||{};
+const progressAxes=Array.isArray(EVOLUTION.estacas_por_eixo)?EVOLUTION.estacas_por_eixo:[];
+const currentProgress=n=>progressAxes[n-1]||null;
 const label={estacas:'Estacas',bloco:'Blocos',pilar:'Pilares',travessa:'Travessas',longarina:'Longarinas',tabuleiro:'Tabuleiro'};
 function escapeHTML(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function dateBR(v){let p=String(v||'').split('-');return p.length===3?p.reverse().join('/'):'Sem data';}
@@ -19,16 +22,23 @@ function syncAxis(n,fromModel=false){
 }
 function renderSummary(){
  const sum=a=>a.reduce((x,y)=>x+y,0);
+ const expected=sum(AX);
+ const concrete=EVOLUTION.total_estacas_concretadas_identificadas??sum(HIST);
+ const executed=EVOLUTION.total_estacas_execucao_registrada??concrete;
  const values=[
- ['kpiEixos',String(CFG.eixos)+' eixos'],
- ['metaVaos',String(CFG.vaos)+' vãos no modelo'],
- ['kpiEstacas',sum(HIST)+' / '+sum(AX)],
- ['kpiBlocos',sum(CFG.blocos.historicos_por_eixo)+' / '+CFG.blocos.previstos_total],
- ['kpiPilares',sum(CFG.pilares.historicos_por_eixo)+' / '+CFG.eixos*CFG.pilares.previstos_por_eixo],
- ['progressContext','Base parcialmente conciliada: '+sum(HIST)+' estacas concretadas registradas de '+sum(AX)+' previstas no modelo. Não equivale a medição nem curva de avanço contratual.']
+  ['kpiEixos',String(CFG.eixos)+' eixos'],
+  ['metaVaos',String(CFG.vaos)+' vãos no modelo'],
+  ['kpiEstacas',executed+' / '+expected],
+  ['kpiConcretadas',concrete+' / '+expected],
+  ['kpiBlocos',String(EVOLUTION.total_blocos_concluidos_registrados??sum(CFG.blocos.historicos_por_eixo))+' / '+CFG.blocos.previstos_total],
+  ['kpiPilares',String(EVOLUTION.total_pilares_integralmente_concretados_registrados??sum(CFG.pilares.historicos_por_eixo))+' / '+CFG.eixos*CFG.pilares.previstos_por_eixo],
+  ['kpiLongarinas',EVOLUTION.total_longarinas_concretadas_em_campo==null?'—':EVOLUTION.total_longarinas_concretadas_em_campo+' / '+(CFG.vaos*8)],
  ];
  for(const [id,value] of values){let el=$(id);if(el)el.textContent=value}
+ const date=$('progressDate');if(date)date.textContent='Consolidação: '+dateBR(EVOLUTION.data_referencia);
+ const fieldDate=$('fieldDate');if(fieldDate)fieldDate.textContent='Campo: '+dateBR(EVOLUTION.data_referencia);
 }
+
 function renderFieldProgress(){
  const root=$('fieldProgress'),caveat=$('fieldCaveat');
  if(!root||!caveat)return;
@@ -61,12 +71,45 @@ function renderFieldProgress(){
 }
 function makeBars(){
  const root=$('axisProgress');if(!root)return;
+ const concreteMode=progressMode==='concretagem';
  root.innerHTML=AX.map((planned,i)=>{
-  const hist=HIST[i], n=i+1, pct=Math.max(0,Math.min(100,hist/planned*100));
-  return '<button type="button" data-axis="'+n+'" aria-pressed="'+String(n===currentAxis)+'" aria-label="Eixo '+n+', '+hist+' de '+planned+' estacas na base histórica"><span class="axis-progress-label">E'+String(n).padStart(2,'0')+'</span><span class="axis-progress-track"><span class="axis-progress-fill" style="width:'+pct.toFixed(2)+'%"></span></span><span class="axis-progress-count">'+hist+' / '+planned+'</span></button>';
+   const e=currentProgress(i+1);
+   const historic=HIST[i], concrete=e?.concretadas_identificadas??historic;
+   const executed=e?.executadas_registradas??concrete;
+   const observed=concreteMode?concrete:executed;
+   const excess=!concreteMode&&executed>planned;
+   const field=e?.origem_execucao==='campo_homologado';
+   const fill=Math.min(100,100*observed/planned).toFixed(2);
+   const confirmed=Math.min(100,100*concrete/planned).toFixed(2);
+   const source=field?('Campo homologado · '+dateBR(e.data_execucao_campo)):'Base histórica · data de referência não identificada';
+   const descriptor=concreteMode?'Concretagem identificada':(field?'Execução homologada, etapa final não discriminada':'Concretagem da base histórica');
+   const more=excess?'<small>+'+(executed-planned)+' além do previsto</small>':'';
+   return '<button type="button" data-axis="'+(i+1)+'" data-source="'+(field?'campo_homologado':'base_historica')+
+      '" data-excess="'+String(excess)+'" aria-pressed="'+String(i+1===currentAxis)+'" '+
+      'aria-label="Eixo '+(i+1)+': '+observed+' de '+planned+' estacas, '+descriptor+'. '+source+
+      (excess?'. '+(executed-planned)+' além do projeto':'')+'">'+
+      '<span class="axis-progress-label">E'+String(i+1).padStart(2,'0')+'</span>'+
+      '<span class="axis-progress-middle"><span class="axis-progress-track" aria-hidden="true">'+
+      '<span class="axis-progress-fill" style="width:'+fill+'%;'+(concreteMode?'background:#43876d':'')+'"></span>'+
+      (concreteMode?'':'<span class="axis-progress-concrete" style="width:'+confirmed+'%"></span>')+
+      '</span><span class="axis-progress-origin">'+source+'</span></span>'+
+      '<span class="axis-progress-count">'+observed+' / '+planned+more+'</span></button>';
  }).join('');
  root.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>syncAxis(Number(b.dataset.axis))));
+ document.querySelectorAll('[data-progress-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.progressMode===progressMode)));
+ const text=$('progressContext'), legend=$('progressLegend');
+ if(concreteMode){
+   if(text)text.textContent='Concretagem identificada: '+(EVOLUTION.total_estacas_concretadas_identificadas??'—')+
+     ' estacas de '+AX.reduce((a,b)=>a+b,0)+' previstas. Contagens das etapas posteriores sem indicação expressa de concretagem não alteram esta série.';
+   if(legend)legend.textContent='Verde: concretagem identificada na base histórica ou em snapshot da mesma etapa. Zero indica ausência de concretagem registrada neste recorte, não paralisação da frente.';
+ }else{
+   if(text)text.textContent='Execução registrada: '+(EVOLUTION.total_estacas_execucao_registrada??'—')+
+     ' estacas contabilizadas por eixo, frente às '+AX.reduce((a,b)=>a+b,0)+
+     ' previstas. Inclui base histórica e totais homologados de etapas diferentes; não corresponde a avanço físico-contratual homogêneo.';
+   if(legend)legend.textContent='Verde: concretagem identificada; bege: execução homologada cujo estágio final não foi detalhado. E09: 25 executadas versus 24 projetadas (+1), sem classificação de locação ou resistência.';
+ }
 }
+
 function makeChooser(){
  const root=$('axisChooser');if(!root)return;
  root.innerHTML=AX.map((_,i)=>'<button type="button" data-axis="'+(i+1)+'" aria-pressed="'+String(i+1===currentAxis)+'">E'+String(i+1).padStart(2,'0')+'</button>').join('');
@@ -75,10 +118,27 @@ function makeChooser(){
 function drawEvidence(){
  const root=$('evidenceRows');if(!root)return;
  const n=currentAxis, code=axisCode(n), published=currentEvents().filter(e=>e.target===code);
- const systemRows=[['Estacas concretadas (base reconciliada)',HIST[n-1]+' / '+AX[n-1]],['Blocos (referência histórica)',CFG.blocos.historicos_por_eixo[n-1]+' / 1'],['Pilares concretados (base reconciliada)',CFG.pilares.historicos_por_eixo[n-1]+' / '+CFG.pilares.previstos_por_eixo],['Eventos homologados para acompanhamento',String(published.length)]];
- root.innerHTML='<p class="small-note">Eixo '+String(n).padStart(2,'0')+' · unidades conhecidas somente por agrupamento, sem posição individual confirmada.</p>'+systemRows.map(([a,b])=>'<div class="evidence-item"><span>'+a+'</span><strong>'+b+'</strong></div>').join('')+
- (published.length?published.map(e=>'<div class="evidence-item"><span>'+escapeHTML(dateBR(e.date))+' · '+escapeHTML(e.activity)+'</span><strong>Registro homologado</strong></div>').join(''):'<p class="small-note">Nenhum evento homologado publicado para esta frente. Ausência de publicação não indica paralisação.</p>');
+ const p=currentProgress(n);
+ const field=p?.origem_execucao==='campo_homologado';
+ const origin=field?'Homologado em '+dateBR(p.data_execucao_campo):'Base histórica, sem identificação individual das estacas';
+ const systemRows=[
+   ['Estacas previstas em projeto',p?.previstas_projeto??AX[n-1]],
+   ['Estacas com execução registrada',p?.executadas_registradas??HIST[n-1]],
+   ['Estacas com concretagem identificada',p?.concretadas_identificadas??HIST[n-1]],
+   ['Origem da execução acumulada',origin],
+   ['Blocos (base histórica)',CFG.blocos.historicos_por_eixo[n-1]+' / 1'],
+   ['Pilares integralmente concretados',CFG.pilares.historicos_por_eixo[n-1]+' / '+CFG.pilares.previstos_por_eixo],
+   ['Apontamentos homologados nesta frente',String(published.length)]
+ ];
+ if((p?.excedente_executado??0)>0)systemRows.splice(3,0,['Diferença de execução frente ao projeto','+'+p.excedente_executado+' · locação e resistência não determinadas']);
+ if(n===3&&EVOLUTION.pilares_E03_concretagem_parcial)
+   systemRows.push(['Pilares P03/P04','Metades inferiores concretadas; topo não confirmado']);
+ root.innerHTML='<p class="small-note">Eixo '+String(n).padStart(2,'0')+' · quantidades agregadas por eixo. Nenhum elemento individual é colorido como concluído sem locação associada.</p>'+
+   systemRows.map(([a,b])=>'<div class="evidence-item"><span>'+escapeHTML(a)+'</span><strong>'+escapeHTML(b)+'</strong></div>').join('')+
+   (published.length?published.map(e=>'<div class="evidence-item"><span>'+escapeHTML(dateBR(e.date))+' · '+escapeHTML(e.activity)+'</span><strong>Homologado</strong></div>').join(''):
+   '<p class="small-note">Nenhum evento homologado publicado para esta frente. A ausência de observação não indica paralisação.</p>');
 }
+
 function redrawTimeline(){
  const sel=$('timelineSelect'), root=$('timelineContent'), count=$('timelineCount');if(!sel||!root||!count)return;
  const events=currentEvents().filter(e=>/^\d{4}-\d{2}-\d{2}$/.test(e.date));
@@ -87,6 +147,7 @@ function redrawTimeline(){
  sel.innerHTML=dates.length?dates.map(d=>'<option value="'+d+'">'+dateBR(d)+'</option>').join(''):'<option value="">Sem datas de registros homologados</option>';
  sel.disabled=!dates.length;
  if(previous&&dates.includes(previous))sel.value=previous;
+ else if(dates.length)sel.value=dates[dates.length-1];
  const chosen=sel.value, listed=events.filter(e=>e.date===chosen);
  count.textContent=dates.length?listed.length+' registros nesta data':'Nenhum evento homologado';
  root.className=dates.length?'timeline-items':'timeline-empty';
@@ -102,6 +163,11 @@ function onSelection(e){
  }
 }
 renderSummary();renderFieldProgress();makeBars();makeChooser();
+document.querySelectorAll('[data-progress-mode]').forEach(button=>button.addEventListener('click',()=>{
+ const next=button.dataset.progressMode;
+ if(next!=='execucao'&&next!=='concretagem')return;
+ progressMode=next;makeBars();
+}));
 const sel=$('timelineSelect');if(sel)sel.addEventListener('change',redrawTimeline);
 window.addEventListener('certare:select',onSelection);
 window.addEventListener('certare:public-data',()=>{redrawTimeline();drawEvidence()});
