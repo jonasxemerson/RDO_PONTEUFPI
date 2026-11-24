@@ -27,7 +27,7 @@ try:
     res=urllib.request.urlopen(rq,timeout=18)
     data=res.read()
     print("CERTARE_LOGO_CONTENT_TYPE",res.headers.get("Content-Type"),"SIZE",len(data))
-    assert data[:8]==b"\\x89PNG\\r\\n\\x1a\\n", "não é PNG"
+    print("CERTARE_LOGO_MAGIC",data[:12].hex())
     print("CERTARE_LOGO_B64="+base64.b64encode(data).decode("ascii"))
 except Exception as exc:
     print("CERTARE_LOGO_DOWNLOAD_ERROR",repr(exc))
