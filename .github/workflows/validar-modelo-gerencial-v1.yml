@@ -1,0 +1,46 @@
+name: Validar modelo gerencial v1 (sem publicacao)
+on:
+  push:
+    branches:
+      - feature/modelo-tecnico-gerencial-v1-20261124
+    paths:
+      - "modelo_gerencial/v1/**"
+      - "scripts/gerar_modelo_gerencial.py"
+      - "scripts/validar_modelo_gerencial.py"
+      - "scripts/gerar_schema_estrutural.py"
+      - "tests/test_modelo_gerencial.py"
+      - ".github/workflows/validar-modelo-gerencial-v1.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  modelo-dados:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ambiente Python
+        run: python -m pip install --disable-pip-version-check jsonschema
+      - name: Checar sintaxe
+        run: python -m py_compile scripts/gerar_modelo_gerencial.py scripts/validar_modelo_gerencial.py scripts/gerar_schema_estrutural.py tests/test_modelo_gerencial.py
+      - name: Regenerar schema e verificar versionamento
+        run: |
+          python scripts/gerar_schema_estrutural.py
+          git diff --exit-code -- modelo_gerencial/v1/schema_snapshot.json
+      - name: Gerar snapshots interno e público a partir da fonte
+        run: |
+          python scripts/gerar_modelo_gerencial.py --root . --scope interno --output /tmp/snapshot_interno.json
+          python scripts/gerar_modelo_gerencial.py --root . --scope publico --output /tmp/snapshot_publico.json
+          cmp /tmp/snapshot_publico.json modelo_gerencial/v1/exemplos/snapshot_publico_2026-11-24.json
+      - name: Validar schema, fontes e regras
+        run: |
+          python scripts/validar_modelo_gerencial.py --root . --snapshot /tmp/snapshot_interno.json
+          python scripts/validar_modelo_gerencial.py --root . --snapshot /tmp/snapshot_publico.json
+      - name: Testes de regressão e segurança de estados
+        run: python -m unittest discover -s tests -p 'test_modelo_gerencial.py' -v
+      - name: Disponibilizar projeção pública gerada
+        uses: actions/upload-artifact@v4
+        with:
+          name: modelo-gerencial-v1-snapshot-publico
+          path: /tmp/snapshot_publico.json
+          retention-days: 30
