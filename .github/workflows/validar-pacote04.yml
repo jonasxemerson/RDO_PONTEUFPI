@@ -1,0 +1,39 @@
+name: Validar prévia P04 — sem publicação
+on:
+  push:
+    branches:
+      - preview/pacote04-3d-contextual-sem-perder-dados
+    paths:
+      - "previews/pacote04/**"
+      - ".github/workflows/validar-pacote04.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  previa-webgl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - name: Integridade dos scripts candidatos
+        run: |
+          node --check previews/pacote04/candidatos/app.js
+          test -s previews/pacote04/preview_pacote04_offline.html
+          python3 -c "from pathlib import Path; p=Path('previews/pacote04/preview_pacote04_offline.html'); assert p.stat().st_size>700000"
+      - name: Chromium Playwright
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install --disable-pip-version-check playwright
+          .venv/bin/python -m playwright install --with-deps chromium
+      - name: Testes funcionais e 4 screenshots
+        run: .venv/bin/python previews/pacote04/testar_previa.py
+      - name: Entregar arquivo único e capturas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ponte-ufpi-p04-offline
+          path: |
+            previews/pacote04/preview_pacote04_offline.html
+            previews/pacote04/capturas/
+          retention-days: 30
+          if-no-files-found: warn
