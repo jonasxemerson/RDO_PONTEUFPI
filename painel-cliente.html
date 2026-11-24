@@ -126,7 +126,7 @@ body{font-size:15px;line-height:1.6}
 @media(max-width:710px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.axis-progress button{grid-template-columns:38px minmax(0,1fr) 76px;gap:7px}.axis-progress-origin{font-size:9px}.axis-progress-count{font-size:10px}.progress-toolbar button{font-size:11px;padding:8px}}
 </style></head><body>
 <header class="header"><div class="shell header-inner"><div class="brand">CERTARE<small>ENGENHARIA · FISCALIZAÇÃO</small></div><nav class="nav" aria-label="Navegação"><a class="active" href="#visao">Visão geral</a><a href="#estrutura">Estrutura</a><a href="#evolucao">Evolução</a><a href="#linha-tempo">Cronologia</a><a href="#evidencias">Evidências</a><a href="#metodologia">Método</a></nav><div class="head-right"><span class="label-date" id="headerDate">Dados em conferência</span><span class="header-context">FISCALIZAÇÃO DE INFRAESTRUTURA</span></div></div></header>
-<main class="shell" id="visao"><div class="hero"><div><div class="eyebrow">CERTARE / PAINEL DE FISCALIZAÇÃO</div><h1>Ponte da UFPI<span style="color:#428566">.</span></h1><p class="desc">Uma leitura clara da execução estrutural: informações históricas, frentes de serviço e situação documental, com consulta por eixo e separação entre execução registrada, concretagem identificada e conformidade estrutural.</p><div class="hero-metadata"><span><b>Empreendimento</b> Ponte da UFPI</span><span><b>Fiscalização</b> CERTARE</span><span><b>Referência</b> Homologação de campo até 24/11/2026</span></div></div><div class="hero-tag"><span class="dot"></span>Consulta institucional · dados homologados com ressalvas</div></div>
+<main class="shell" id="visao"><div class="hero"><div><div class="eyebrow">CERTARE / PAINEL DE FISCALIZAÇÃO</div><h1>Ponte da UFPI<span style="color:#428566">.</span></h1><p class="desc">Uma leitura clara da execução estrutural: informações históricas, frentes de serviço e situação documental, com consulta por eixo e separação entre execução registrada, concretagem identificada e conformidade estrutural.</p><div class="hero-metadata"><span><b>Empreendimento</b> Ponte da UFPI</span><span><b>Fiscalização</b> CERTARE</span><span><b>Referência</b> Apontamentos homologados via GitHub</span></div></div><div class="hero-tag"><span class="dot"></span>Consulta institucional · dados homologados com ressalvas</div></div>
 <div class="stats" aria-label="Indicadores de evolução física">
   <div class="stat featured"><div class="over">Estrutura do projeto</div><div class="value" id="kpiEixos">— eixos</div><div class="meta" id="metaVaos">Vãos estruturais · modelo esquemático</div></div>
   <div class="stat"><div class="over">Estacas com execução registrada</div><div class="value" id="kpiEstacas">—</div><div class="meta">Base histórica + relatos homologados, sem dupla contagem; etapas não uniformes</div></div>
@@ -139,7 +139,7 @@ body{font-size:15px;line-height:1.6}
 <div class="section-title"><div><div class="eyebrow">Situação executiva · fiscalização de campo</div>
 <h2>Executado em campo × previsto em projeto</h2>
 <p>Quantitativos homologados conforme mensagens do responsável, sem alterar os totais do projeto.</p></div>
-<span class="badge">Data de campo: 24/11/2026</span></div>
+<span class="badge" id="fieldDate">Data de campo: 24/11/2026</span></div>
 <div id="fieldProgress" class="progress-grid" aria-label="Quantitativos executados no campo e previstos em projeto"></div>
 <div id="fieldCaveat" class="muted-panel" style="margin-top:14px">Aguardando conciliação de campo.</div>
 </section>
@@ -149,7 +149,7 @@ body{font-size:15px;line-height:1.6}
 <div class="split"><div class="axis-top"><div><div class="eyebrow">Detalhe da frente</div><div class="axis-big" id="axisTitle">Eixo 07</div></div><span class="badge" id="axisStatus">Conferência pendente</span></div><div class="axis-rows" id="axisRows"></div><p class="small-note">As cores do modelo diferenciam sistemas estruturais, não estágios de execução. Quantitativos agregados não permitem indicar quais estacas ou pilares específicos foram executados.</p><div id="elementInspector" class="element-inspector" role="status" aria-live="polite">Selecione uma peça na geometria para consultar o sistema estrutural.</div></div></section>
 <aside class="card card-pad"><div class="card-header"><div><div class="eyebrow">Boletim público</div><h2>Situação dos registros</h2><p class="subtle">Apontamentos homologados pelo responsável para acompanhamento físico, distintos de aceite contratual.</p></div></div><div class="notice" id="noticePending"><strong>Sem novos eventos homologados</strong><p>Isso não significa obra parada. Registros ainda em análise não são apresentados como execução oficialmente atestada.</p></div><div class="updates" id="updates" aria-live="polite"><p class="skeleton">Consultando publicações…</p></div><p class="small-note" id="dataStatus" role="status">Fonte: arquivos versionados no GitHub.</p></aside>
 </div>
-<section id="evolucao" class="section-v2"><div class="section-title"><div><div class="eyebrow">Evolução física · dados homologados</div><h2>Fundações por eixo</h2><p>Relatos de execução por eixo conciliados com a base histórica; quantidades previstas não são alteradas.</p></div><span class="badge">Consolidação até 24/11/2026 · não constitui medição</span></div>
+<section id="evolucao" class="section-v2"><div class="section-title"><div><div class="eyebrow">Evolução física · dados homologados</div><h2>Fundações por eixo</h2><p>Relatos de execução por eixo conciliados com a base histórica; quantidades previstas não são alteradas.</p></div><span class="badge" id="progressDate">Consolidação até 24/11/2026 · não constitui medição</span></div>
 <div class="card card-pad">
   <div class="progress-toolbar" role="group" aria-label="Visualizar a evolução das fundações">
     <button type="button" data-progress-mode="execucao" aria-pressed="true">Execução registrada</button>
@@ -177,21 +177,30 @@ function selectAxis(i){
  selected=i;drawBridge();
  $('#axisTitle').textContent='Eixo '+String(i).padStart(2,'0');
  const code='E'+String(i).padStart(2,'0'),specific=events.filter(e=>e.target===code);
- const recent=(metric)=>specific.filter(e=>e.state==='snapshot'&&e.metric===metric).sort((a,b)=>String(a.date+' '+(a.time||'')).localeCompare(String(b.date+' '+(b.time||'')))).at(-1);
+ const axis=CONFIG.consolidacao?.evolucao_fisica?.estacas_por_eixo?.[i-1]||null;
+ const byDate=(a,b)=>String(a.date+' '+(a.time||'')).localeCompare(String(b.date+' '+(b.time||''));
+ const recent=(metric)=>specific.filter(e=>e.state==='snapshot'&&e.metric===metric).sort(byDate).at(-1);
  const concrete=recent('estacas_concretadas'),undefinedStep=recent('estacas_feitas_etapa_indefinida');
  const sleeves=recent('camisas_sem_concretagem');
- const ordinal=specific.filter(e=>e.quantity_kind==='ordinal_em_execucao').sort((a,b)=>String(a.date+a.time).localeCompare(String(b.date+b.time))).at(-1);
- let rows=[['Estacas previstas no modelo',AX[i-1]],
-   ['Concretadas · base reconciliada',HIST[i-1]],
-   ['Concretadas · último relato homologado',concrete?concrete.quantity+' (já conciliadas)':'Não há novo snapshot'],
-   ['Etapa não especificada',undefinedStep?undefinedStep.quantity+' (total relatado)':'Não informado'],
-   ['Executadas em campo · 24/11',CONFIG.consolidacao?.execucao_em_campo?.estacas_por_eixo?.[code]?.executadas_em_campo??'Não informado'],
-   ['Diferença executado − previsto',CONFIG.consolidacao?.execucao_em_campo?.estacas_por_eixo?.[code]?.diferenca_executado_menos_previsto??'Não identificada'],
-   ['Somente camisas, sem concretagem',sleeves?sleeves.quantity:'Não informado'],
-   ['Estaca ordinal em perfuração',ordinal?ordinal.quantity+'ª (não concluída)':'Não informado'],
+ const ordinal=specific.filter(e=>e.quantity_kind==='ordinal_em_execucao').sort(byDate).at(-1);
+ const ordinalValid=ordinal&&(!axis?.data_execucao_campo||ordinal.date>=axis.data_execucao_campo);
+ const ordinalText=ordinal?(ordinal.quantity+'ª · '+ordinal.activity+(ordinalValid?'':' (registro anterior, não é estágio atual)')):'Não informado';
+ const field=axis?.origem_execucao==='campo_homologado';
+ const prov=field?'Campo homologado em '+axis.data_execucao_campo:'Base histórica sem data individual determinada';
+ let rows=[['Estacas previstas em projeto',axis?.previstas_projeto??AX[i-1]],
+   ['Execução registrada · acumulado',axis?.executadas_registradas??HIST[i-1]],
+   ['Concretagem identificada · acumulado',axis?.concretadas_identificadas??HIST[i-1]],
+   ['Fonte do acumulado',prov],
+   ['Concretadas · relato da mesma etapa',concrete?concrete.quantity+' (já conciliadas)':'Sem novo snapshot explícito'],
+   ['Relato anterior · etapa não definida',undefinedStep?undefinedStep.quantity:'Não informado'],
+   ['Somente camisas sem concretagem',sleeves?sleeves.quantity:'Não informado'],
+   ['Etapa ordinal informada',ordinalText],
    ['Registros homologados nesta frente',specific.length]];
+ if(axis?.excedente_executado>0)rows.splice(3,0,['Excedente de execução sobre projeto','+'+axis.excedente_executado+' · locação/resistência não determinadas']);
+ if(i===3&&CONFIG.consolidacao?.evolucao_fisica?.pilares_E03_concretagem_parcial)
+   rows.push(['Pilares E03-P03 e E03-P04','Metades inferiores concretadas; topo não confirmado']);
  $('#axisRows').innerHTML=rows.map(([k,v])=>'<div class="axis-row"><span>'+safe(k)+'</span><strong>'+safe(v)+'</strong></div>').join('');
- $('#axisStatus').textContent='Campo e projeto separados; locação e resistência exigem verificação individual';
+ $('#axisStatus').textContent=field?'Execução homologada · etapa final a distinguir':'Registro histórico · sem atesto por estaca';
 }
 function date(v){if(!v)return '—';let p=v.slice(0,10).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:v}
 async function readData(){try{let manifest=await fetch('data/manifest.json',{cache:'no-store'});if(!manifest.ok)throw Error('Manifesto indisponível');let m=await manifest.json();if(!Array.isArray(m.files))throw Error('Manifesto inválido');let docs=await Promise.all(m.files.filter(p=>/^data\/observacoes-\d{4}-\d{2}\.json$/.test(p)).map(async p=>{let r=await fetch(p,{cache:'no-store'});if(!r.ok)throw Error('Arquivo indisponível');return r.json()}));events=docs.flatMap(d=>Array.isArray(d.events)?d.events:[]);let seen=new Set();events=events.filter(e=>{if(!e.id||seen.has(e.id))return false;seen.add(e.id);return true});window.CertarePublicEvents=events;window.CertarePublicInferences=docs.flatMap(d=>Array.isArray(d.inferences)?d.inferences:[]);window.dispatchEvent(new CustomEvent('certare:public-data'));let listed=events.filter(e=>!['seguranca','qualidade'].includes(e.service)).sort((a,b)=>String(b.date+' '+(b.time||'')).localeCompare(String(a.date+' '+(a.time||'')))).slice(0,5);$('#noticePending').hidden=listed.length>0;$('#updates').innerHTML=listed.length?listed.map(e=>'<div class="update"><time>'+safe(date(e.date))+'</time><div><strong>'+safe(e.activity)+' · '+safe(e.target)+'</strong><span class="chip">Homologado para acompanhamento</span><p>'+safe(e.element||'')+' · '+safe(e.state||'Registro técnico')+'</p></div></div>').join(''):'<p class="subtle">Não há observações publicadas.</p>';let last=events.map(e=>e.date).filter(Boolean).sort().at(-1);$('#headerDate').textContent=last?'Último registro: '+date(last):'Sem registro consolidado';$('#dataStatus').textContent=events.length+' registros homologados para acompanhamento · não equivalem a medição';selectAxis(selected)}catch(err){$('#updates').innerHTML='<p class="error">Registros temporariamente indisponíveis.</p>';$('#dataStatus').textContent='Não foi possível consultar a base GitHub; indicadores históricos permanecem identificados.';window.CertarePublicEvents=[];$('#noticePending').hidden=false;window.dispatchEvent(new CustomEvent('certare:public-data'));selectAxis(selected)}}
