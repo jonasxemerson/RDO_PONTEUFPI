@@ -48,7 +48,9 @@ with sync_playwright() as p:
         assert page.locator("#noticePending").is_hidden()
         assert page.locator(".summary-row").count() == 0
         assert page.evaluate("() => !!document.getElementById('certare-config')")
-        assert page.locator("#fieldProgress .progress-card").count() == 4
+        assert page.locator("#fieldProgress .progress-card").count() == 6
+        assert "+218" in page.locator("#fieldProgress").inner_text()
+        assert "2 parciais" in page.locator("#fieldProgress").inner_text()
         assert "25 / 24" in page.locator("#fieldProgress").inner_text()
         assert "19 / 37" in page.locator("#fieldProgress").inner_text()
         assert "13 / 32" in page.locator("#fieldProgress").inner_text()
