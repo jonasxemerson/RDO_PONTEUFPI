@@ -1,0 +1,1624 @@
+{
+  "type": "object",
+  "properties": {
+    "versao_schema": {
+      "const": "1.0.0"
+    },
+    "id_empreendimento": {
+      "const": "ponte-ufpi"
+    },
+    "escopo": {
+      "enum": [
+        "interno",
+        "publico"
+      ]
+    },
+    "data_referencia": {
+      "$ref": "#/$defs/date"
+    },
+    "origem": {
+      "$ref": "#/$defs/origem"
+    },
+    "base_quantitativa": {
+      "$ref": "#/$defs/quant"
+    },
+    "eixos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/axis"
+      },
+      "minItems": 9,
+      "maxItems": 9
+    },
+    "elementos_individualizados": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/element"
+      }
+    },
+    "referencias_eventos": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/event_ref"
+      }
+    },
+    "gestao_contratual": {
+      "$ref": "#/$defs/contract"
+    },
+    "controles_formais": {
+      "$ref": "#/$defs/formal_controls"
+    },
+    "alertas_derivados": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/alert"
+      }
+    },
+    "regras": {
+      "$ref": "#/$defs/regras"
+    },
+    "diagnostico": {
+      "$ref": "#/$defs/diagnostic"
+    }
+  },
+  "required": [
+    "versao_schema",
+    "id_empreendimento",
+    "escopo",
+    "data_referencia",
+    "origem",
+    "base_quantitativa",
+    "eixos",
+    "elementos_individualizados",
+    "referencias_eventos",
+    "gestao_contratual",
+    "controles_formais",
+    "alertas_derivados",
+    "regras"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jonasxemerson/RDO_PONTEUFPI/modelo_gerencial/v1/schema_snapshot.json",
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_.:-]+$"
+    },
+    "filesha": {
+      "type": "object",
+      "properties": {
+        "arquivo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "arquivo",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "origem": {
+      "type": "object",
+      "properties": {
+        "integracao": {
+          "const": "projecao_nao_destrutiva"
+        },
+        "regra_relato": {
+          "const": "homologado_responsavel_e_confiavel_como_registro_de_campo"
+        },
+        "arquivos_sha256": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/filesha"
+          },
+          "minItems": 3
+        }
+      },
+      "required": [
+        "integracao",
+        "regra_relato",
+        "arquivos_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "q_stat": {
+      "type": "object",
+      "properties": {
+        "situacao": {
+          "enum": [
+            "nao_avaliado",
+            "em_analise",
+            "conforme",
+            "nao_conforme",
+            "nao_aplicavel"
+          ]
+        },
+        "quantidade_aceita": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "documento_liberacao_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "situacao",
+        "quantidade_aceita",
+        "documento_liberacao_id"
+      ],
+      "additionalProperties": false
+    },
+    "hp_stat": {
+      "type": "object",
+      "properties": {
+        "situacao": {
+          "enum": [
+            "nao_configurado",
+            "aguardando_analise",
+            "liberado_por_ato",
+            "bloqueado_por_ato"
+          ]
+        },
+        "ato_liberacao_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "situacao",
+        "ato_liberacao_id"
+      ],
+      "additionalProperties": false
+    },
+    "med_stat": {
+      "type": "object",
+      "properties": {
+        "situacao": {
+          "enum": [
+            "nao_avaliada",
+            "em_conferencia",
+            "apta_por_criterio_contratual",
+            "retida_por_ato",
+            "medida"
+          ]
+        },
+        "quantidade_apta": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "referencia_bm_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "situacao",
+        "quantidade_apta",
+        "referencia_bm_id"
+      ],
+      "additionalProperties": false
+    },
+    "axis": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^E0[1-9]$"
+        },
+        "estacas_previstas": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "estacas_execucao_registrada": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "estacas_concretagem_identificada": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "execucao_etapa": {
+          "type": "string",
+          "minLength": 1
+        },
+        "origem_execucao": {
+          "enum": [
+            "base_historica",
+            "campo_homologado"
+          ]
+        },
+        "data_ultimo_snapshot": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evento_snapshot_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidencia_do_eixo_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "excedente_execucao_sobre_projeto": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status_geom": {
+          "const": "nao_verificado_individualmente"
+        },
+        "controle_tecnologico": {
+          "$ref": "#/$defs/q_stat"
+        },
+        "hold_point": {
+          "$ref": "#/$defs/hp_stat"
+        },
+        "medicao": {
+          "$ref": "#/$defs/med_stat"
+        }
+      },
+      "required": [
+        "id",
+        "estacas_previstas",
+        "estacas_execucao_registrada",
+        "estacas_concretagem_identificada",
+        "execucao_etapa",
+        "origem_execucao",
+        "data_ultimo_snapshot",
+        "evento_snapshot_id",
+        "evidencia_do_eixo_ids",
+        "excedente_execucao_sobre_projeto",
+        "status_geom",
+        "controle_tecnologico",
+        "hold_point",
+        "medicao"
+      ],
+      "additionalProperties": false
+    },
+    "element": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "eixo_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^E0[1-9]$"
+        },
+        "tipo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "identificacao": {
+          "const": "identificado_em_relato_sem_validacao_geometrica"
+        },
+        "etapa_relato": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execucao_integral_comprovada": {
+          "type": "boolean"
+        },
+        "evento_origem_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1
+        },
+        "liberacao_tecnica": {
+          "enum": [
+            "nao_avaliada",
+            "em_analise",
+            "liberada_por_ato",
+            "bloqueada_por_ato"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "eixo_id",
+        "tipo",
+        "identificacao",
+        "etapa_relato",
+        "execucao_integral_comprovada",
+        "evento_origem_ids",
+        "liberacao_tecnica"
+      ],
+      "additionalProperties": false
+    },
+    "event_ref": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "arquivo_origem": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^data/observacoes-\\d{4}-\\d{2}\\.json$"
+        },
+        "data": {
+          "$ref": "#/$defs/date"
+        },
+        "eixo_ou_frente": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(E0[1-9]|GERAL|FAB)$"
+        },
+        "servico": {
+          "type": "string",
+          "minLength": 1
+        },
+        "estado_relato": {
+          "type": "string",
+          "minLength": 1
+        },
+        "validacao_relato": {
+          "enum": [
+            "homologado_responsavel",
+            "validado_campo",
+            "pendente_esclarecimento",
+            "inferido",
+            "relato_nao_homologado"
+          ]
+        },
+        "revisao_classificacao_pendente": {
+          "type": "boolean"
+        },
+        "elementos_identificados_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "arquivo_origem",
+        "data",
+        "eixo_ou_frente",
+        "servico",
+        "estado_relato",
+        "validacao_relato",
+        "revisao_classificacao_pendente",
+        "elementos_identificados_ids"
+      ],
+      "additionalProperties": false
+    },
+    "numeric": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "quant": {
+      "type": "object",
+      "properties": {
+        "estacas_previstas": {
+          "$ref": "#/$defs/numeric"
+        },
+        "estacas_execucao_registrada": {
+          "$ref": "#/$defs/numeric"
+        },
+        "estacas_concretagem_identificada": {
+          "$ref": "#/$defs/numeric"
+        },
+        "execucao_etapas_mistas": {
+          "type": "boolean"
+        },
+        "blocos_concluidos_registrados": {
+          "$ref": "#/$defs/numeric"
+        },
+        "pilares_integralmente_concretados_registrados": {
+          "$ref": "#/$defs/numeric"
+        },
+        "longarinas_concretadas_registradas": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/numeric"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "prelajes_incrementais_novembro": {
+          "$ref": "#/$defs/numeric"
+        },
+        "prelajes_estoque_total": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/numeric"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "estacas_previstas",
+        "estacas_execucao_registrada",
+        "estacas_concretagem_identificada",
+        "execucao_etapas_mistas",
+        "blocos_concluidos_registrados",
+        "pilares_integralmente_concretados_registrados",
+        "longarinas_concretadas_registradas",
+        "prelajes_incrementais_novembro",
+        "prelajes_estoque_total"
+      ],
+      "additionalProperties": false
+    },
+    "contract": {
+      "type": "object",
+      "properties": {
+        "linha_base_cronograma_aprovada_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "idp_spi": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "valor_agregado_ev": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "valor_planejado_pv": {
+          "anyOf": [
+            {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "idp_situacao": {
+          "enum": [
+            "nao_calculavel_sem_linha_base_e_pesos",
+            "calculado_sobre_linha_base_aprovada"
+          ]
+        },
+        "caminho_critico_documentado": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/id"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ritmo_semanal_meta": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "medicao_financeira_vigente": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "alerta_90pct_quantidade_contratual": {
+          "enum": [
+            "nao_calculavel_sem_itens_contratuais_comparaveis",
+            "avaliado_por_item_contratual"
+          ]
+        }
+      },
+      "required": [
+        "linha_base_cronograma_aprovada_id",
+        "idp_spi",
+        "valor_agregado_ev",
+        "valor_planejado_pv",
+        "idp_situacao",
+        "caminho_critico_documentado",
+        "ritmo_semanal_meta",
+        "medicao_financeira_vigente",
+        "alerta_90pct_quantidade_contratual"
+      ],
+      "additionalProperties": false
+    },
+    "alert": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "tipo": {
+          "const": "diferenca_quantitativa_executado_previsto"
+        },
+        "eixo_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^E0[1-9]$"
+        },
+        "gravidade": {
+          "const": "requer_compatibilizacao"
+        },
+        "automatico": {
+          "type": "boolean"
+        },
+        "rnc_formal": {
+          "type": "boolean"
+        },
+        "referencia_evento_id": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "id",
+        "tipo",
+        "eixo_id",
+        "gravidade",
+        "automatico",
+        "rnc_formal",
+        "referencia_evento_id"
+      ],
+      "additionalProperties": false
+    },
+    "documentos": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "classe": {
+          "enum": [
+            "projeto",
+            "especificacao",
+            "rdo",
+            "ensaio",
+            "liberacao",
+            "medicao",
+            "notificacao",
+            "outro"
+          ]
+        },
+        "data_documento": {
+          "$ref": "#/$defs/date"
+        },
+        "versao": {
+          "type": "string",
+          "minLength": 1
+        },
+        "acesso": {
+          "enum": [
+            "publico",
+            "interno",
+            "restrito"
+          ]
+        },
+        "url_ou_referencia": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "classe",
+        "data_documento",
+        "versao",
+        "acesso",
+        "url_ou_referencia",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "planos_inspecao": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "servico": {
+          "type": "string",
+          "minLength": 1
+        },
+        "etapa": {
+          "type": "string",
+          "minLength": 1
+        },
+        "referencia_projeto_id": {
+          "$ref": "#/$defs/id"
+        },
+        "criterio_aprovacao": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ensaios_exigidos": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "autoridade_liberadora": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data_aprovacao": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "servico",
+        "etapa",
+        "referencia_projeto_id",
+        "criterio_aprovacao",
+        "ensaios_exigidos",
+        "autoridade_liberadora",
+        "data_aprovacao"
+      ],
+      "additionalProperties": false
+    },
+    "ensaios": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "data_abertura": {
+          "$ref": "#/$defs/date"
+        },
+        "frente_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(E0[1-9]|GERAL|FAB|CONTRATO)$"
+        },
+        "elemento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "responsavel_papel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidencias_documentais_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "fonte_evento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tipo_ensaio": {
+          "type": "string",
+          "minLength": 1
+        },
+        "plano_inspecao_id": {
+          "$ref": "#/$defs/id"
+        },
+        "laboratorio": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data_ensaio": {
+          "$ref": "#/$defs/date"
+        },
+        "resultado": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unidade": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "criterio_aprovacao_documento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "situacao": {
+          "enum": [
+            "informado",
+            "em_validacao",
+            "aprovado_por_responsavel",
+            "reprovado_por_responsavel",
+            "inconclusivo"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "data_abertura",
+        "frente_id",
+        "elemento_id",
+        "responsavel_papel",
+        "evidencias_documentais_ids",
+        "fonte_evento_id",
+        "tipo_ensaio",
+        "plano_inspecao_id",
+        "laboratorio",
+        "data_ensaio",
+        "resultado",
+        "unidade",
+        "criterio_aprovacao_documento_id",
+        "situacao"
+      ],
+      "additionalProperties": false
+    },
+    "hold_points": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "data_abertura": {
+          "$ref": "#/$defs/date"
+        },
+        "frente_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(E0[1-9]|GERAL|FAB|CONTRATO)$"
+        },
+        "elemento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "responsavel_papel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidencias_documentais_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "fonte_evento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "etapa": {
+          "type": "string",
+          "minLength": 1
+        },
+        "plano_inspecao_id": {
+          "$ref": "#/$defs/id"
+        },
+        "situacao": {
+          "enum": [
+            "aguardando_analise",
+            "liberado_por_ato",
+            "bloqueado_por_ato"
+          ]
+        },
+        "ato_formal_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "data_decisao": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "data_abertura",
+        "frente_id",
+        "elemento_id",
+        "responsavel_papel",
+        "evidencias_documentais_ids",
+        "fonte_evento_id",
+        "etapa",
+        "plano_inspecao_id",
+        "situacao",
+        "ato_formal_id",
+        "data_decisao"
+      ],
+      "additionalProperties": false
+    },
+    "rnc": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "data_abertura": {
+          "$ref": "#/$defs/date"
+        },
+        "frente_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(E0[1-9]|GERAL|FAB|CONTRATO)$"
+        },
+        "elemento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "responsavel_papel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidencias_documentais_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "fonte_evento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "descricao": {
+          "type": "string",
+          "minLength": 1
+        },
+        "situacao": {
+          "enum": [
+            "aberta",
+            "em_tratamento",
+            "em_verificacao",
+            "encerrada"
+          ]
+        },
+        "data_limite": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "data_encerramento": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ato_encerramento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "data_abertura",
+        "frente_id",
+        "elemento_id",
+        "responsavel_papel",
+        "evidencias_documentais_ids",
+        "fonte_evento_id",
+        "descricao",
+        "situacao",
+        "data_limite",
+        "data_encerramento",
+        "ato_encerramento_id"
+      ],
+      "additionalProperties": false
+    },
+    "rfi": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "data_abertura": {
+          "$ref": "#/$defs/date"
+        },
+        "frente_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(E0[1-9]|GERAL|FAB|CONTRATO)$"
+        },
+        "elemento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "responsavel_papel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidencias_documentais_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "fonte_evento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assunto": {
+          "type": "string",
+          "minLength": 1
+        },
+        "destinatario_papel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "situacao": {
+          "enum": [
+            "aberta",
+            "respondida",
+            "concluida"
+          ]
+        },
+        "data_envio": {
+          "$ref": "#/$defs/date"
+        },
+        "data_resposta": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "documento_resposta_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "data_abertura",
+        "frente_id",
+        "elemento_id",
+        "responsavel_papel",
+        "evidencias_documentais_ids",
+        "fonte_evento_id",
+        "assunto",
+        "destinatario_papel",
+        "situacao",
+        "data_envio",
+        "data_resposta",
+        "documento_resposta_id"
+      ],
+      "additionalProperties": false
+    },
+    "medicoes": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "numero_bm": {
+          "type": "string",
+          "minLength": 1
+        },
+        "data_corte": {
+          "$ref": "#/$defs/date"
+        },
+        "item_contratual_id": {
+          "$ref": "#/$defs/id"
+        },
+        "marco_contratual_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "referencia_documental_id": {
+          "$ref": "#/$defs/id"
+        },
+        "quantidade_medida": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unidade": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "valor_medido": {
+          "type": "number",
+          "minimum": 0
+        },
+        "situacao": {
+          "enum": [
+            "em_conferencia",
+            "atestada",
+            "liquidada",
+            "paga",
+            "glosada"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "numero_bm",
+        "data_corte",
+        "item_contratual_id",
+        "marco_contratual_id",
+        "referencia_documental_id",
+        "quantidade_medida",
+        "unidade",
+        "valor_medido",
+        "situacao"
+      ],
+      "additionalProperties": false
+    },
+    "decisoes": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "data_abertura": {
+          "$ref": "#/$defs/date"
+        },
+        "frente_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(E0[1-9]|GERAL|FAB|CONTRATO)$"
+        },
+        "elemento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "responsavel_papel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidencias_documentais_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          }
+        },
+        "fonte_evento_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tipo": {
+          "enum": [
+            "encaminhamento",
+            "recomendacao",
+            "notificacao",
+            "liberacao",
+            "indeferimento",
+            "outro"
+          ]
+        },
+        "descricao": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ato_decisorio_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "data_limite": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "situacao": {
+          "enum": [
+            "aberta",
+            "em_acompanhamento",
+            "encerrada"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "data_abertura",
+        "frente_id",
+        "elemento_id",
+        "responsavel_papel",
+        "evidencias_documentais_ids",
+        "fonte_evento_id",
+        "tipo",
+        "descricao",
+        "ato_decisorio_id",
+        "data_limite",
+        "situacao"
+      ],
+      "additionalProperties": false
+    },
+    "producao_diaria": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "data": {
+          "$ref": "#/$defs/date"
+        },
+        "frente_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(E0[1-9]|FAB|GERAL)$"
+        },
+        "servico": {
+          "type": "string",
+          "minLength": 1
+        },
+        "etapa": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantidade": {
+          "type": "number",
+          "minimum": 0
+        },
+        "unidade": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tipo_quantidade": {
+          "enum": [
+            "incremento_validado",
+            "snapshot_acumulado",
+            "ordinal_em_execucao"
+          ]
+        },
+        "evento_origem_id": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "id",
+        "data",
+        "frente_id",
+        "servico",
+        "etapa",
+        "quantidade",
+        "unidade",
+        "tipo_quantidade",
+        "evento_origem_id"
+      ],
+      "additionalProperties": false
+    },
+    "recursos_diarios": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/id"
+        },
+        "data": {
+          "$ref": "#/$defs/date"
+        },
+        "frente_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(E0[1-9]|FAB|GERAL)$"
+        },
+        "recurso_tipo": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantidade_observada": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "turno": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evento_origem_id": {
+          "$ref": "#/$defs/id"
+        }
+      },
+      "required": [
+        "id",
+        "data",
+        "frente_id",
+        "recurso_tipo",
+        "quantidade_observada",
+        "turno",
+        "evento_origem_id"
+      ],
+      "additionalProperties": false
+    },
+    "formal_controls": {
+      "type": "object",
+      "properties": {
+        "documentos": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/documentos"
+          }
+        },
+        "planos_inspecao": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/planos_inspecao"
+          }
+        },
+        "ensaios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ensaios"
+          }
+        },
+        "hold_points": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/hold_points"
+          }
+        },
+        "rnc": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rnc"
+          }
+        },
+        "rfi": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/rfi"
+          }
+        },
+        "medicoes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/medicoes"
+          }
+        },
+        "decisoes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/decisoes"
+          }
+        },
+        "producao_diaria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/producao_diaria"
+          }
+        },
+        "recursos_diarios": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recursos_diarios"
+          }
+        }
+      },
+      "required": [
+        "documentos",
+        "planos_inspecao",
+        "ensaios",
+        "hold_points",
+        "rnc",
+        "rfi",
+        "medicoes",
+        "decisoes",
+        "producao_diaria",
+        "recursos_diarios"
+      ],
+      "additionalProperties": false
+    },
+    "regras": {
+      "type": "object",
+      "properties": {
+        "idp_nao_calculado_sem_cronograma": {
+          "const": true
+        },
+        "camisas_e_ordinais_nao_sao_concretagens": {
+          "const": true
+        },
+        "snapshots_nao_sao_incrementos": {
+          "const": true
+        },
+        "ausencia_de_registro_nao_e_paralisacao": {
+          "const": true
+        },
+        "relato_homologado_nao_e_aceite": {
+          "const": true
+        },
+        "hold_point_nao_bloqueado_sem_ato": {
+          "const": true
+        },
+        "nao_criar_rnc_rfi_medicoes_automaticamente": {
+          "const": true
+        }
+      },
+      "required": [
+        "idp_nao_calculado_sem_cronograma",
+        "camisas_e_ordinais_nao_sao_concretagens",
+        "snapshots_nao_sao_incrementos",
+        "ausencia_de_registro_nao_e_paralisacao",
+        "relato_homologado_nao_e_aceite",
+        "hold_point_nao_bloqueado_sem_ato",
+        "nao_criar_rnc_rfi_medicoes_automaticamente"
+      ],
+      "additionalProperties": false
+    },
+    "diagnostic": {
+      "type": "object",
+      "properties": {
+        "registros_totais": {
+          "$ref": "#/$defs/numeric"
+        },
+        "registros_homologados_campo": {
+          "$ref": "#/$defs/numeric"
+        },
+        "registros_pendentes_esclarecimento": {
+          "$ref": "#/$defs/numeric"
+        },
+        "registros_homologados_a_reclassificar": {
+          "$ref": "#/$defs/numeric"
+        },
+        "achados_auditoria_nao_sao_rnc": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "documentos_requeridos_a_confirmar": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "financeiro_referencia_historica": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "registros_totais",
+        "registros_homologados_campo",
+        "registros_pendentes_esclarecimento",
+        "registros_homologados_a_reclassificar"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
