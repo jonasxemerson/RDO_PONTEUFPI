@@ -61,6 +61,16 @@ function renderFieldProgress(){
    '<div class="progress-value">'+escapeHTML(beams.concretadas_em_campo)+'</div>'+
    '<div class="progress-note">Vigas concretadas · total de campo em '+escapeHTML(dateBR(beams.data))+'</div>'+
    '<p class="small-note">Não somar com as longarinas concretadas anteriormente. Não comprova protensão nem lançamento.</p></div>');
+ const partial=EVOLUTION.pilares_E03_concretagem_parcial;
+ if(partial)cards.push('<div class="card progress-card"><div class="eyebrow">Pilares E03-P03/P04</div>'+
+   '<div class="progress-value">'+escapeHTML(partial.metades_inferiores_concretadas)+' parciais</div>'+
+   '<div class="progress-note">Metades inferiores concretadas · partes superiores não confirmadas</div>'+
+   '<p class="small-note">Não acrescentar aos seis pilares integralmente concretados da consolidação.</p></div>');
+ if(EVOLUTION.prelajes_acrescimos_reportados_novembro!=null)cards.push(
+   '<div class="card progress-card"><div class="eyebrow">Pré-lajes · produção adicional</div>'+
+   '<div class="progress-value">+'+escapeHTML(EVOLUTION.prelajes_acrescimos_reportados_novembro)+'</div>'+
+   '<div class="progress-note">Acréscimos relatados e homologados em novembro</div>'+
+   '<p class="small-note">Não representa estoque total. Base histórica ainda não conciliada por peça.</p></div>');
  root.innerHTML=cards.join('');
  const e9=piles.E09;
  caveat.innerHTML='<b>Leitura técnica:</b> executado em campo e projetado são duas referências verdadeiras com funções diferentes. '+
