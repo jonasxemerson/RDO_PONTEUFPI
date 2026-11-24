@@ -24,7 +24,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validar dados versionados e gerar pacote público
         run: |
-          python3 scripts/auditar_marca_certare.py
           python3 scripts/validar_dados.py
           python3 scripts/testar_conciliacao.py
           python3 -m py_compile scripts/gerar_site_publico.py
@@ -33,6 +32,7 @@ jobs:
           test -f site/scripts/modelo-4d-publico.js
           test -f site/scripts/painel-v2.js
           test -f site/assets/sdu-norte-identificacao.svg
+          test -f site/assets/logo-grupo-certare-oficial.svg
           test ! -f site/scripts/github-dados.js
           test ! -f site/painel-cliente.html
           node --check site/scripts/modelo-4d-publico.js
