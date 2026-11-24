@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "project": "ponte-ufpi",
+  "files": [
+    "data/observacoes-2026-11.json"
+  ],
+  "description": "Arquivos mensais publicados após revisão por Pull Request. Adicione novos meses aqui."
+}
