@@ -19,7 +19,22 @@ assert sum(state["estacas"]["previstas_por_eixo"]) == 292
 assert c["registros_totais"] == len(events)
 assert c["registros_homologados"] + c["registros_pendentes"] == len(events)
 assert c["registros_homologados"] >= 41
-assert c["registros_pendentes"] >= 1
+assert c["registros_pendentes"] == 1, "Única pendência legada ambígua deve permanecer separada"
+assert c["registros_homologados"] == 59, "18 relatos de campo do dia 24 devem estar homologados"
+assert state["data_referencia"] == "2026-11-24", "Data da última homologação divergente"
+field = c["execucao_em_campo"]
+assert field["sem_contagem_dupla"] is True
+piles = field["estacas_por_eixo"]
+assert piles["E07"]["executadas_em_campo"] == 19
+assert piles["E08"]["executadas_em_campo"] == 13
+assert piles["E09"]["executadas_em_campo"] == 25
+assert piles["E09"]["previstas_projeto"] == 24
+assert piles["E09"]["diferenca_executado_menos_previsto"] == 1
+assert piles["E09"]["locacao_conforme_projeto"] == "nao_verificada"
+assert piles["E09"]["participacao_na_resistencia"] == "nao_determinada"
+assert field["longarinas"]["concretadas_em_campo"] == 3
+assert field["pilares_parciais_E03"]["metades_inferiores_concretadas"] == 2
+assert field["pilares_parciais_E03"]["concretagem_superior_confirmada"] is False
 assert state["estacas"]["historicas_por_eixo"][7] == 11, "E08 contou duas vezes"
 assert state["pilares"]["historicos_por_eixo"][2] >= 2, "Dois pilares E03 não consolidados"
 assert c["total_estacas_concretadas_base_mais_snapshots"] >= 111
@@ -42,6 +57,8 @@ assert c["detalhes"]["prelajes_acrescimos_nao_conciliados"], "Acréscimos de pr�
 html = (root / "painel-cliente.html").read_text(encoding="utf-8")
 assert "<!-- CERTARE_CONFIG -->" in html
 assert "111 / 292" not in html, "KPI não deve ser fixo no HTML"
+assert 'id="fieldProgress"' in html
+assert 'id="fieldCaveat"' in html
 print(f"OK: {c['registros_homologados']} homologados, {c['registros_pendentes']} pendente(s), "
       f"{c['total_estacas_concretadas_base_mais_snapshots']} estacas, "
       f"{c['total_pilares_concretados_base_mais_snapshots']} pilares, "
