@@ -1,0 +1,882 @@
+{
+  "versao_schema": "1.0.0",
+  "id_empreendimento": "ponte-ufpi",
+  "escopo": "publico",
+  "data_referencia": "2026-11-24",
+  "origem": {
+    "integracao": "projecao_nao_destrutiva",
+    "regra_relato": "homologado_responsavel_e_confiavel_como_registro_de_campo",
+    "arquivos_sha256": [
+      {
+        "arquivo": "data/manifest.json",
+        "sha256": "8cea82193f5016183135fb056fe48cda0818d6043289b9955cdb56df3bdac6b3"
+      },
+      {
+        "arquivo": "data/indicadores-historicos.json",
+        "sha256": "2f487be10f179708c802d4c0a936ff726ddb36b9a1d23417c91c8d2d65cc786a"
+      },
+      {
+        "arquivo": "data/observacoes-2026-11.json",
+        "sha256": "ccbb647533b9187d6521858496648a086a965330f4aba7799dc0101ac7027c58"
+      }
+    ]
+  },
+  "base_quantitativa": {
+    "estacas_previstas": 292,
+    "estacas_execucao_registrada": 145,
+    "estacas_concretagem_identificada": 111,
+    "execucao_etapas_mistas": true,
+    "blocos_concluidos_registrados": 2,
+    "pilares_integralmente_concretados_registrados": 6,
+    "longarinas_concretadas_registradas": 3,
+    "prelajes_incrementais_novembro": 218,
+    "prelajes_estoque_total": null
+  },
+  "eixos": [
+    {
+      "id": "E01",
+      "estacas_previstas": 24,
+      "estacas_execucao_registrada": 24,
+      "estacas_concretagem_identificada": 24,
+      "execucao_etapa": "concretagem_base_historica",
+      "origem_execucao": "base_historica",
+      "data_ultimo_snapshot": null,
+      "evento_snapshot_id": null,
+      "evidencia_do_eixo_ids": [],
+      "excedente_execucao_sobre_projeto": 0,
+      "status_geom": "nao_verificado_individualmente",
+      "controle_tecnologico": {
+        "situacao": "nao_avaliado",
+        "quantidade_aceita": null,
+        "documento_liberacao_id": null
+      },
+      "hold_point": {
+        "situacao": "nao_configurado",
+        "ato_liberacao_id": null
+      },
+      "medicao": {
+        "situacao": "nao_avaliada",
+        "quantidade_apta": null,
+        "referencia_bm_id": null
+      }
+    },
+    {
+      "id": "E02",
+      "estacas_previstas": 32,
+      "estacas_execucao_registrada": 32,
+      "estacas_concretagem_identificada": 32,
+      "execucao_etapa": "concretagem_base_historica",
+      "origem_execucao": "base_historica",
+      "data_ultimo_snapshot": null,
+      "evento_snapshot_id": null,
+      "evidencia_do_eixo_ids": [],
+      "excedente_execucao_sobre_projeto": 0,
+      "status_geom": "nao_verificado_individualmente",
+      "controle_tecnologico": {
+        "situacao": "nao_avaliado",
+        "quantidade_aceita": null,
+        "documento_liberacao_id": null
+      },
+      "hold_point": {
+        "situacao": "nao_configurado",
+        "ato_liberacao_id": null
+      },
+      "medicao": {
+        "situacao": "nao_avaliada",
+        "quantidade_apta": null,
+        "referencia_bm_id": null
+      }
+    },
+    {
+      "id": "E03",
+      "estacas_previstas": 32,
+      "estacas_execucao_registrada": 32,
+      "estacas_concretagem_identificada": 32,
+      "execucao_etapa": "concretagem_base_historica",
+      "origem_execucao": "base_historica",
+      "data_ultimo_snapshot": null,
+      "evento_snapshot_id": null,
+      "evidencia_do_eixo_ids": [
+        "wa-20261104-1410-pilar-e03",
+        "wa-20261117-0855-e03-armadura",
+        "wa-20261117-0855-e03-formas-aguardam",
+        "wa-20261117-0855-e03-pilares-con",
+        "wa-20261117-0922-e03-andaimes",
+        "wa-20261124-103159-e03-pilar03-04-formas",
+        "wa-20261124-103159-e03-pilar03-04-inferior"
+      ],
+      "excedente_execucao_sobre_projeto": 0,
+      "status_geom": "nao_verificado_individualmente",
+      "controle_tecnologico": {
+        "situacao": "nao_avaliado",
+        "quantidade_aceita": null,
+        "documento_liberacao_id": null
+      },
+      "hold_point": {
+        "situacao": "nao_configurado",
+        "ato_liberacao_id": null
+      },
+      "medicao": {
+        "situacao": "nao_avaliada",
+        "quantidade_apta": null,
+        "referencia_bm_id": null
+      }
+    },
+    {
+      "id": "E04",
+      "estacas_previstas": 37,
+      "estacas_execucao_registrada": 0,
+      "estacas_concretagem_identificada": 0,
+      "execucao_etapa": "concretagem_base_historica",
+      "origem_execucao": "base_historica",
+      "data_ultimo_snapshot": null,
+      "evento_snapshot_id": null,
+      "evidencia_do_eixo_ids": [],
+      "excedente_execucao_sobre_projeto": 0,
+      "status_geom": "nao_verificado_individualmente",
+      "controle_tecnologico": {
+        "situacao": "nao_avaliado",
+        "quantidade_aceita": null,
+        "documento_liberacao_id": null
+      },
+      "hold_point": {
+        "situacao": "nao_configurado",
+        "ato_liberacao_id": null
+      },
+      "medicao": {
+        "situacao": "nao_avaliada",
+        "quantidade_apta": null,
+        "referencia_bm_id": null
+      }
+    },
+    {
+      "id": "E05",
+      "estacas_previstas": 37,
+      "estacas_execucao_registrada": 0,
+      "estacas_concretagem_identificada": 0,
+      "execucao_etapa": "concretagem_base_historica",
+      "origem_execucao": "base_historica",
+      "data_ultimo_snapshot": null,
+      "evento_snapshot_id": null,
+      "evidencia_do_eixo_ids": [],
+      "excedente_execucao_sobre_projeto": 0,
+      "status_geom": "nao_verificado_individualmente",
+      "controle_tecnologico": {
+        "situacao": "nao_avaliado",
+        "quantidade_aceita": null,
+        "documento_liberacao_id": null
+      },
+      "hold_point": {
+        "situacao": "nao_configurado",
+        "ato_liberacao_id": null
+      },
+      "medicao": {
+        "situacao": "nao_avaliada",
+        "quantidade_apta": null,
+        "referencia_bm_id": null
+      }
+    },
+    {
+      "id": "E06",
+      "estacas_previstas": 37,
+      "estacas_execucao_registrada": 0,
+      "estacas_concretagem_identificada": 0,
+      "execucao_etapa": "concretagem_base_historica",
+      "origem_execucao": "base_historica",
+      "data_ultimo_snapshot": null,
+      "evento_snapshot_id": null,
+      "evidencia_do_eixo_ids": [],
+      "excedente_execucao_sobre_projeto": 0,
+      "status_geom": "nao_verificado_individualmente",
+      "controle_tecnologico": {
+        "situacao": "nao_avaliado",
+        "quantidade_aceita": null,
+        "documento_liberacao_id": null
+      },
+      "hold_point": {
+        "situacao": "nao_configurado",
+        "ato_liberacao_id": null
+      },
+      "medicao": {
+        "situacao": "nao_avaliada",
+        "quantidade_apta": null,
+        "referencia_bm_id": null
+      }
+    },
+    {
+      "id": "E07",
+      "estacas_previstas": 37,
+      "estacas_execucao_registrada": 19,
+      "estacas_concretagem_identificada": 4,
+      "execucao_etapa": "nao_especificada",
+      "origem_execucao": "campo_homologado",
+      "data_ultimo_snapshot": "2026-11-24",
+      "evento_snapshot_id": "wa-20261124-102034-e07-total-19",
+      "evidencia_do_eixo_ids": [
+        "wa-20261109-1658-e07",
+        "wa-20261110-1122-e07",
+        "wa-20261117-0851-e07-perfuracao",
+        "wa-20261124-101408-e07-perfuracao",
+        "wa-20261124-101408-e07-prova-carga",
+        "wa-20261124-102034-e07-arm20",
+        "wa-20261124-102034-e07-total-19"
+      ],
+      "excedente_execucao_sobre_projeto": 0,
+      "status_geom": "nao_verificado_individualmente",
+      "controle_tecnologico": {
+        "situacao": "nao_avaliado",
+        "quantidade_aceita": null,
+        "documento_liberacao_id": null
+      },
+      "hold_point": {
+        "situacao": "nao_configurado",
+        "ato_liberacao_id": null
+      },
+      "medicao": {
+        "situacao": "nao_avaliada",
+        "quantidade_apta": null,
+        "referencia_bm_id": null
+      }
+    },
+    {
+      "id": "E08",
+      "estacas_previstas": 32,
+      "estacas_execucao_registrada": 13,
+      "estacas_concretagem_identificada": 11,
+      "execucao_etapa": "nao_especificada",
+      "origem_execucao": "campo_homologado",
+      "data_ultimo_snapshot": "2026-11-24",
+      "evento_snapshot_id": "wa-20261124-101843-e08-total-13",
+      "evidencia_do_eixo_ids": [
+        "wa-20261117-0850-e08-concretadas",
+        "wa-20261117-0854-e08-camisas",
+        "wa-20261124-101843-e08-camisa14",
+        "wa-20261124-101843-e08-total-13"
+      ],
+      "excedente_execucao_sobre_projeto": 0,
+      "status_geom": "nao_verificado_individualmente",
+      "controle_tecnologico": {
+        "situacao": "nao_avaliado",
+        "quantidade_aceita": null,
+        "documento_liberacao_id": null
+      },
+      "hold_point": {
+        "situacao": "nao_configurado",
+        "ato_liberacao_id": null
+      },
+      "medicao": {
+        "situacao": "nao_avaliada",
+        "quantidade_apta": null,
+        "referencia_bm_id": null
+      }
+    },
+    {
+      "id": "E09",
+      "estacas_previstas": 24,
+      "estacas_execucao_registrada": 25,
+      "estacas_concretagem_identificada": 8,
+      "execucao_etapa": "finalizadas_sem_etapa_detalhada",
+      "origem_execucao": "campo_homologado",
+      "data_ultimo_snapshot": "2026-11-24",
+      "evento_snapshot_id": "wa-20261124-101003-e09-finalizadas-25",
+      "evidencia_do_eixo_ids": [
+        "wa-20261109-1652-e09",
+        "wa-20261116-0924-e09-total",
+        "wa-20261117-0845-e09-perfuracao",
+        "wa-20261124-101003-e09-finalizadas-25",
+        "wa-20261124-101408-e09-perfuracao",
+        "wa-20261124-103127-e09-nivel-bloco"
+      ],
+      "excedente_execucao_sobre_projeto": 1,
+      "status_geom": "nao_verificado_individualmente",
+      "controle_tecnologico": {
+        "situacao": "nao_avaliado",
+        "quantidade_aceita": null,
+        "documento_liberacao_id": null
+      },
+      "hold_point": {
+        "situacao": "nao_configurado",
+        "ato_liberacao_id": null
+      },
+      "medicao": {
+        "situacao": "nao_avaliada",
+        "quantidade_apta": null,
+        "referencia_bm_id": null
+      }
+    }
+  ],
+  "elementos_individualizados": [
+    {
+      "id": "E03-P03",
+      "eixo_id": "E03",
+      "tipo": "pilar",
+      "identificacao": "identificado_em_relato_sem_validacao_geometrica",
+      "etapa_relato": "metade_inferior_concretada_forma_superior_montada",
+      "execucao_integral_comprovada": false,
+      "evento_origem_ids": [
+        "wa-20261124-103159-e03-pilar03-04-inferior",
+        "wa-20261124-103159-e03-pilar03-04-formas"
+      ],
+      "liberacao_tecnica": "nao_avaliada"
+    },
+    {
+      "id": "E03-P04",
+      "eixo_id": "E03",
+      "tipo": "pilar",
+      "identificacao": "identificado_em_relato_sem_validacao_geometrica",
+      "etapa_relato": "metade_inferior_concretada_forma_superior_montada",
+      "execucao_integral_comprovada": false,
+      "evento_origem_ids": [
+        "wa-20261124-103159-e03-pilar03-04-inferior",
+        "wa-20261124-103159-e03-pilar03-04-formas"
+      ],
+      "liberacao_tecnica": "nao_avaliada"
+    }
+  ],
+  "referencias_eventos": [
+    {
+      "id": "wa-20261104-1410-pilar-e03",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-04",
+      "eixo_ou_frente": "E03",
+      "servico": "pilar",
+      "estado_relato": "executado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261104-1410-prelajes",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-04",
+      "eixo_ou_frente": "FAB",
+      "servico": "prelaje",
+      "estado_relato": "incremento_reportado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261106-1035-prelajes",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-06",
+      "eixo_ou_frente": "FAB",
+      "servico": "prelaje",
+      "estado_relato": "incremento_reportado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261109-1645-long1",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-09",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261109-1645-long5",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-09",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261109-1652-e09",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-09",
+      "eixo_ou_frente": "E09",
+      "servico": "estacas",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261109-1658-e07",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-09",
+      "eixo_ou_frente": "E07",
+      "servico": "estacas",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261110-1054-long1",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-10",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "executado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261110-1059-long5",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-10",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261110-1122-e07",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-10",
+      "eixo_ou_frente": "E07",
+      "servico": "estacas",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261110-1451-long1",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-10",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "executado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261112-0930-cordoalhas",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-12",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261112-0930-cordoalhas-and",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-12",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261112-0930-desforma",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-12",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "executado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261112-0930-montadas",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-12",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261116-0920-long2",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-16",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261116-0921-canteiro",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-16",
+      "eixo_ou_frente": "GERAL",
+      "servico": "canteiro",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261116-0924-e09-total",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-16",
+      "eixo_ou_frente": "E09",
+      "servico": "estacas",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0828-canteiro-leste",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "GERAL",
+      "servico": "canteiro",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0828-long2",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "executado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0828-long3-formas",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0845-e09-perfuracao",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "E09",
+      "servico": "estacas",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0850-e08-concretadas",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "E08",
+      "servico": "estacas",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0851-e07-perfuracao",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "E07",
+      "servico": "estacas",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0854-e08-camisas",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "E08",
+      "servico": "estacas",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0855-e03-armadura",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "E03",
+      "servico": "pilar",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0855-e03-formas-aguardam",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "E03",
+      "servico": "pilar",
+      "estado_relato": "aguardando_pre_requisito",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0855-e03-pilares-con",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "E03",
+      "servico": "pilar",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261117-0922-e03-andaimes",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-17",
+      "eixo_ou_frente": "E03",
+      "servico": "pilar",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-092903-long4-formas",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-092903-longarinas-3",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-092903-protensao-material",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "mobilizado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-093154-long4-cordoalhas",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-100538-long4-vibradores",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "FAB",
+      "servico": "longarina",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-101003-e09-finalizadas-25",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E09",
+      "servico": "estacas",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-101408-e07-perfuracao",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E07",
+      "servico": "estacas",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-101408-e07-prova-carga",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E07",
+      "servico": "estacas",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-101408-e09-perfuracao",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E09",
+      "servico": "estacas",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-101843-e08-camisa14",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E08",
+      "servico": "estacas",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-101843-e08-total-13",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E08",
+      "servico": "estacas",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-102034-e07-arm20",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E07",
+      "servico": "estacas",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-102034-e07-total-19",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E07",
+      "servico": "estacas",
+      "estado_relato": "snapshot",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": true,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-103127-e09-nivel-bloco",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E09",
+      "servico": "bloco",
+      "estado_relato": "em_andamento",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": []
+    },
+    {
+      "id": "wa-20261124-103159-e03-pilar03-04-formas",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E03",
+      "servico": "pilar",
+      "estado_relato": "executado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": [
+        "E03-P03",
+        "E03-P04"
+      ]
+    },
+    {
+      "id": "wa-20261124-103159-e03-pilar03-04-inferior",
+      "arquivo_origem": "data/observacoes-2026-11.json",
+      "data": "2026-11-24",
+      "eixo_ou_frente": "E03",
+      "servico": "pilar",
+      "estado_relato": "parcial_executado",
+      "validacao_relato": "homologado_responsavel",
+      "revisao_classificacao_pendente": false,
+      "elementos_identificados_ids": [
+        "E03-P03",
+        "E03-P04"
+      ]
+    }
+  ],
+  "gestao_contratual": {
+    "linha_base_cronograma_aprovada_id": null,
+    "idp_spi": null,
+    "valor_agregado_ev": null,
+    "valor_planejado_pv": null,
+    "idp_situacao": "nao_calculavel_sem_linha_base_e_pesos",
+    "caminho_critico_documentado": null,
+    "ritmo_semanal_meta": null,
+    "medicao_financeira_vigente": null,
+    "alerta_90pct_quantidade_contratual": "nao_calculavel_sem_itens_contratuais_comparaveis"
+  },
+  "controles_formais": {
+    "documentos": [],
+    "planos_inspecao": [],
+    "ensaios": [],
+    "hold_points": [],
+    "rnc": [],
+    "rfi": [],
+    "medicoes": [],
+    "decisoes": [],
+    "producao_diaria": [],
+    "recursos_diarios": []
+  },
+  "alertas_derivados": [
+    {
+      "id": "ALERTA-QUANT-E09",
+      "tipo": "diferenca_quantitativa_executado_previsto",
+      "eixo_id": "E09",
+      "gravidade": "requer_compatibilizacao",
+      "automatico": true,
+      "rnc_formal": false,
+      "referencia_evento_id": "wa-20261124-101003-e09-finalizadas-25"
+    }
+  ],
+  "regras": {
+    "idp_nao_calculado_sem_cronograma": true,
+    "camisas_e_ordinais_nao_sao_concretagens": true,
+    "snapshots_nao_sao_incrementos": true,
+    "ausencia_de_registro_nao_e_paralisacao": true,
+    "relato_homologado_nao_e_aceite": true,
+    "hold_point_nao_bloqueado_sem_ato": true,
+    "nao_criar_rnc_rfi_medicoes_automaticamente": true
+  }
+}
