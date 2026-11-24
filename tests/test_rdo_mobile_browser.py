@@ -28,10 +28,10 @@ def run():
                 if "/pulls?state=" in key and q.method=="GET":
                     v=[{"number":51,"state":"open","draft":True,"merged_at":None,
                         "head":{"ref":"rdo/2026-11-24/teste","sha":"e"*40}}]
-                elif "/git/trees/" in key and q.method=="GET":
-                    v={"truncated":False,"tree":[{"type":"blob",
-                       "path":"rdos/2026-11/rdo-2026-11-24-teste.json","sha":"f"*40}]}
-                elif key.endswith("/git/blobs/"+"f"*40) and q.method=="GET":
+                elif "/pulls/51/files?" in key and q.method=="GET":
+                    v=[{"status":"added","filename":"rdos/2026-11/rdo-2026-11-24-teste.json"},
+                       {"status":"modified","filename":"README.md"}]
+                elif "/contents/rdos/2026-11/rdo-2026-11-24-teste.json?" in key and q.method=="GET":
                     fake={"project":"ponte-ufpi","header":{"date":"2026-11-24"},
                           "records":[{"target":"E09","service":"estacas","phase":"concretagem",
                                       "activity":"Histórico privado de teste","state":"observado",
@@ -79,6 +79,9 @@ def run():
             page.locator("#frontActivity").fill("25 estacas relatadas como executadas")
             page.locator('#frontForm button[type="submit"]').click()
             assert page.locator("#frontList .front-card").count()==1
+            assert "E09" in page.locator("#frontDashboardContent").inner_text()
+            assert "1 lançamento" in page.locator("#frontDashboardContent").inner_text()
+            assert "total_reportado" in page.locator("#frontDashboardContent").inner_text()
             page.locator('[data-tab="fotos"]').click()
             page.locator("#pickPhotos").set_input_files({"name":"teste.jpg","mimeType":"image/jpeg","buffer":image_jpeg()})
             page.locator(".photo-card").first.wait_for(state="visible")
