@@ -10,7 +10,7 @@ assert HTML.exists() and HTML.stat().st_size>700_000
 source=HTML.read_text(encoding="utf-8")
 assert '<script id="offline-data" type="application/json">' in source
 assert 'THREE.Raycaster' in source and 'THREE.EdgesGeometry' in source
-assert 'THREE.FogExp2' in source and 'createElementNS' not in source  # 3D is actual WebGL, not SVG re-make
+assert 'THREE.FogExp2' in source and 'THREE.WebGLRenderer' in source and '<canvas id="viewerCanvas"' in source  # fonte Three.js inclui utilitários SVG internos
 assert '<script src=' not in source and '<link rel="stylesheet"' not in source
 OUT=BASE/"capturas"
 OUT.mkdir(exist_ok=True)
