@@ -46,6 +46,13 @@ with sync_playwright() as p:
         assert page.locator("#noticePending").is_hidden()
         assert page.locator(".summary-row").count() == 0
         assert page.evaluate("() => !!document.getElementById('certare-config')")
+        assert page.locator("#fieldProgress .progress-card").count() == 4
+        assert "25 / 24" in page.locator("#fieldProgress").inner_text()
+        assert "19 / 37" in page.locator("#fieldProgress").inner_text()
+        assert "13 / 32" in page.locator("#fieldProgress").inner_text()
+        assert "3" in page.locator("#fieldProgress").inner_text()
+        assert "não prova erro de locação" in page.locator("#fieldCaveat").inner_text()
+        assert page.evaluate("JSON.parse(document.getElementById('certare-config').textContent).consolidacao.registros_homologados === 59")
         assert page.locator("#axisProgress button").count() == 9
         assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).estacas.historicas_por_eixo[7] === 11")
         assert page.locator("#axisChooser button").count() == 9
@@ -77,6 +84,8 @@ with sync_playwright() as p:
         page.locator("#axisChooser button[data-axis=\"9\"]").click()
         assert page.locator("#axisTitle").inner_text() == "Eixo 09"
         assert "Concretadas" in page.locator("#axisRows").inner_text()
+        assert "25" in page.locator("#axisRows").inner_text()
+        assert "Diferença executado" in page.locator("#axisRows").inner_text()
         assert "não concluída" in page.locator("#axisRows").inner_text()
         assert page.locator("#axisProgress button[data-axis=\"9\"]").get_attribute("aria-pressed") == "true"
         page.locator('[data-model-view="superior"]').click()

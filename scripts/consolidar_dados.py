@@ -92,10 +92,66 @@ def build_state(root=ROOT):
         ],
     }
 
+    # Executado em campo: afirmações do responsável são homologadas como registros reais.
+    # Não colapsar "executadas/finalizadas" em "concretadas" sem indicação explícita
+    # da etapa. Capacidade resistente, posição e aceite são campos independentes.
+    def latest_approved_metric(target, metric):
+        matches = [e for e in approved if e.get("target") == target and
+                   e.get("metric") == metric and
+                   e.get("state") == "snapshot" and
+                   e.get("quantity_kind") == "total_reportado"]
+        return matches[-1] if matches else None
+
+    field_piles = {}
+    field_metrics = {
+        "E07": "estacas_executadas_etapa_a_verificar",
+        "E08": "estacas_executadas_etapa_a_verificar",
+        "E09": "estacas_finalizadas_etapa_a_verificar",
+    }
+    for axis, metric in field_metrics.items():
+        row = latest_approved_metric(axis, metric)
+        if not row:
+            continue
+        index = int(axis[1:]) - 1
+        planned_number = planned[index]
+        executed = row["quantity"]
+        field_piles[axis] = {
+            "executadas_em_campo": executed,
+            "previstas_projeto": planned_number,
+            "diferenca_executado_menos_previsto": executed - planned_number,
+            "concretadas_na_base_anterior": piles[index],
+            "data": row["date"],
+            "evento_origem": row["id"],
+            "etapa_de_conclusao": "nao_especificada" if axis != "E09" else "finalizadas_sem_etapa_detalhada",
+            "locacao_conforme_projeto": "nao_verificada",
+            "participacao_na_resistencia": "nao_determinada",
+            "status": "executado_em_campo_homologado",
+        }
+    longarinas_row = latest_approved_metric("FAB", "longarinas_concretadas_total")
+    field_longarinas = ({
+        "concretadas_em_campo": longarinas_row["quantity"],
+        "data": longarinas_row["date"],
+        "evento_origem": longarinas_row["id"],
+        "identificacao_individual_de_todas": False,
+        "status": "executado_em_campo_homologado",
+    } if longarinas_row else None)
+    partial_pillars = [e for e in approved if e["id"] == "wa-20261124-103159-e03-pilar03-04-inferior"]
+    pillar_formwork = [e for e in approved if e["id"] == "wa-20261124-103159-e03-pilar03-04-formas"]
+    field_pillar_status = ({
+        "elementos": ["E03-P03", "E03-P04"],
+        "metades_inferiores_concretadas": 2,
+        "formas_superiores_montadas": len(pillar_formwork) > 0,
+        "concretagem_superior_confirmada": False,
+        "nao_adicionar_aos_pilares_integrais": True,
+        "data": partial_pillars[-1]["date"],
+    } if partial_pillars else None)
+
     state = copy.deepcopy(legacy)
     state["schema_version"] = 2
     state["classification"] = "consolidacao_parcial_para_acompanhamento"
-    state["data_referencia"] = max((e["date"] for e in ordered), default="nao_determinada")
+    # A data do estado homologado deve refletir só o último evento aprovado.
+    # Novos relatos não homologados são indicados separadamente.
+    state["data_referencia"] = max((e["date"] for e in approved), default="nao_determinada")
     state["source_note"] = ("Base histórica preservada; homologação dos apontamentos pelo responsável "
                             "não equivale a aceite ou medição. E08 foi revalidado sem nova soma; E03 atualizado por snapshot.")
     state["estacas"]["historicas_por_eixo"] = piles
@@ -105,6 +161,7 @@ def build_state(root=ROOT):
         "registros_totais": len(ordered),
         "registros_homologados": len(approved),
         "registros_pendentes": len(pending),
+        "ultimo_relato_pendente": max((e["date"] for e in pending), default=None),
         "eventos_pendentes_ids": [e["id"] for e in pending],
         "metodo": "maximo_por_etapa_e_eixo_entre_base_historica_e_ultimo_snapshot_homologado",
         "total_estacas_concretadas_base_mais_snapshots": sum(piles),
@@ -114,8 +171,16 @@ def build_state(root=ROOT):
         "longarinas_concretadas_inferidas": 1 if beam_2_event and beam_2_inferred else 0,
         "inferencia_longarina_2_data_exata": None,
         "detalhes": other,
+        "execucao_em_campo": {
+            "estacas_por_eixo": field_piles,
+            "longarinas": field_longarinas,
+            "pilares_parciais_E03": field_pillar_status,
+            "critica_de_conformidade": "Projeto e executado coexistem; divergência de quantidade não prova erro de locação ou exclusão da resistência.",
+            "sem_contagem_dupla": True,
+        },
         "criterios": [
             "Totais reportados nao se somam entre datas.",
+            "Total de 25 estacas executadas no E09 pode superar as 24 projetadas sem alterar a previsão: locação e resistência permanecem indeterminadas.",
             "Ordinais de perfuracao nao sao estacas concretadas.",
             "A ausencia de registro nao constitui paralizacao.",
             "Inferencia de concretagem de longarina 2 nao constitui medicao ou aceite.",

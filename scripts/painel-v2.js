@@ -29,6 +29,36 @@ function renderSummary(){
  ];
  for(const [id,value] of values){let el=$(id);if(el)el.textContent=value}
 }
+function renderFieldProgress(){
+ const root=$('fieldProgress'),caveat=$('fieldCaveat');
+ if(!root||!caveat)return;
+ const field=CFG.consolidacao?.execucao_em_campo||{};
+ const piles=field.estacas_por_eixo||{};
+ const axes=['E07','E08','E09'];
+ const cards=axes.map(code=>{
+   const x=piles[code];if(!x)return '';
+   const delta=x.diferenca_executado_menos_previsto;
+   const note=delta>0?('Excedente quantitativo de '+delta+' unidade(s); locação e resistência não determinadas') :
+       'Situação executada de campo; etapa final não especificada';
+   return '<div class="card progress-card"><div class="eyebrow">'+escapeHTML('Eixo '+Number(code.slice(1)))+'</div>'+
+     '<div class="progress-value">'+escapeHTML(x.executadas_em_campo)+' / '+escapeHTML(x.previstas_projeto)+'</div>'+
+     '<div class="progress-note">Executadas em campo / previstas no projeto</div>'+
+     '<p class="small-note">'+escapeHTML(note)+'</p>'+
+     '<p class="small-note">Concretadas na base histórica: '+escapeHTML(x.concretadas_na_base_anterior)+' (indicador independente)</p></div>';
+ });
+ const beams=field.longarinas;
+ if(beams)cards.push('<div class="card progress-card"><div class="eyebrow">Longarinas no pátio</div>'+
+   '<div class="progress-value">'+escapeHTML(beams.concretadas_em_campo)+'</div>'+
+   '<div class="progress-note">Vigas concretadas · total de campo em '+escapeHTML(dateBR(beams.data))+'</div>'+
+   '<p class="small-note">Não somar com as longarinas concretadas anteriormente. Não comprova protensão nem lançamento.</p></div>');
+ root.innerHTML=cards.join('');
+ const e9=piles.E09;
+ caveat.innerHTML='<b>Leitura técnica:</b> executado em campo e projetado são duas referências verdadeiras com funções diferentes. '+
+   (e9 ? 'No E09: '+escapeHTML(e9.executadas_em_campo)+' estacas finalizadas em campo versus '+
+    escapeHTML(e9.previstas_projeto)+' previstas em projeto. A diferença não prova erro de locação; ' : '')+
+   'a identificação de elementos efetivamente aproveitados na resistência depende de conferência de locação, documentação de execução e validação estrutural. '+
+   'A concretagem parcial dos pilares E03-P03/P04 também não equivale à conclusão integral dos pilares.';
+}
 function makeBars(){
  const root=$('axisProgress');if(!root)return;
  root.innerHTML=AX.map((planned,i)=>{
@@ -71,7 +101,7 @@ function onSelection(e){
    inspector.textContent=area+' · '+(label[currentService]||'Sistema estrutural')+'. Seleção geométrica ilustrativa: não há identificação individual nem atesto da peça representada.';
  }
 }
-renderSummary();makeBars();makeChooser();
+renderSummary();renderFieldProgress();makeBars();makeChooser();
 const sel=$('timelineSelect');if(sel)sel.addEventListener('change',redrawTimeline);
 window.addEventListener('certare:select',onSelection);
 window.addEventListener('certare:public-data',()=>{redrawTimeline();drawEvidence()});
