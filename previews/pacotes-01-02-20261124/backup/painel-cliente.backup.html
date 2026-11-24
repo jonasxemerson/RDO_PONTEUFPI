@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f5f1"><title>Ponte da UFPI | Painel de acompanhamento · CERTARE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#f5f5f1;--white:#fff;--ink:#152721;--muted:#6f7a73;--line:#dfe5de;--green:#236b52;--green-soft:#e7f1ea;--orange:#b47c38;--radius:18px;--shadow:0 10px 35px #253f3010}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);font:15px/1.55 'DM Sans',Arial,sans-serif;color:var(--ink)}button{font:inherit;cursor:pointer}a{color:inherit;text-decoration:none}a:focus-visible,button:focus-visible{outline:3px solid #6a9e83;outline-offset:3px}
+.shell{width:min(1480px,calc(100% - 64px));margin:auto}.header{height:82px;border-bottom:1px solid var(--line);background:#ffffffda;backdrop-filter:blur(14px);position:sticky;top:0;z-index:10}.header-inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font:800 23px/1 'Manrope',sans-serif;letter-spacing:.1em}.brand small{display:block;font:500 10px/1.8 'DM Sans',sans-serif;letter-spacing:.12em;color:var(--muted);margin-top:4px}.nav{display:flex;gap:5px;align-items:center}.nav a{font-weight:700;color:#5c6a60;font-size:13px;padding:11px 16px;border-radius:9px}.nav a:hover,.nav a.active{background:var(--green-soft);color:var(--green)}.head-right{display:flex;gap:13px;align-items:center}.label-date{font-size:12px;color:var(--muted)}.circle{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-weight:800;color:var(--green)}
+.hero{padding:54px 0 32px;display:flex;gap:24px;justify-content:space-between;align-items:end}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.19em;font-weight:800;color:var(--green)}h1,h2,h3,.big{font-family:'Manrope',sans-serif;letter-spacing:-.045em}h1{font-size:clamp(36px,4.2vw,64px);line-height:1.09;margin:13px 0 13px;font-weight:800}h2{font-size:24px;margin:0}h3{font-size:16px;margin:0}.desc{color:var(--muted);margin:0;max-width:680px}.hero-tag{border:1px solid var(--line);background:white;padding:12px 16px;border-radius:100px;white-space:nowrap;color:#52685a;font-size:12px;font-weight:700}.dot{display:inline-block;background:#4a9b76;width:7px;height:7px;border-radius:50%;margin-right:7px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:24px 0}.stat{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:25px;min-height:148px;box-shadow:var(--shadow)}.stat .over{color:var(--muted);font-size:12px;font-weight:700}.stat .value{font:800 clamp(27px,3vw,42px)/1.1 'Manrope',sans-serif;letter-spacing:-.05em;margin:15px 0 9px}.stat .meta{color:#78857b;font-size:12px}.stat.featured{background:#183f32;color:white;border-color:#183f32}.featured .over,.featured .meta{color:#c3d9cf}
+.layout{display:grid;grid-template-columns:minmax(0,1.78fr) minmax(320px,.8fr);gap:17px;align-items:stretch;margin-top:18px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}.card-pad{padding:25px}.card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.subtle{font-size:12px;color:var(--muted);margin:7px 0 0}.badge{border:1px solid #d7e4d9;background:#eff5ef;color:#436a52;border-radius:100px;padding:6px 10px;font-size:11px;font-weight:800;white-space:nowrap}.bridge-figure{background:linear-gradient(170deg,#f2f6f1,#e6eeeb);border:1px solid #e1eae4;border-radius:14px;margin-top:24px;overflow:hidden;position:relative}.bridge-figure svg{display:block;width:100%;height:auto}.hint{display:flex;justify-content:space-between;gap:10px;padding:11px 18px;border-top:1px solid #dbe8dc;font-size:11px;color:#718179}.axis{cursor:pointer}.axis circle{transition:transform .15s;transform-box:fill-box;transform-origin:center}.axis:hover circle,.axis:focus circle{transform:scale(1.12)}.axis:focus{outline:none}.axis.selected circle{stroke:#173b2f;stroke-width:3}.axis text{pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:19px;margin-top:17px;font-size:12px;color:#68786d}.legend span:before{content:'';display:inline-block;width:10px;height:10px;margin-right:7px;border-radius:3px;background:#91a89c}.legend .complete:before{background:#357b60}.legend .active:before{background:#d49a4b}
+.split{border-top:1px solid var(--line);margin-top:22px;padding-top:20px}.axis-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.axis-big{font:800 26px 'Manrope',sans-serif}.axis-rows{display:grid;gap:15px;margin-top:17px}.axis-row{display:flex;justify-content:space-between;gap:12px;font-size:13px;border-bottom:1px solid #eff1ed;padding-bottom:11px}.axis-row strong{font-weight:800}.small-note{font-size:11px;color:var(--muted);margin-top:16px}.section-title{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:34px 0 15px}.section-title p{margin:6px 0 0;color:var(--muted);font-size:13px}.progress-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.progress-card{padding:24px}.progress-value{font:800 27px 'Manrope',sans-serif;letter-spacing:-.04em;margin-top:18px}.track{background:#e9efea;height:8px;border-radius:10px;overflow:hidden;margin:13px 0}.fill{display:block;background:#37795f;height:100%;border-radius:10px}.progress-note{color:#849188;font-size:11px}.updates{display:grid;gap:0;margin-top:6px}.update{padding:16px 0;display:grid;grid-template-columns:88px 1fr;gap:13px;border-bottom:1px solid #e8ede8}.update:last-child{border:0}.update time{font-weight:800;color:#657a6a;font-size:12px}.update p{margin:4px 0 0;color:#6d7970;font-size:12px}.update strong{font-size:13px}.chip{display:inline-block;font-size:10px;text-transform:uppercase;letter-spacing:.05em;font-weight:800;color:#926a35;background:#fff3e2;border-radius:5px;padding:3px 6px;margin-left:6px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0 45px}.muted-panel{background:#edf2eb;border:1px solid #dae4d9;border-radius:14px;padding:22px;color:#55695b;font-size:13px}.muted-panel b{color:#233e2f}.muted-panel p{margin:7px 0 0}.footer{padding:24px 0 35px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:#7c887e;font-size:12px;gap:15px}.error{color:#a34b38}.skeleton{color:#8e9a90}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.progress-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:710px){.shell{width:min(100% - 30px,1480px)}.header{height:auto;min-height:78px}.header-inner{flex-wrap:wrap;padding:14px 0}.nav{order:3;overflow-x:auto;width:100%}.nav a{white-space:nowrap;padding:8px 10px}.head-right{margin-left:auto}.label-date{display:none}.hero{padding:32px 0 15px;display:block}.hero-tag{display:inline-block;margin-top:17px}.stats{grid-template-columns:1fr 1fr;gap:9px}.stat{padding:16px;min-height:133px}.stat .value{font-size:27px}.card-pad{padding:17px}.progress-grid,.info-grid{grid-template-columns:1fr}.update{grid-template-columns:72px 1fr}.bridge-figure svg{min-height:230px}.footer{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+.model-actions{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:20px}.model-layers,.model-controls{display:flex;gap:6px;flex-wrap:wrap}.model-actions button{border:1px solid #dbe5dd;background:#f6f8f4;color:#4b6958;padding:8px 11px;border-radius:9px;font-size:12px;font-weight:700}.model-actions button[aria-pressed=true]{background:#245b45;color:#fff;border-color:#245b45}.model-actions button:hover{border-color:#347b60}.bridge-figure{margin-top:12px!important}.bridge-figure canvas{width:100%;height:clamp(380px,49vw,610px);display:block;touch-action:none;cursor:grab}.bridge-figure canvas:active{cursor:grabbing}@media(max-width:710px){.bridge-figure canvas{height:380px}} @media(max-width:710px){.layout,.progress-grid,.info-grid{grid-template-columns:minmax(0,1fr)}.nav{min-width:0;max-width:100%;flex-basis:100%}.header-inner>*{min-width:0}.card-header{min-width:0;flex-wrap:wrap}.card-header>div{min-width:0}.model-actions,.model-layers,.model-controls{min-width:0;max-width:100%}.hint{flex-wrap:wrap}.footer{overflow-wrap:anywhere}} @media(max-width:710px){.section-title{flex-direction:column;align-items:flex-start;flex-wrap:wrap}.section-title>div{min-width:0;max-width:100%}.badge{white-space:normal;max-width:100%;overflow-wrap:anywhere}} /* CERTARE painel executivo V2 */
+.section-v2{scroll-margin-top:108px}.layout{grid-template-columns:minmax(0,1.85fr) minmax(280px,.58fr)}.stats{margin-bottom:24px}.card{box-shadow:0 8px 30px #253f300b}.bridge-figure canvas{height:clamp(450px,49vw,690px)}.legend{line-height:1.5}.legend span:before{background:#a8bbb1}.legend-pill{font-weight:700}.notice{padding:16px;background:#f4f6f1;border-radius:12px;border:1px solid var(--line);margin:22px 0 4px}.notice strong{font-size:14px}.notice p{font-size:12px;color:var(--muted);margin:6px 0 0}.element-inspector{margin-top:15px;padding:13px 14px;border:1px solid #e0e9e1;background:#f7faf6;border-radius:10px;font-size:12px;color:#496b57}.axis-progress{display:grid;gap:11px}.axis-progress button{display:grid;grid-template-columns:55px minmax(0,1fr) 85px;align-items:center;gap:14px;border:1px solid transparent;border-radius:10px;background:transparent;padding:9px 10px;text-align:left;color:var(--ink)}.axis-progress button:hover,.axis-progress button[aria-pressed=true]{background:#f0f6f0;border-color:#bfdac9}.axis-progress-label{font-size:12px;font-weight:800}.axis-progress-track{height:12px;border-radius:12px;background:#e9eeea;overflow:hidden}.axis-progress-fill{display:block;height:100%;background:#43876d;border-radius:12px}.axis-progress-count{text-align:right;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}.summary-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}.summary-tile{background:#eaf0e9;border:1px solid #dbe6d9;border-radius:14px;padding:19px;display:flex;flex-direction:column;gap:5px}.summary-tile span{font-size:12px;color:#547461}.summary-tile strong{font:800 27px Manrope,Arial}.summary-tile small{color:#687b6d}.timeline-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center}.timeline-bar label{font-size:13px;font-weight:800}.timeline-bar select{padding:11px 13px;border-radius:10px;border:1px solid var(--line);background:#f8faf7;min-width:215px;max-width:100%}.timeline-empty{padding:24px 0 8px;color:var(--muted);font-size:13px}.timeline-event{padding:13px 0;border-top:1px solid var(--line);display:flex;gap:14px;align-items:baseline;font-size:13px}.timeline-event time{color:#647b6d;font-weight:800;white-space:nowrap}.evidence-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(240px,.7fr);gap:17px}.axis-chooser{display:flex;gap:8px;flex-wrap:wrap;margin:17px 0}.axis-chooser button{padding:9px 13px;background:#f4f6f1;border:1px solid var(--line);border-radius:10px;font-weight:800;font-size:12px}.axis-chooser button[aria-pressed=true]{background:#276f52;border-color:#276f52;color:white}.evidence-rows{display:grid;gap:8px}.evidence-item{display:flex;justify-content:space-between;gap:16px;padding:12px;border:1px solid var(--line);border-radius:10px;font-size:12px}.evidence-item strong{font-variant-numeric:tabular-nums}.assurance{display:grid;gap:6px;font-size:13px;color:var(--muted);margin:17px 0}.assurance b{color:#255a45;margin-top:10px}#evolucao,#linha-tempo,#evidencias,#metodologia{scroll-margin-top:115px}.footer a{font-weight:700;color:#24654c}@media(max-width:1100px){.evidence-layout{grid-template-columns:1fr}.layout{grid-template-columns:1fr}}@media(max-width:710px){.bridge-figure canvas{height:400px}.summary-row{grid-template-columns:1fr}.axis-progress button{grid-template-columns:38px minmax(0,1fr) 65px;gap:8px}.axis-progress-count{font-size:11px}.timeline-bar{align-items:flex-start;flex-direction:column}.evidence-layout{grid-template-columns:1fr}}
+
+/* V3 — redução de redundância, hierarquia editorial e usabilidade técnica */
+:root{--bg:#f8f9f7;--ink:#20312b;--line:#e0e6e1;--muted:#596a61;--green:#174b38;--radius:16px}
+body{font-size:15px;line-height:1.6}
+.shell{width:min(1440px,calc(100% - 72px))}
+.header{height:76px;box-shadow:0 3px 16px #132e2110}
+.brand{font-size:21px}
+.header-context{font-size:10px;letter-spacing:.12em;color:#567263;font-weight:800}
+.header-inner{gap:12px}
+.nav a{padding:10px 12px}
+.hero{padding:47px 0 22px;align-items:center}
+.hero .desc{font-size:15px;max-width:810px}
+.hero-metadata{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+.hero-metadata span{display:inline-flex;flex-direction:column;background:#eef2ee;border:1px solid #e1e8e0;border-radius:10px;padding:10px 13px;color:#355448;font-size:12px;min-width:156px}
+.hero-metadata b{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#718279;margin-bottom:2px}
+.hero-tag{border-radius:12px;padding:10px 14px;white-space:normal;max-width:245px;text-align:left}
+.stats{margin:14px 0 19px;gap:12px}
+.stat{padding:21px;min-height:136px;box-shadow:none}
+.stat .value{margin:12px 0 9px}
+.stat .meta{color:#63786d;font-size:12px}
+.stat.featured .meta{color:#d3e5db}
+.layout{margin-top:13px;grid-template-columns:minmax(0,2fr) minmax(275px,.67fr)}
+.card{box-shadow:0 3px 20px #0b24190a}
+.card-pad{padding:24px}
+.section-title{margin-top:43px}
+.section-title p{font-size:13px}
+.small-note{font-size:12px;line-height:1.6}
+.axis-row{font-size:13px}
+.model-viewbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:20px}
+.toolbar-caption{font-size:10px;letter-spacing:.1em;font-weight:800;color:#718477;margin-right:7px}
+.model-viewbar button{border:1px solid #dbe5dd;background:#f7f9f7;color:#436052;padding:9px 12px;border-radius:9px;font-size:12px;font-weight:750}
+.model-viewbar button[aria-pressed=true]{background:#174b38;color:#fff;border-color:#174b38}
+.model-actions{margin-top:12px}
+.model-actions button{padding:10px 12px}
+.model-actions button:focus-visible,.model-viewbar button:focus-visible{outline:3px solid #83ad8b;outline-offset:2px}
+.bridge-figure{background:linear-gradient(155deg,#f5f8f5,#e9f0ed)}
+.bridge-figure canvas{height:clamp(480px,50vw,700px)}
+.legend{font-size:12px}
+.notice{margin-top:20px}
+.notice[hidden]{display:none}
+.evolution-footnote{margin-top:12px;font-size:12px;color:#607368;padding:13px 3px}
+.evolution-footnote strong{color:#294f3f}
+.evidence-item{font-size:13px}
+.timeline-empty{font-size:13px}
+:where(button,a,select):focus-visible{outline:3px solid #79a893;outline-offset:3px}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.hero{align-items:flex-start}.hero-tag{max-width:220px}}
+@media(max-width:710px){.shell{width:calc(100% - 30px)}.hero{padding-top:27px}.hero-metadata{gap:7px}.hero-metadata span{min-width:calc(50% - 4px);flex:1}.hero-tag{max-width:none;margin-top:16px}.stats{gap:8px}.stat{padding:15px;min-height:127px}.stat .value{font-size:25px}.bridge-figure canvas{height:400px}.model-viewbar button{padding:10px}.card-pad{padding:16px}.header-context{display:none}}
+/* CERTARE V4 — apresentação técnica do modelo */
+.model-scene-info{position:absolute;top:14px;left:14px;z-index:2;pointer-events:none;padding:8px 10px;border-radius:9px;border:1px solid #D7E6DC;background:#F8FCF7DC;backdrop-filter:blur(8px);font-size:10px;font-weight:800;letter-spacing:.09em;color:#436957}
+.scene-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#43856D;margin-right:5px}
+.scene-separator{margin:0 8px;color:#91AFA0}
+.bridge-figure{border:1px solid #D2DFD5;background:#EFF6F1;box-shadow:inset 0 0 0 1px #F5FAF6}
+.bridge-figure canvas{min-height:500px;image-rendering:auto;cursor:grab}
+.model-actions button,.model-viewbar button{min-height:39px}
+.model-actions #modelPresentation{background:#153F33;color:#fff;border-color:#153F33}
+.model-actions #modelPresentation:hover{background:#235947}
+.model-actions #modelFocusAxis{background:#EAF3ED;color:#286449;border-color:#CDE2D5}
+.model-presentation{position:fixed!important;inset:12px;z-index:110;overflow:auto;overscroll-behavior:contain;border:1px solid #C9D9CE;box-shadow:0 0 0 100vmax #0A2219C2,0 20px 85px #071A14A0!important;padding:22px!important}
+.model-presentation .bridge-figure canvas{height:min(67vh,830px)!important;min-height:420px}
+.model-presentation .model-scene-info{top:16px}
+.presentation-open{overflow:hidden}
+@media(max-width:710px){.bridge-figure canvas{height:430px;min-height:430px}.model-scene-info{font-size:9px;top:10px;left:10px}.model-presentation{inset:4px;padding:13px!important}.model-presentation .bridge-figure canvas{height:48vh!important;min-height:270px}.model-actions button,.model-viewbar button{min-height:40px}}
+
+/* Modelagem WebGL institucional — marcadores e tratamento de profundidade */
+.bridge-figure{background:radial-gradient(ellipse at 47% 24%,#fff 0%,#F1F6F3 43%,#E2ECE6 100%);isolation:isolate}
+.bridge-figure canvas#bridge4d{display:block;position:relative;z-index:1;background:transparent;min-height:490px;outline-offset:-3px;touch-action:none}
+.model-markers{position:absolute;inset:0;bottom:33px;z-index:3;pointer-events:none;overflow:hidden}
+.axis-marker{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;border:1px solid #BDD2C6;background:#FFFFFFE8;color:#2E5F4D;border-radius:7px;padding:4px 7px;box-shadow:0 3px 8px #173D321F;font:800 10px/1 'DM Sans',Arial,sans-serif;min-width:32px;height:23px;letter-spacing:.04em;cursor:pointer}
+.axis-marker.is-active,.axis-marker:hover{background:#1C664B;border-color:#1C664B;color:#fff;box-shadow:0 4px 12px #15432D35}
+.axis-marker:focus-visible{outline:3px solid #D4A451;outline-offset:2px}
+.model-render-status{color:#668070;font-size:11px;margin:8px 0 0;line-height:1.5}
+.model-scene-info{background:#FFFFFFDA;z-index:4}
+.model-presentation .bridge-figure canvas#bridge4d{height:min(67vh,830px)!important;min-height:400px}
+@media(max-width:710px){.bridge-figure canvas#bridge4d{height:390px;min-height:390px}.axis-marker{font-size:9px;min-width:30px}.model-presentation .bridge-figure canvas#bridge4d{height:47vh!important;min-height:260px}}
+
+/* CERTARE V6 — direção de arte: maquete de engenharia axonométrica */
+.bridge-figure{background:linear-gradient(172deg,#FFFFFF 0%,#F8FAF8 53%,#F0F4F1 100%);border:1px solid #DAE4DE;box-shadow:inset 0 0 0 1px #fff,0 10px 34px #153F3210}
+.bridge-figure canvas#bridge4d{min-height:480px}
+.model-scene-info{color:#51685C;background:#FFFFFFE9;border-color:#E0E8E1;letter-spacing:.085em}
+.scene-dot{background:#8EA99C}
+.model-actions #modelOverview{background:#F1F5F1;border-color:#D6E3DA;color:#365F4B}
+.model-actions #modelOverview:hover{background:#E5EEE7}
+.model-actions #modelFocusAxis{background:#E5EEE7;border-color:#C9DCCC;color:#205F45}
+.axis-marker{background:#FFFFFFF5;border-color:#D5E0D8;color:#50685A;box-shadow:0 2px 7px #193C2C12}
+.axis-marker.is-active{background:#236D4F;color:#fff}
+.model-render-status{font-size:12px;font-weight:600;color:#597264}
+.legend span:before{background:#B9C9C2}
+@media(max-width:710px){.bridge-figure canvas#bridge4d{min-height:385px}}
+
+/* Revisão da evolução física — série executada e concretagem separadas */
+.stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.progress-toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.progress-toolbar button{border:1px solid #d8e4dc;background:#f6f8f5;color:#466153;border-radius:9px;padding:10px 13px;font-size:12px;font-weight:800}
+.progress-toolbar button[aria-pressed=true]{background:#245f48;color:#fff;border-color:#245f48}
+.axis-progress button{grid-template-columns:54px minmax(0,1fr) 120px;gap:12px}
+.axis-progress button[data-source=campo_homologado]{background:#f5f9f5;border-color:#e2ece3}
+.axis-progress button[data-excess=true] .axis-progress-count{color:#98652f;font-weight:800}
+.axis-progress-middle{display:grid;gap:4px;min-width:0}
+.axis-progress-track{position:relative;height:13px;overflow:hidden}
+.axis-progress-fill{position:absolute;inset:0 auto 0 0;width:0;background:#d5b07a;border-radius:12px}
+.axis-progress-concrete{position:absolute;inset:0 auto 0 0;width:0;background:#43876d;border-radius:12px}
+.axis-progress-origin{font-size:10px;color:#697b70;line-height:1.3}
+.axis-progress-count{white-space:normal}
+.axis-progress-count small{font-size:10px;font-weight:700;color:#9a6a30;display:block}
+.axis-marker[data-progress]::after{content:attr(data-progress);position:absolute;top:22px;left:50%;transform:translateX(-50%);font:700 9px/1.15 'DM Sans',Arial,sans-serif;border:1px solid #d7e3d8;background:#fff;color:#295c45;padding:2px 4px;border-radius:4px;white-space:nowrap;box-shadow:0 2px 5px #173d3212}
+.axis-marker.is-active[data-progress]::after{border-color:#236d4f}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:710px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.axis-progress button{grid-template-columns:38px minmax(0,1fr) 76px;gap:7px}.axis-progress-origin{font-size:9px}.axis-progress-count{font-size:10px}.progress-toolbar button{font-size:11px;padding:8px}}
+
+/* Marcas institucionais: agrupadas no canto superior esquerdo, dentro do cabeçalho existente. */
+.brand-logos{display:flex;align-items:center;justify-content:flex-start;gap:14px;flex:0 0 auto;min-width:0}
+.brand-logos img{display:block;object-fit:contain;height:auto;flex-shrink:0}
+.brand-certare{width:170px;max-height:49px}
+.brand-sdu{width:205px;max-height:46px}
+.brand-separator{width:1px;height:32px;background:var(--line);flex-shrink:0}
+@media(max-width:1270px){
+ .header-context{display:none}
+ .nav a{padding:9px 9px}
+ .brand-logos{gap:11px}
+ .brand-certare{width:150px}
+ .brand-sdu{width:177px}
+}
+@media(max-width:1100px){
+ .header{height:auto;min-height:76px}
+ .header-inner{flex-wrap:wrap;padding:10px 0}
+ .header .nav{order:3;flex-basis:100%;min-width:0;max-width:100%;overflow-x:auto}
+ .header .head-right{margin-left:auto}
+}
+@media(max-width:710px){
+ .brand-logos{gap:9px}
+ .brand-certare{width:136px;max-height:40px}
+ .brand-sdu{width:145px;max-height:36px}
+ .brand-separator{height:28px}
+ .header-inner{padding:10px 0 8px}
+}
+@media(max-width:360px){
+ .brand-certare{width:120px}
+ .brand-sdu{width:127px}
+ .brand-logos{gap:7px}
+}
+</style></head><body>
+<header class="header"><div class="shell header-inner"><div class="brand-logos" aria-label="Instituições do empreendimento">
+  <img class="brand-certare" src="assets/logo-grupo-certare-oficial.svg" width="720" height="200" alt="Grupo CERTARE — Engenharia e Consultoria" decoding="async">
+  <span class="brand-separator" aria-hidden="true"></span>
+  <img class="brand-sdu" src="assets/sdu-norte-identificacao.svg" width="420" height="92" alt="SDU Norte — Superintendência de Desenvolvimento Urbano de Teresina" decoding="async">
+</div><nav class="nav" aria-label="Navegação"><a class="active" href="#visao">Visão geral</a><a href="#estrutura">Estrutura</a><a href="#evolucao">Evolução</a><a href="#linha-tempo">Cronologia</a><a href="#evidencias">Evidências</a><a href="#metodologia">Método</a></nav><div class="head-right"><span class="label-date" id="headerDate">Dados em conferência</span><span class="header-context">FISCALIZAÇÃO DE INFRAESTRUTURA</span></div></div></header>
+<main class="shell" id="visao"><div class="hero"><div><div class="eyebrow">CERTARE / PAINEL DE FISCALIZAÇÃO</div><h1>Ponte da UFPI<span style="color:#428566">.</span></h1><p class="desc">Uma leitura clara da execução estrutural: informações históricas, frentes de serviço e situação documental, com consulta por eixo e separação entre execução registrada, concretagem identificada e conformidade estrutural.</p><div class="hero-metadata"><span><b>Empreendimento</b> Ponte da UFPI</span><span><b>Fiscalização</b> CERTARE</span><span><b>Referência</b> Apontamentos homologados via GitHub</span></div></div><div class="hero-tag"><span class="dot"></span>Consulta institucional · dados homologados com ressalvas</div></div>
+<div class="stats" aria-label="Indicadores de evolução física">
+  <div class="stat featured"><div class="over">Estrutura do projeto</div><div class="value" id="kpiEixos">— eixos</div><div class="meta" id="metaVaos">Vãos estruturais · modelo esquemático</div></div>
+  <div class="stat"><div class="over">Estacas com execução registrada</div><div class="value" id="kpiEstacas">—</div><div class="meta">Base histórica + relatos homologados, sem dupla contagem; etapas não uniformes</div></div>
+  <div class="stat"><div class="over">Estacas concretadas identificadas</div><div class="value" id="kpiConcretadas">—</div><div class="meta">Concretagem registrada; distinta do total de execução</div></div>
+  <div class="stat"><div class="over">Blocos concluídos</div><div class="value" id="kpiBlocos">—</div><div class="meta">Base histórica · outros em preparação</div></div>
+  <div class="stat"><div class="over">Pilares integralmente concretados</div><div class="value" id="kpiPilares">—</div><div class="meta">Pilares E03-P03/P04 em execução parcial, fora deste total</div></div>
+  <div class="stat"><div class="over">Longarinas concretadas no pátio</div><div class="value" id="kpiLongarinas">—</div><div class="meta">Total homologado · não equivale a protensão ou lançamento</div></div>
+</div>
+<section id="campo-executado" class="section-v2">
+<div class="section-title"><div><div class="eyebrow">Situação executiva · fiscalização de campo</div>
+<h2>Executado em campo × previsto em projeto</h2>
+<p>Quantitativos homologados conforme mensagens do responsável, sem alterar os totais do projeto.</p></div>
+<span class="badge" id="fieldDate">Data de campo: 24/11/2026</span></div>
+<div id="fieldProgress" class="progress-grid" aria-label="Quantitativos executados no campo e previstos em projeto"></div>
+<div id="fieldCaveat" class="muted-panel" style="margin-top:14px">Aguardando conciliação de campo.</div>
+</section>
+<div class="layout" id="estrutura">
+<section class="card card-pad"><div class="card-header"><div><div class="eyebrow">Leitura espacial</div><h2>Maquete técnica axonométrica</h2><p class="subtle">Composição leve e institucional: estrutura clara na vista geral; detalhe das estacas somente ao focar o eixo correspondente.</p></div><span class="badge">Maquete técnica · sem escala</span></div>
+<div class="model-viewbar" aria-label="Orientações do modelo"><span class="toolbar-caption">VISTA</span><button type="button" data-model-view="perspectiva" aria-pressed="true">Perspectiva</button><button type="button" data-model-view="lateral" aria-pressed="false">Lateral</button><button type="button" data-model-view="superior" aria-pressed="false">Superior</button><button type="button" data-model-view="frontal" aria-pressed="false">Frontal</button></div><div class="model-actions" aria-label="Controles do modelo"><div class="model-layers"><button data-model-layer="todos" aria-pressed="true">Estrutura</button><button data-model-layer="fundacoes" aria-pressed="false">Fundações</button><button data-model-layer="meso" aria-pressed="false">Apoios</button><button data-model-layer="super" aria-pressed="false">Superestrutura</button></div><div class="model-controls"><button id="modelReset" title="Recentrar">Recentrar</button><button id="modelZoomIn" title="Aproximar">+</button><button id="modelZoomOut" title="Afastar">−</button><button id="modelGround" title="Alternar plano esquemático de referência">Plano de referência</button><button id="modelOverview" title="Retornar à vista geral simplificada">Vista geral</button><button id="modelFocusAxis" title="Exibir e aproximar as estacas esquemáticas do eixo">Detalhar eixo</button><button id="modelPresentation" aria-pressed="false" title="Expandir a visualização">Ampliar modelo</button></div></div><div class="bridge-figure"><div class="model-scene-info"><span class="scene-dot"></span> MODELO AXONOMÉTRICO <span class="scene-separator">/</span> 9 EIXOS · 8 VÃOS</div><div id="modelMarkers" class="model-markers" aria-label="Eixos do modelo"></div><canvas id="bridge4d" aria-label="Modelo estrutural esquemático navegável. Use as setas do teclado para orientar, mais e menos para zoom, Home para restaurar, ou selecione um eixo pelos botões abaixo." tabindex="0"></canvas><div class="hint"><span>Arraste para girar · clique nas etiquetas dos eixos · use as vistas técnicas</span><span>Geometria ilustrativa, não em escala</span></div><p id="modelRenderStatus" class="model-render-status" role="status">Vista geral axonométrica · sem escala · quantitativos não associados a posições</p></div><div class="legend"><span>Branco e cinza: maquete esquemática; verde: peça selecionada</span><span class="legend-pill">Na vista geral, as estacas são recolhidas para melhorar a leitura</span></div>
+<div class="split"><div class="axis-top"><div><div class="eyebrow">Detalhe da frente</div><div class="axis-big" id="axisTitle">Eixo 07</div></div><span class="badge" id="axisStatus">Conferência pendente</span></div><div class="axis-rows" id="axisRows"></div><p class="small-note">As cores do modelo diferenciam sistemas estruturais, não estágios de execução. Quantitativos agregados não permitem indicar quais estacas ou pilares específicos foram executados.</p><div id="elementInspector" class="element-inspector" role="status" aria-live="polite">Selecione uma peça na geometria para consultar o sistema estrutural.</div></div></section>
+<aside class="card card-pad"><div class="card-header"><div><div class="eyebrow">Boletim público</div><h2>Situação dos registros</h2><p class="subtle">Apontamentos homologados pelo responsável para acompanhamento físico, distintos de aceite contratual.</p></div></div><div class="notice" id="noticePending"><strong>Sem novos eventos homologados</strong><p>Isso não significa obra parada. Registros ainda em análise não são apresentados como execução oficialmente atestada.</p></div><div class="updates" id="updates" aria-live="polite"><p class="skeleton">Consultando publicações…</p></div><p class="small-note" id="dataStatus" role="status">Fonte: arquivos versionados no GitHub.</p></aside>
+</div>
+<section id="evolucao" class="section-v2"><div class="section-title"><div><div class="eyebrow">Evolução física · dados homologados</div><h2>Fundações por eixo</h2><p>Relatos de execução por eixo conciliados com a base histórica; quantidades previstas não são alteradas.</p></div><span class="badge" id="progressDate">Consolidação até 24/11/2026 · não constitui medição</span></div>
+<div class="card card-pad">
+  <div class="progress-toolbar" role="group" aria-label="Visualizar a evolução das fundações">
+    <button type="button" data-progress-mode="execucao" aria-pressed="true">Execução registrada</button>
+    <button type="button" data-progress-mode="concretagem" aria-pressed="false">Concretagem identificada</button>
+  </div>
+  <div id="axisProgress" class="axis-progress" aria-label="Execução física por eixo, com comparação ao projeto"></div>
+  <p class="small-note" id="progressContext" aria-live="polite">Carregando evolução física homologada.</p>
+  <p class="small-note" id="progressLegend">Verde: concretagem identificada. Bege: execução homologada de etapa não especificada. A etiqueta mostra o executado e o previsto.</p>
+</div>
+<div class="evolution-footnote"><strong>Critério técnico:</strong> “executadas” não é sinônimo de “concretadas” quando a etapa não está descrita. A base anterior continua identificada como histórica; um total acima do projeto é exibido como excedente, sem concluir erro de locação ou participação na resistência.</div></section>
+<section id="linha-tempo" class="section-v2"><div class="section-title"><div><div class="eyebrow">Linha do tempo documental</div><h2>Consulta por data da evidência</h2><p>Exibe somente eventos homologados e datados; não interpola datas nem inventa execução entre visitas.</p></div></div><div class="card card-pad"><div class="timeline-bar"><label for="timelineSelect">Data de referência</label><select id="timelineSelect" aria-label="Selecionar data de referência"><option value="">Sem datas homologadas</option></select><span id="timelineCount" class="badge">Nenhum evento homologado</span></div><div id="timelineContent" class="timeline-empty">Não há série temporal validada para reconstruir a obra em datas anteriores. A geometria permanece esquemática e os números históricos não possuem uma data de medição homologada.</div></div></section>
+<section id="evidencias" class="section-v2"><div class="section-title"><div><div class="eyebrow">Rastreabilidade</div><h2>Elementos e evidências publicáveis</h2><p>Consulta por eixo e serviço. Documentos privados não são expostos no site público.</p></div></div><div class="evidence-layout"><div class="card card-pad"><h3>Consultar uma frente</h3><div id="axisChooser" class="axis-chooser" role="group" aria-label="Selecionar eixo"></div><div id="evidenceRows" class="evidence-rows" aria-live="polite"></div></div><aside class="card card-pad"><div class="eyebrow">Critério de leitura</div><h3>O que está comprovado?</h3><div class="assurance"><b>Histórico:</b> dado legado, sem homologação documental atual.<b>Homologado:</b> registro aceito pelo responsável para acompanhamento físico; não equivale a atesto técnico independente ou medição.<b>Inferido:</b> pré-requisito técnico, não equivalendo a laudo, inspeção ou aceite.</div><p class="small-note">A incorporação de fotografias selecionadas e fichas por elemento exige aprovação de conteúdo e identificação inequívoca da peça.</p></aside></div></section>
+<section id="metodologia"><div class="section-title"><div><div class="eyebrow">Transparência metodológica</div><h2>Como interpretar o painel</h2></div></div><div class="info-grid"><div class="muted-panel"><b>Atualização e rastreabilidade</b><p>Novos registros são publicados em arquivos JSON do repositório, mediante revisão. Totais informados em datas diferentes não devem ser somados como novas unidades executadas. A ausência de relatório em determinado dia não significa paralisação.</p></div><div class="muted-panel"><b>Limites dos indicadores</b><p>Etapas concluídas por inferência são identificadas separadamente e não equivalem a inspeção ou aceite. A curva planejado × realizado e o avanço físico-financeiro exigem cronograma-base, ponderações e medições compatíveis.</p></div></div></section></main>
+<footer class="shell footer"><span>© 2026 CERTARE · Fiscalização de obras · <a href="https://github.com/jonasxemerson/RDO_PONTEUFPI/edit/main/data/manifest.json" rel="noopener noreferrer" target="_blank" title="Acesso de edição controlado pela autenticação e permissões do GitHub">Acesso administrativo via GitHub</a></span><span>Ponte da UFPI · Painel institucional demonstrativo · Não substitui documentação contratual</span></footer>
+<!-- CERTARE_CONFIG -->
+<script src="scripts/modelo-4d-publico.js"></script>
+<script>
+'use strict';
+const CONFIG=JSON.parse(document.getElementById('certare-config').textContent);
+const AX=CONFIG.estacas.previstas_por_eixo,HIST=CONFIG.estacas.historicas_por_eixo;
+const $=s=>document.querySelector(s), safe=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let events=[];let selected=7;
+function drawBridge(){window.Certare4D?.setSelection(selected)}
+function selectAxis(i){
+ selected=i;drawBridge();
+ $('#axisTitle').textContent='Eixo '+String(i).padStart(2,'0');
+ const code='E'+String(i).padStart(2,'0'),specific=events.filter(e=>e.target===code);
+ const axis=CONFIG.consolidacao?.evolucao_fisica?.estacas_por_eixo?.[i-1]||null;
+ const byDate=(a,b)=>String(a.date+' '+(a.time||'')).localeCompare(String(b.date+' '+(b.time||'')));
+ const recent=(metric)=>specific.filter(e=>e.state==='snapshot'&&e.metric===metric).sort(byDate).at(-1);
+ const concrete=recent('estacas_concretadas'),undefinedStep=recent('estacas_feitas_etapa_indefinida');
+ const sleeves=recent('camisas_sem_concretagem');
+ const ordinal=specific.filter(e=>e.quantity_kind==='ordinal_em_execucao').sort(byDate).at(-1);
+ const ordinalValid=ordinal&&(!axis?.data_execucao_campo||ordinal.date>=axis.data_execucao_campo);
+ const ordinalText=ordinal?(ordinal.quantity+'ª · '+ordinal.activity+(ordinalValid?'':' (registro anterior, não é estágio atual)')):'Não informado';
+ const field=axis?.origem_execucao==='campo_homologado';
+ const prov=field?'Campo homologado em '+axis.data_execucao_campo:'Base histórica sem data individual determinada';
+ let rows=[['Estacas previstas em projeto',axis?.previstas_projeto??AX[i-1]],
+   ['Execução registrada · acumulado',axis?.executadas_registradas??HIST[i-1]],
+   ['Concretagem identificada · acumulado',axis?.concretadas_identificadas??HIST[i-1]],
+   ['Fonte do acumulado',prov],
+   ['Concretadas · relato da mesma etapa',concrete?concrete.quantity+' (já conciliadas)':'Sem novo snapshot explícito'],
+   ['Relato anterior · etapa não definida',undefinedStep?undefinedStep.quantity:'Não informado'],
+   ['Somente camisas sem concretagem',sleeves?sleeves.quantity:'Não informado'],
+   ['Etapa ordinal informada',ordinalText],
+   ['Registros homologados nesta frente',specific.length]];
+ if(axis?.excedente_executado>0)rows.splice(3,0,['Excedente de execução sobre projeto','+'+axis.excedente_executado+' · locação/resistência não determinadas']);
+ if(i===3&&CONFIG.consolidacao?.evolucao_fisica?.pilares_E03_concretagem_parcial)
+   rows.push(['Pilares E03-P03 e E03-P04','Metades inferiores concretadas; topo não confirmado']);
+ $('#axisRows').innerHTML=rows.map(([k,v])=>'<div class="axis-row"><span>'+safe(k)+'</span><strong>'+safe(v)+'</strong></div>').join('');
+ $('#axisStatus').textContent=field?'Execução homologada · etapa final a distinguir':'Registro histórico · sem atesto por estaca';
+}
+function date(v){if(!v)return '—';let p=v.slice(0,10).split('-');return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:v}
+async function readData(){try{let manifest=await fetch('data/manifest.json',{cache:'no-store'});if(!manifest.ok)throw Error('Manifesto indisponível');let m=await manifest.json();if(!Array.isArray(m.files))throw Error('Manifesto inválido');let docs=await Promise.all(m.files.filter(p=>/^data\/observacoes-\d{4}-\d{2}\.json$/.test(p)).map(async p=>{let r=await fetch(p,{cache:'no-store'});if(!r.ok)throw Error('Arquivo indisponível');return r.json()}));events=docs.flatMap(d=>Array.isArray(d.events)?d.events:[]);let seen=new Set();events=events.filter(e=>{if(!e.id||seen.has(e.id))return false;seen.add(e.id);return true});window.CertarePublicEvents=events;window.CertarePublicInferences=docs.flatMap(d=>Array.isArray(d.inferences)?d.inferences:[]);window.dispatchEvent(new CustomEvent('certare:public-data'));let listed=events.filter(e=>!['seguranca','qualidade'].includes(e.service)).sort((a,b)=>String(b.date+' '+(b.time||'')).localeCompare(String(a.date+' '+(a.time||'')))).slice(0,5);$('#noticePending').hidden=listed.length>0;$('#updates').innerHTML=listed.length?listed.map(e=>'<div class="update"><time>'+safe(date(e.date))+'</time><div><strong>'+safe(e.activity)+' · '+safe(e.target)+'</strong><span class="chip">Homologado para acompanhamento</span><p>'+safe(e.element||'')+' · '+safe(e.state||'Registro técnico')+'</p></div></div>').join(''):'<p class="subtle">Não há observações publicadas.</p>';let last=events.map(e=>e.date).filter(Boolean).sort().at(-1);$('#headerDate').textContent=last?'Último registro: '+date(last):'Sem registro consolidado';$('#dataStatus').textContent=events.length+' registros homologados para acompanhamento · não equivalem a medição';selectAxis(selected)}catch(err){$('#updates').innerHTML='<p class="error">Registros temporariamente indisponíveis.</p>';$('#dataStatus').textContent='Não foi possível consultar a base GitHub; indicadores históricos permanecem identificados.';window.CertarePublicEvents=[];$('#noticePending').hidden=false;window.dispatchEvent(new CustomEvent('certare:public-data'));selectAxis(selected)}}
+document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>{document.querySelectorAll('.nav a').forEach(b=>b.classList.remove('active'));a.classList.add('active')});window.Certare4D?.init((kind,index)=>{if(kind==='eixo')selectAxis(index)});selectAxis(7);readData();
+</script><script src="scripts/painel-v2.js"></script></body></html>
