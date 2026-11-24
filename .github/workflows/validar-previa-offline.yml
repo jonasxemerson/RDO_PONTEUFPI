@@ -8,7 +8,7 @@ on:
       - ".github/workflows/validar-previa-offline.yml"
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   testar-previa:
     runs-on: ubuntu-latest
@@ -29,6 +29,16 @@ jobs:
           .venv/bin/python -m playwright install --with-deps chromium
       - name: Testar dados, Three.js, interação e screenshots desktop/mobile
         run: .venv/bin/python previews/pacotes-01-02-20261124/test_preview.py
+      - name: Versionar HTML offline diretamente na branch de prévia
+        continue-on-error: true
+        run: |
+          git config user.name "certare-preview-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add previews/pacotes-01-02-20261124/preview_offline.html
+          if ! git diff --cached --quiet; then
+            git commit -m "preview: gerar HTML offline validado [skip ci]"
+            git push origin HEAD:refs/heads/preview/pacotes-01-02-offline-20261124
+          fi
       - name: Entregar backups, HTML offline, candidatos e capturas
         if: always()
         uses: actions/upload-artifact@v4
