@@ -65,3 +65,12 @@ A quinta aba **Histórico** permite selecionar E01–E09, FAB, GERAL ou todas as
 A tela apresenta data, eixo, serviço, fase, atividade, natureza da quantidade, contagem de fotos associadas e link para a PR privada. Não baixa fotografias para o painel e não registra imagens em cache persistente. A classificação da PR (draft/aberta/fechada/mesclada) **não é homologação de campo**, aceite técnico nem liberação contratual. Propostas encerradas sem mesclagem também permanecem distinguíveis. Ausência de registro não indica paralisação.
 
 O teste de navegação usa API simulada para verificar filtro E09, leitura de JSON da branch privada, indicação de revisão e link privado em desktop e celular. **Integração real com PAT não executada**. Ficam pendentes: paginação para histórico completo, consulta independente de fotos e vínculos documentais, gestão da homologação com assinatura e perfis institucionais e ensaios de segurança em hospedagem aprovada. Nenhuma alteração em `main` ou no painel público.
+
+
+## Evolução: painel operacional de frentes (sem fichas obrigatórias)
+
+A aba **Frentes** agora inclui resumo derivado do próprio RDO em edição. Para cada eixo ou frente (E01–E09, FAB, GERAL) apresenta número de lançamentos, serviços, quantos relatos são de execução em andamento/parcial/concluída, fotos vinculadas e número de registros com peça individualizada. A identificação de peça permanece **opcional**.
+
+**O resumo não soma quantidades**: total_reportado é snapshot, ordinal_em_execucao é referência de ordenação e unidades_em_execucao não significa conclusão. Relato concluído também não implica ensaio conforme, liberação ou aptidão de medição. A contagem de lançamentos é métrica de registros, não produção. Nenhum dia sem relato é considerado paralisação. Os indicadores são provisórios e calculados no navegador a partir dos dados já inseridos no RDO, sem segunda digitação.
+
+Para evitar duplicação da consulta histórica, a aba **Histórico** passou a ler somente os arquivos incluídos/alterados em cada Pull Request privada; arquivos RDO herdados de main não são contados outra vez. Consultas permanecem limitadas às 20 PRs recentes e PRs com até 99 arquivos visíveis na primeira página; caso exceda, a interface interrompe a consulta, para não apresentar resultado indevidamente parcial. Pendências: paginação completa e testes com credencial real. O painel institucional e o 3D continuam inalterados.
