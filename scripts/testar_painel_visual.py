@@ -26,14 +26,23 @@ with sync_playwright() as p:
         response = page.goto(url, wait_until="networkidle")
         assert response.status == 200, f"HTTP {response.status}"
         assert page.title().startswith("Ponte da UFPI")
-        # Marcas inseridas sem alterar a navegação, o tema nem os indicadores.
-        assert page.locator(".institutional-brand-row").is_visible()
-        assert page.locator(".institutional-sdu img").count() == 1
-        assert page.locator(".institutional-certare img").count() == 1
-        assert page.locator(".institutional-sdu img").evaluate("(img) => img.complete && img.naturalWidth > 0")
-        assert page.locator(".institutional-certare img").evaluate("(img) => img.complete && img.naturalWidth > 0")
-        assert page.locator(".institutional-band").evaluate(
-            "(el) => el.getBoundingClientRect().width <= innerWidth + 1"
+        # Assinaturas corretas da CERTARE e SDU Norte no canto superior esquerdo.
+        assert page.locator(".brand-logos").is_visible()
+        assert page.locator(".institutional-band").count() == 0
+        assert page.locator(".brand-logos .brand-certare").count() == 1
+        assert page.locator(".brand-logos .brand-sdu").count() == 1
+        for selector in (".brand-certare", ".brand-sdu"):
+            assert page.locator(selector).evaluate("(img) => img.complete && img.naturalWidth > 0")
+            assert page.locator(selector).get_attribute("src").startswith("assets/")
+        assert page.locator(".brand-certare").get_attribute("src") == "assets/logo-grupo-certare-oficial.svg"
+        assert page.locator(".brand-logos").evaluate(
+            "(el) => el.closest('header') !== null && el.getBoundingClientRect().left < 60"
+        )
+        assert page.locator(".brand-sdu").evaluate(
+            "(el) => el.getBoundingClientRect().left > document.querySelector('.brand-certare').getBoundingClientRect().right"
+        )
+        assert page.locator(".brand-logos").evaluate(
+            "(el) => el.getBoundingClientRect().right < innerWidth - 5"
         )
 
         assert page.locator("#bridge4d").is_visible()
