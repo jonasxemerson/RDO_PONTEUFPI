@@ -101,6 +101,10 @@
 const OWNER='jonasxemerson';
 const REPO='RDO_CERTARE';
 const API='https://api.github.com';
+// Nunca peça credenciais GitHub em visualizadores HTML de terceiros.
+const TRUSTED_ORIGIN=location.protocol==='file:' ||
+ ['jonasxemerson.github.io','localhost','127.0.0.1'].includes(location.hostname);
+
 const MAX_PHOTOS=10;
 const MAX_PHOTO_BYTES=2*1024*1024;
 const VERSION='1.0.0';
@@ -144,6 +148,8 @@ async function authorize(token){
 }
 $('authForm').addEventListener('submit',async ev=>{
  ev.preventDefault();if(pending)return;
+ if(!TRUSTED_ORIGIN){textStatus('authFeedback','Origem não confiável. Não informe credenciais neste domínio. Abra o arquivo local ou a hospedagem oficial jonasxemerson.github.io.','error');return;}
+
  const token=$('githubToken').value.trim();if(!token){textStatus('authFeedback','Informe o token.','error');return;}
  setBusy(true);textStatus('authFeedback','Conferindo identidade e permissão no GitHub...');
  try{
@@ -452,6 +458,7 @@ $('deleteDraft').addEventListener('click',async()=>{
  resetFrontForm();renderAll();feedback('Rascunho local apagado.','ok');showTab('rdo');
 });
 function renderAll(){renderFronts();renderPhotos();renderReview();}
+if(!TRUSTED_ORIGIN){$('connectBtn').disabled=true;textStatus('authFeedback','Prévia somente visual: não informe token em domínio de terceiros.','error');}
 $('rdoDate').value=isoLocal();
 for(const id of FIELDS){$(id).addEventListener('input',scheduleDraft);$(id).addEventListener('change',scheduleDraft);}
 window.addEventListener('pagehide',()=>{for(const url of PHOTO_URLS)URL.revokeObjectURL(url)});
