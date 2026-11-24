@@ -63,7 +63,16 @@ with sync_playwright() as playwright:
             assert page.locator("#chartRows .chart-row[data-axis='9']").inner_text().find("25 / 24") >= 0
             assert page.locator("#chartRows .chart-row[data-axis='9']").inner_text().find("+1 excedente") >= 0
             assert not page.locator("#offlineBanner").is_visible() if kind != "offline" else page.locator("#offlineBanner").is_visible()
-            assert page.evaluate("document.documentElement.scrollWidth <= window.innerWidth + 2")
+            overflow=page.evaluate("""() => ({
+                width: innerWidth, scroll: document.documentElement.scrollWidth,
+                offenders: [...document.querySelectorAll('body *')].map(el=>{
+                  const r=el.getBoundingClientRect();
+                  return {tag:el.tagName,id:el.id,cls:String(el.className||'').slice(0,70),
+                          left:Math.round(r.left),right:Math.round(r.right),width:Math.round(r.width)}
+                }).filter(x=>x.right > innerWidth + 2 || x.left < -2).slice(0,20)
+            })""")
+            print("LAYOUT_DIAGNOSTIC",kind,screen,overflow,flush=True)
+            assert overflow["scroll"] <= overflow["width"] + 2
             if kind == "offline":
                 assert not any(u.startswith(("http://", "https://")) for u in requests), requests
             page.locator("#chartRows .chart-row[data-axis='9']").click()
