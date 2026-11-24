@@ -1,0 +1,58 @@
+name: Validar RDO móvel admin — sem publicação
+on:
+  push:
+    branches:
+      - feature/rdo-mobile-admin-v1-20261124
+    paths:
+      - "admin-rdo/**"
+      - "scripts/conectar_rdo_gerencial.py"
+      - "tests/test_rdo_mobile_browser.py"
+      - ".github/workflows/validar-rdo-mobile.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fluxo-mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Conferência de sintaxe JS e JSON Schema
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from pathlib import Path
+          class P(HTMLParser):
+              def __init__(self):super().__init__();self.in_script=False;self.scripts=[]
+              def handle_starttag(self,tag,attrs):
+                  if tag=='script' and not dict(attrs).get('src'):self.in_script=True
+              def handle_endtag(self,tag):
+                  if tag=='script':self.in_script=False
+              def handle_data(self,data):
+                  if self.in_script:self.scripts.append(data)
+          x=P();x.feed(Path('admin-rdo/index.html').read_text())
+          Path('/tmp/rdo_js.js').write_text('\n'.join(x.scripts))
+          import json;json.loads(Path('admin-rdo/schema_rdo_mobile.json').read_text())
+          PY
+          node --check /tmp/rdo_js.js
+          python3 -m py_compile scripts/conectar_rdo_gerencial.py
+      - name: Instalar Playwright e suporte JPEG
+        shell: bash
+        run: |
+          python3 -m venv .venv
+          .venv/bin/pip install --disable-pip-version-check pillow playwright jsonschema
+          .venv/bin/python -m playwright install --with-deps chromium
+      - name: Teste em desktop e celular (API simulada)
+        run: .venv/bin/python tests/test_rdo_mobile_browser.py
+      - name: Capturas para revisão
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rdo-mobile-admin-previa
+          path: |
+            admin-rdo/index.html
+            docs/FLUXO_RDO_MOBILE_ADMIN.md
+            tests/capturas/
+          retention-days: 30
+          if-no-files-found: warn
