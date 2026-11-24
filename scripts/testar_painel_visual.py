@@ -26,6 +26,16 @@ with sync_playwright() as p:
         response = page.goto(url, wait_until="networkidle")
         assert response.status == 200, f"HTTP {response.status}"
         assert page.title().startswith("Ponte da UFPI")
+        # Marcas inseridas sem alterar a navegação, o tema nem os indicadores.
+        assert page.locator(".institutional-brand-row").is_visible()
+        assert page.locator(".institutional-sdu img").count() == 1
+        assert page.locator(".institutional-certare img").count() == 1
+        assert page.locator(".institutional-sdu img").evaluate("(img) => img.complete && img.naturalWidth > 0")
+        assert page.locator(".institutional-certare img").evaluate("(img) => img.complete && img.naturalWidth > 0")
+        assert page.locator(".institutional-band").evaluate(
+            "(el) => el.getBoundingClientRect().width <= innerWidth + 1"
+        )
+
         assert page.locator("#bridge4d").is_visible()
         assert page.locator("#modelPresentation").is_visible()
         assert page.locator("#modelFocusAxis").is_visible()

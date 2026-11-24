@@ -124,8 +124,32 @@ body{font-size:15px;line-height:1.6}
 .axis-marker.is-active[data-progress]::after{border-color:#236d4f}
 @media(max-width:1100px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:710px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.axis-progress button{grid-template-columns:38px minmax(0,1fr) 76px;gap:7px}.axis-progress-origin{font-size:9px}.axis-progress-count{font-size:10px}.progress-toolbar button{font-size:11px;padding:8px}}
+
+/* Faixa de identificação institucional: sem alterações da identidade visual do painel. */
+.institutional-band{background:#fff;border-bottom:1px solid var(--line)}
+.institutional-brand-row{display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:72px;padding:9px 0}
+.institutional-logo{display:flex;align-items:center;justify-content:center;min-width:0}
+.institutional-logo img{display:block;width:auto;height:auto;max-height:55px;max-width:100%;object-fit:contain}
+.institutional-sdu{width:227px;justify-content:flex-start}
+.institutional-certare{width:192px;justify-content:flex-end}
+@media(max-width:710px){
+ .institutional-brand-row{min-height:59px;gap:12px;padding:7px 0}
+ .institutional-sdu{width:47%}.institutional-certare{width:43%}
+ .institutional-logo img{max-height:42px}
+}
+@media(max-width:390px){.institutional-logo img{max-height:38px}}
 </style></head><body>
 <header class="header"><div class="shell header-inner"><div class="brand">CERTARE<small>ENGENHARIA · FISCALIZAÇÃO</small></div><nav class="nav" aria-label="Navegação"><a class="active" href="#visao">Visão geral</a><a href="#estrutura">Estrutura</a><a href="#evolucao">Evolução</a><a href="#linha-tempo">Cronologia</a><a href="#evidencias">Evidências</a><a href="#metodologia">Método</a></nav><div class="head-right"><span class="label-date" id="headerDate">Dados em conferência</span><span class="header-context">FISCALIZAÇÃO DE INFRAESTRUTURA</span></div></div></header>
+<div class="institutional-band" aria-label="Identificação das instituições do empreendimento">
+  <div class="shell institutional-brand-row">
+    <div class="institutional-logo institutional-sdu" title="SDU Norte — identificação tipográfica">
+      <img src="assets/sdu-norte-identificacao.svg" width="312" height="76" alt="SDU Norte — Superintendência de Desenvolvimento Urbano, Teresina" decoding="async">
+    </div>
+    <div class="institutional-logo institutional-certare">
+      <img src="https://static.wixstatic.com/media/ec432d_f6daaa062a504aab82d58c09f5392867~mv2.png" width="1888" height="583" alt="Logotipo CERTARE Engenharia e Consultoria" referrerpolicy="no-referrer" decoding="async">
+    </div>
+  </div>
+</div>
 <main class="shell" id="visao"><div class="hero"><div><div class="eyebrow">CERTARE / PAINEL DE FISCALIZAÇÃO</div><h1>Ponte da UFPI<span style="color:#428566">.</span></h1><p class="desc">Uma leitura clara da execução estrutural: informações históricas, frentes de serviço e situação documental, com consulta por eixo e separação entre execução registrada, concretagem identificada e conformidade estrutural.</p><div class="hero-metadata"><span><b>Empreendimento</b> Ponte da UFPI</span><span><b>Fiscalização</b> CERTARE</span><span><b>Referência</b> Apontamentos homologados via GitHub</span></div></div><div class="hero-tag"><span class="dot"></span>Consulta institucional · dados homologados com ressalvas</div></div>
 <div class="stats" aria-label="Indicadores de evolução física">
   <div class="stat featured"><div class="over">Estrutura do projeto</div><div class="value" id="kpiEixos">— eixos</div><div class="meta" id="metaVaos">Vãos estruturais · modelo esquemático</div></div>
