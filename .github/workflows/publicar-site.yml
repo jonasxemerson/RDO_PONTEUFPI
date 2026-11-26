@@ -9,6 +9,7 @@ on:
       - "data/**"
       - "scripts/**"
       - "assets/**"
+      - "bim/**"
       - ".github/workflows/publicar-site.yml"
   pull_request:
     branches: [main]
@@ -31,12 +32,16 @@ jobs:
           test -f site/index.html
           test -f site/scripts/modelo-4d-publico.js
           test -f site/scripts/painel-v2.js
+          test -f site/bim/index.html
+          test -f site/bim/modelo-manifest.json
           test -f site/assets/sdu-norte-identificacao.svg
           test -f site/assets/logo-grupo-certare-oficial.svg
           test ! -f site/scripts/github-dados.js
           test ! -f site/painel-cliente.html
           node --check site/scripts/modelo-4d-publico.js
           node --check site/scripts/painel-v2.js
+          python3 -c 'from pathlib import Path; html=Path("site/bim/index.html").read_text(encoding="utf-8"); Path("/tmp/certare-bim.js").write_text(html.rsplit("<script>",1)[1].split("</script>",1)[0], encoding="utf-8")'
+          node --check /tmp/certare-bim.js
           python3 -c 'from pathlib import Path; html=Path("site/index.html").read_text(encoding="utf-8"); assert "<script>" in html, "Script JS inline ausente"; Path("/tmp/certare-inline.js").write_text(html.split("<script>",1)[1].split("</script>",1)[0], encoding="utf-8")'
           node --check /tmp/certare-inline.js
 

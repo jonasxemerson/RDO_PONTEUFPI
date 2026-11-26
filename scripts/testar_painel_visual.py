@@ -26,6 +26,20 @@ with sync_playwright() as p:
         response = page.goto(url, wait_until="networkidle")
         assert response.status == 200, f"HTTP {response.status}"
         assert page.title().startswith("Ponte da UFPI")
+        assert page.locator("#openBimPortal").count() == 1
+        assert page.locator("#openBimPortal").get_attribute("href") == "bim/"
+        portal=browser.new_page(viewport=dimensions,device_scale_factor=1)
+        portal_errors=[]
+        portal.on("pageerror",lambda error: portal_errors.append(str(error)))
+        response_bim=portal.goto(url+"bim/",wait_until="domcontentloaded")
+        assert response_bim.status == 200
+        assert "Portal de visualização BIM" in portal.locator("h1").inner_text()
+        portal.wait_for_function("() => document.querySelector('#viewerStatus').textContent.includes('Ainda não há modelo executivo validado publicado')",timeout=15000)
+        assert portal.locator("#viewerFrame").is_hidden()
+        assert portal.locator("#viewerLocal").is_hidden()
+        assert portal.locator('#localGlb').count()==1
+        assert not portal_errors,portal_errors
+        portal.close()
         # Assinaturas corretas da CERTARE e SDU Norte no canto superior esquerdo.
         assert page.locator(".brand-logos").is_visible()
         assert page.locator(".institutional-band").count() == 0

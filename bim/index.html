@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CERTARE · Portal BIM | Ponte da UFPI</title>
+<meta name="description" content="Visualização de modelos georreferenciados da Ponte da UFPI, com rastreabilidade da fonte geométrica.">
+<style>
+:root{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:#193029;background:#f4f7f4}
+*{box-sizing:border-box}body{margin:0}a{color:#20644c}
+header{border-bottom:1px solid #d8e4db;background:white;padding:16px max(20px,calc((100vw - 1240px)/2))}
+header a{font-weight:700;text-decoration:none}main{max-width:1240px;margin:0 auto;padding:24px 20px 60px}
+h1{font-size:clamp(25px,3vw,37px);line-height:1.15;margin:.2em 0}.eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#567165;font-weight:700}
+p{line-height:1.6}.muted{color:#5d6b65}.grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}
+.panel{border:1px solid #d9e3dd;border-radius:15px;background:white;padding:18px;box-shadow:0 5px 24px #1435240b}
+.stage{height:min(68vh,650px);min-height:420px;background:linear-gradient(155deg,#eef5ef,#dce8e2);position:relative;overflow:hidden;border-radius:12px;border:1px solid #d4e0da;display:grid;place-items:center}
+.stage model-viewer,.stage iframe{width:100%;height:100%;display:block;border:0}
+#empty{padding:34px;max-width:560px;text-align:center}
+#empty h2{font-size:21px}#viewerFrame,#viewerLocal{display:none}
+#viewerLocal{--poster-color:#e7f1e8}
+button,.button{border:1px solid #b8c9be;border-radius:8px;background:#f3f8f3;color:#1c4f3d;padding:10px 13px;font:600 14px system-ui;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+button:disabled{opacity:.6;cursor:wait}.primary{background:#23684e;color:#fff;border-color:#23684e}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #70a387;outline-offset:2px}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin:15px 0}
+input[type=file]{width:100%;max-width:100%;font:14px system-ui}
+.flag{font-size:12px;padding:5px 9px;background:#fff1dc;border:1px solid #efdbb7;border-radius:20px;display:inline-block;color:#764f18}
+.meta{margin:0}.meta dt{font-size:12px;color:#62736b;margin-top:12px}.meta dd{margin:3px 0 0;font-weight:600;overflow-wrap:anywhere}
+.note{background:#f3f6f2;border:1px solid #dae4da;border-radius:10px;padding:12px;font-size:13px}
+footer{margin-top:24px;color:#5e6e65;font-size:12px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}.stage{height:50vh;min-height:320px}}
+</style></head>
+<body>
+<header><a href="../">← Painel de acompanhamento · CERTARE</a></header>
+<main>
+<p class="eyebrow">Ponte da UFPI / Fiscalização de obras / Visualização técnica</p>
+<h1>Portal de visualização BIM</h1>
+<p class="muted">Espaço reservado à geometria extraída de arquivos de projeto e validada por eixo. O modelo esquemático anterior permanece acessível no painel principal. Um arquivo 3D apenas visual não comprova compatibilidade geométrica ou semântica IFC.</p>
+<div class="grid">
+<section class="panel" aria-label="Visualização tridimensional">
+<div class="actions">
+<button type="button" id="clearLocal">Voltar à referência publicada</button>
+<button type="button" id="resetView" disabled>Recentrar câmera</button>
+</div>
+<div class="stage" id="stage">
+<div id="empty"><h2>Nenhum modelo geométrico validado foi publicado</h2><p>O projeto permanece com geometria conceitual no painel existente. É possível abrir um arquivo <strong>GLB local</strong> para inspeção visual, sem enviá-lo ao servidor.</p><span class="flag">Geometria executiva pendente de conferência</span></div>
+<iframe title="Visualizador BIM autorizado" id="viewerFrame" referrerpolicy="no-referrer" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+<model-viewer id="viewerLocal" camera-controls touch-action="pan-y" environment-image="neutral" exposure="1" shadow-intensity="0.65" alt="Modelo tridimensional local do projeto para conferência visual" interaction-prompt="auto"></model-viewer>
+</div>
+<p id="viewerStatus" role="status" aria-live="polite" class="muted">Aguardando leitura do manifesto de modelos.</p>
+<div class="note"><strong>Separação de responsabilidade:</strong> modelo BIM e execução de obra são bases distintas. Nunca colorir uma peça como concluída apenas porque existe geometria; a associação exige identificação e registro homologado.</div>
+</section>
+<aside class="panel">
+<h2 style="margin-top:0">Origem e validação</h2>
+<dl class="meta"><dt>Modelo publicado</dt><dd id="modelName">Não disponível</dd><dt>Formato / visualizador</dt><dd id="modelFormat">—</dd><dt>Versão / revisão</dt><dd id="modelRevision">Não homologada</dd><dt>Unidades e sistema de coordenadas</dt><dd id="modelCoords">Não verificados</dd><dt>Conferência de projeto</dt><dd id="modelApproval">Pendente</dd></dl>
+<hr style="border:0;border-top:1px solid #dae4da;margin:20px 0">
+<h3>Prévia local de geometria</h3>
+<label for="localGlb" class="muted">Selecione GLB exportado do software BIM</label>
+<input id="localGlb" type="file" accept=".glb,model/gltf-binary" aria-describedby="localPrivacy">
+<p id="localPrivacy" class="muted" style="font-size:12px">A prévia local não faz upload do arquivo. Não há garantia de precisão geométrica até conferir unidades, origem, eixos, seções e revisão das pranchas.</p>
+<h3>Fonte do projeto</h3>
+<p class="muted" style="font-size:13px">Para publicação fiel: IFC/GLB ou XKT derivado de projeto conferido, com quantitativos e GUIDs rastreáveis. DXF isolado não garante propriedades BIM.</p>
+<a href="../#estrutura">Consultar a maquete conceitual atual</a>
+</aside>
+</div>
+<footer>Visualização de engenharia · CERTARE. Não substitui prancha aprovada, projeto executivo, laudo ou medição.</footer>
+</main>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const EMPTY=$('empty'),FRAME=$('viewerFrame'),MODEL=$('viewerLocal'),STATUS=$('viewerStatus');
+let objectUrl=null;
+function reset(){if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl=null;}MODEL.removeAttribute('src');MODEL.style.display='none';FRAME.removeAttribute('src');FRAME.style.display='none';EMPTY.style.display='block';$('resetView').disabled=true;}
+function status(txt){STATUS.textContent=txt;}
+function safePublishedUrl(url){
+ try{const u=new URL(url,location.href);
+  if(u.protocol!=='https:')return false;
+  return ['app.speckle.systems','speckle.xyz','app.speckle.xyz'].includes(u.hostname);
+ }catch{return false;}
+}
+async function manifest(){
+ try{const res=await fetch('modelo-manifest.json',{cache:'no-store'});if(!res.ok)throw Error('Manifesto indisponível');
+  const m=await res.json();if(m.schema_version!==1)throw Error('Versão de manifesto inválida');
+  $('modelName').textContent=m.name||'Não disponível';
+  $('modelFormat').textContent=m.format||'—';
+  $('modelRevision').textContent=m.revision||'Não homologada';
+  $('modelCoords').textContent=m.coordinates||'Não verificados';
+  $('modelApproval').textContent=m.approval_state==='geometria_validada'?'Geometria validada':'Pendente';
+  if(m.approval_state!=='geometria_validada'||!m.public_url){status('Ainda não há modelo executivo validado publicado.');return;}
+  if(m.viewer==='speckle_embed'&&safePublishedUrl(m.public_url)){
+    reset();EMPTY.style.display='none';FRAME.src=m.public_url;FRAME.style.display='block';status('Visualizador externo de modelo validado · confira a revisão da origem.');return;
+  }
+  if(m.viewer==='glb'&&typeof m.public_url==='string'&&/^modelos\/[a-zA-Z0-9_./-]+\.glb$/.test(m.public_url)&&!m.public_url.includes('..')){
+    reset();EMPTY.style.display='none';MODEL.src='../'+m.public_url;MODEL.style.display='block';$('resetView').disabled=false;status('Modelo publicado · visualização de malha GLB, sem inspeção IFC de propriedades.');return;
+  }
+  throw Error('Modelo sem visualizador autorizado. Confira o manifesto.');
+ }catch(e){status('Não foi possível validar o manifesto: '+e.message);}
+}
+$('localGlb').addEventListener('change',ev=>{
+ const file=ev.target.files?.[0];if(!file)return;
+ if(!/\.glb$/i.test(file.name)){status('Formato não aceito: escolha um arquivo .glb.');ev.target.value='';return;}
+ if(file.size>150*1024*1024){status('Arquivo acima de 150 MB: use modelo otimizado por eixos.');ev.target.value='';return;}
+ reset();objectUrl=URL.createObjectURL(file);MODEL.src=objectUrl;MODEL.style.display='block';EMPTY.style.display='none';$('resetView').disabled=false;
+ status('Prévia LOCAL: '+file.name+' ('+(file.size/1048576).toFixed(1)+' MB). Não foi publicado nem conferido.');
+});
+$('resetView').addEventListener('click',()=>MODEL.resetTurntableRotation?.());
+$('clearLocal').addEventListener('click',()=>{reset();$('localGlb').value='';manifest();});
+window.addEventListener('pagehide',()=>{if(objectUrl)URL.revokeObjectURL(objectUrl);});
+manifest();
+})();
+</script></body></html>
