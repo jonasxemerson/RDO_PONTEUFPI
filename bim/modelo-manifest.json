@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "project": "ponte-ufpi",
+  "name": "Ponte da UFPI — geometria executiva",
+  "approval_state": "aguardando_geometria_validada",
+  "format": "A definir (IFC e visualização GLB/XKT)",
+  "revision": "Não informada",
+  "coordinates": "Não verificados — exigir unidades, referencial, cotas e transformação DXF",
+  "viewer": null,
+  "public_url": null,
+  "source_documents": [],
+  "checks": {
+    "project_origin": false,
+    "axis_geolocation": false,
+    "pile_coordinates": false,
+    "section_dimensions": false,
+    "revision_identified": false,
+    "geometry_approved": false
+  },
+  "note": "Manifesto de habilitação: não habilitar visualizador nem preencher URLs antes de validar fonte e publicar geometria autorizada. Não guardar tokens ou dados privados."
+}
