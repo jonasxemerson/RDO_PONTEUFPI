@@ -1,0 +1,29 @@
+name: Validar inventário CAD — sem publicação BIM
+on:
+  push:
+    branches: [feature/auditoria-geometrica-dxf-v1-20261126]
+    paths:
+      - "scripts/auditar_dxf_projeto.py"
+      - "tests/test_auditar_dxf_projeto.py"
+      - ".github/workflows/validar-auditoria-dxf.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/auditar_dxf_projeto.py"
+      - "tests/test_auditar_dxf_projeto.py"
+      - ".github/workflows/validar-auditoria-dxf.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verificar-cad:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar biblioteca DXF
+        run: python3 -m pip install --disable-pip-version-check "ezdxf>=1.3,<2"
+      - name: Validar sintaxe
+        run: python3 -m py_compile scripts/auditar_dxf_projeto.py tests/test_auditar_dxf_projeto.py
+      - name: Testar inventário, limites e fontes
+        run: python3 -m unittest discover -s tests -p "test_auditar_dxf_projeto.py" -v
