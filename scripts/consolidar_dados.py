@@ -69,7 +69,7 @@ def build_state(root=ROOT):
                             and i.get("exact_date") is None
                             and i.get("validation") == "homologada_por_inferencia"), None)
     ordinal = {}
-    for target in ("E07", "E09"):
+    for target in ("E07", "E08", "E09"):
         matches = [e for e in approved if e["target"] == target
                    and e.get("quantity_kind") == "ordinal_em_execucao"
                    and e["state"] == "em_andamento"]
@@ -141,15 +141,27 @@ def build_state(root=ROOT):
         "identificacao_individual_de_todas": False,
         "status": "executado_em_campo_homologado",
     } if longarinas_row else None)
+    # P03/P04 tinham metades inferiores executadas em 24/11; em 26/11 foi
+    # confirmada a conclusão do restante. Não somar novamente as metades.
+    upper_pillars = next((e for e in approved if e["id"] == "wa-20261126-0829-e03-p03-p04"
+                          and e["state"] == "executado" and e["quantity"] == 2
+                          and e.get("element") == "Pilares 03 e 04"), None)
+    lower_pillars = next((e for e in approved if e["id"] == "wa-20261124-103159-e03-pilar03-04-inferior"
+                          and e["state"] == "parcial_executado" and e["quantity"] == 2), None)
+    if upper_pillars and lower_pillars:
+        # Duas outras unidades já constavam do snapshot E03; P03/P04 são as
+        # duas peças restantes, agora integralmente concretadas segundo relato.
+        pillars[2] = max(pillars[2], 4)
     partial_pillars = [e for e in approved if e["id"] == "wa-20261124-103159-e03-pilar03-04-inferior"]
     pillar_formwork = [e for e in approved if e["id"] == "wa-20261124-103159-e03-pilar03-04-formas"]
     field_pillar_status = ({
         "elementos": ["E03-P03", "E03-P04"],
         "metades_inferiores_concretadas": 2,
         "formas_superiores_montadas": len(pillar_formwork) > 0,
-        "concretagem_superior_confirmada": False,
-        "nao_adicionar_aos_pilares_integrais": True,
-        "data": partial_pillars[-1]["date"],
+        "concretagem_superior_confirmada": bool(upper_pillars and lower_pillars),
+        "nao_adicionar_aos_pilares_integrais": not bool(upper_pillars and lower_pillars),
+        "data": upper_pillars["date"] if upper_pillars and lower_pillars else partial_pillars[-1]["date"],
+        "evento_conclusao_id": upper_pillars["id"] if upper_pillars and lower_pillars else None,
     } if partial_pillars else None)
 
     # Projeção da evolução física: uma única referência por eixo.
@@ -204,7 +216,7 @@ def build_state(root=ROOT):
             "Estacas executadas em etapa não especificada não devem ser rotuladas como concretadas.",
             "Eixo 09 tem 25 estacas finalizadas em campo contra 24 previstas em projeto.",
             "A soma de execução por eixo agrega base histórica e apontamentos homologados; não é avanço contratual homogêneo.",
-            "Pilares E03-P03/P04 possuem somente a parte inferior concretada, sem confirmação dos topos.",
+            "Pilares E03-P03/P04: concretagem superior relatada como concluída em 26/11, sem ateste tecnológico.",
             "Pré-lajes registradas como incrementos não permitem total de estoque sem conciliar a base anterior.",
             "Nenhum conjunto de estacas pode ser colorido como elementos individuais concluídos sem locação validada.",
         ],
