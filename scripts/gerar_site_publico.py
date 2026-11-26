@@ -14,6 +14,7 @@ if DEST.exists():
 (DEST / "scripts").mkdir(parents=True)
 (DEST / "data").mkdir(parents=True)
 (DEST / "assets").mkdir(parents=True)
+(DEST / "bim").mkdir(parents=True)
 # Fonte única e auditável para indicadores de referência, incorporada no HTML.
 cfg = build_state(ROOT)
 ax = cfg["estacas"]["previstas_por_eixo"]
@@ -33,6 +34,15 @@ shutil.copy2(ROOT / "assets/sdu-norte-identificacao.svg", DEST / "assets/sdu-nor
 shutil.copy2(ROOT / "assets/logo-grupo-certare-oficial.svg", DEST / "assets/logo-grupo-certare-oficial.svg")
 shutil.copy2(ROOT / "scripts/modelo-4d-publico.js", DEST / "scripts/modelo-4d-publico.js")
 shutil.copy2(ROOT / "scripts/painel-v2.js", DEST / "scripts/painel-v2.js")
+# Porta BIM: publicar apenas o visualizador vazio e manifesto de controle.
+# Nenhum arquivo de modelo/IFC/GLB privado é enviado por este gerador.
+bim_manifest = json.loads((ROOT / "bim/modelo-manifest.json").read_text(encoding="utf-8"))
+assert bim_manifest["schema_version"] == 1
+assert bim_manifest["project"] == "ponte-ufpi"
+if bim_manifest["approval_state"] != "geometria_validada":
+    assert bim_manifest["public_url"] is None and bim_manifest["viewer"] is None, "Modelo não homologado não pode apontar para publicação"
+shutil.copy2(ROOT / "bim/index.html", DEST / "bim/index.html")
+shutil.copy2(ROOT / "bim/modelo-manifest.json", DEST / "bim/modelo-manifest.json")
 (DEST / ".nojekyll").write_text("", encoding="utf-8")
 
 manifest = json.loads((ROOT / "data/manifest.json").read_text(encoding="utf-8"))
