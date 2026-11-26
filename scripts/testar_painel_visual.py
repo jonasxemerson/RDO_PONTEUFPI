@@ -107,7 +107,7 @@ with sync_playwright() as p:
         assert page.locator("#axisChooser button").count() == 9
         assert page.locator("#timelineSelect").is_enabled()
         assert page.locator("#timelineContent .timeline-event").count() > 0
-        assert page.locator("#timelineSelect").input_value() == "2026-11-24"
+        assert page.locator("#timelineSelect").input_value() == "2026-11-26"
         assert page.evaluate("window.CertarePublicEvents.length > 20")
         assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).consolidacao.registros_homologados >= 41")
         assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).consolidacao.longarinas_concretadas_inferidas === 1")
