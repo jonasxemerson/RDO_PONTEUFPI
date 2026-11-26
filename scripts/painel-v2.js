@@ -54,7 +54,11 @@ function renderFieldProgress(){
      '<div class="progress-value">'+escapeHTML(x.executadas_em_campo)+' / '+escapeHTML(x.previstas_projeto)+'</div>'+
      '<div class="progress-note">Executadas em campo / previstas no projeto</div>'+
      '<p class="small-note">'+escapeHTML(note)+'</p>'+
-     '<p class="small-note">Concretadas na base histórica: '+escapeHTML(x.concretadas_na_base_anterior)+' (indicador independente)</p></div>';
+     '<p class="small-note">Concretadas na base histórica: '+escapeHTML(x.concretadas_na_base_anterior)+' (indicador independente)</p>'+
+     (CFG.consolidacao?.detalhes?.perfuracao_ordinal_em_andamento?.[code]?
+       '<p class="small-note">Estaca nº '+escapeHTML(CFG.consolidacao.detalhes.perfuracao_ordinal_em_andamento[code].position)+
+       ' em execução em '+escapeHTML(dateBR(CFG.consolidacao.detalhes.perfuracao_ordinal_em_andamento[code].date))+
+       ' (ordinal; não somar como concluída).</p>':'')+'</div>';
  });
  const beams=field.longarinas;
  if(beams)cards.push('<div class="card progress-card"><div class="eyebrow">Longarinas no pátio</div>'+
@@ -62,10 +66,13 @@ function renderFieldProgress(){
    '<div class="progress-note">Vigas concretadas · total de campo em '+escapeHTML(dateBR(beams.data))+'</div>'+
    '<p class="small-note">Não somar com as longarinas concretadas anteriormente. Não comprova protensão nem lançamento.</p></div>');
  const partial=EVOLUTION.pilares_E03_concretagem_parcial;
- if(partial)cards.push('<div class="card progress-card"><div class="eyebrow">Pilares E03-P03/P04</div>'+
-   '<div class="progress-value">'+escapeHTML(partial.metades_inferiores_concretadas)+' parciais</div>'+
-   '<div class="progress-note">Metades inferiores concretadas · partes superiores não confirmadas</div>'+
-   '<p class="small-note">Não acrescentar aos seis pilares integralmente concretados da consolidação.</p></div>');
+ if(partial){
+   const concluded=partial.concretagem_superior_confirmada===true;
+   cards.push('<div class="card progress-card"><div class="eyebrow">Pilares E03-P03/P04</div>'+
+    '<div class="progress-value">'+escapeHTML(partial.metades_inferiores_concretadas)+(concluded?' integralmente concretados':' parciais')+'</div>'+
+    '<div class="progress-note">'+(concluded?'Concretagem superior relatada em '+escapeHTML(dateBR(partial.data)):'Metades inferiores concretadas · partes superiores não confirmadas')+'</div>'+
+    '<p class="small-note">'+(concluded?'Já incluídos no acumulado dos pilares; sem ateste de controle tecnológico ou medição.':'Não acrescentar aos pilares integralmente concretados antes da conclusão.')+'</p></div>');
+ }
  if(EVOLUTION.prelajes_acrescimos_reportados_novembro!=null)cards.push(
    '<div class="card progress-card"><div class="eyebrow">Pré-lajes · produção adicional</div>'+
    '<div class="progress-value">+'+escapeHTML(EVOLUTION.prelajes_acrescimos_reportados_novembro)+'</div>'+

@@ -68,21 +68,23 @@ with sync_playwright() as p:
         assert page.locator("nav a").count() == 6
         assert page.locator("#kpiEstacas").inner_text() == "145 / 292"
         assert page.locator("#kpiConcretadas").inner_text() == "111 / 292"
-        assert page.locator("#kpiLongarinas").inner_text() == "3 / 64"
+        assert page.locator("#kpiLongarinas").inner_text() == "4 / 64"
         assert page.locator("#kpiBlocos").inner_text() == "2 / 9"
-        assert page.locator("#kpiPilares").inner_text() == "6 / 36"
+        assert page.locator("#kpiPilares").inner_text() == "8 / 36"
         assert page.locator("#noticePending").is_hidden()
         assert page.locator(".summary-row").count() == 0
         assert page.evaluate("() => !!document.getElementById('certare-config')")
         assert page.locator("#fieldProgress .progress-card").count() == 6
         assert "+218" in page.locator("#fieldProgress").inner_text()
-        assert "2 parciais" in page.locator("#fieldProgress").inner_text()
+        assert "2 integralmente concretados" in page.locator("#fieldProgress").inner_text()
         assert "25 / 24" in page.locator("#fieldProgress").inner_text()
         assert "19 / 37" in page.locator("#fieldProgress").inner_text()
         assert "13 / 32" in page.locator("#fieldProgress").inner_text()
-        assert "3" in page.locator("#fieldProgress").inner_text()
+        assert "Estaca nº 27 em execução" in page.locator("#fieldProgress").inner_text()
+        assert "Estaca nº 15 em execução" in page.locator("#fieldProgress").inner_text()
+        assert "4" in page.locator("#fieldProgress").inner_text()
         assert "não prova erro de locação" in page.locator("#fieldCaveat").inner_text()
-        assert page.evaluate("JSON.parse(document.getElementById('certare-config').textContent).consolidacao.registros_homologados === 59")
+        assert page.evaluate("JSON.parse(document.getElementById('certare-config').textContent).consolidacao.registros_homologados === 69")
         assert page.locator("#axisProgress button").count() == 9
         assert page.locator('[data-progress-mode="execucao"]').get_attribute("aria-pressed") == "true"
         assert page.locator("#axisProgress button[data-axis='7'] .axis-progress-count").inner_text() == "19 / 37"
@@ -105,7 +107,7 @@ with sync_playwright() as p:
         assert page.locator("#axisChooser button").count() == 9
         assert page.locator("#timelineSelect").is_enabled()
         assert page.locator("#timelineContent .timeline-event").count() > 0
-        assert page.locator("#timelineSelect").input_value() == "2026-11-24"
+        assert page.locator("#timelineSelect").input_value() == "2026-11-26"
         assert page.evaluate("window.CertarePublicEvents.length > 20")
         assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).consolidacao.registros_homologados >= 41")
         assert page.evaluate("JSON.parse(document.querySelector('#certare-config').textContent).consolidacao.longarinas_concretadas_inferidas === 1")

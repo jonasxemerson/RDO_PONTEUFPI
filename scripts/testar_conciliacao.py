@@ -20,8 +20,8 @@ assert c["registros_totais"] == len(events)
 assert c["registros_homologados"] + c["registros_pendentes"] == len(events)
 assert c["registros_homologados"] >= 41
 assert c["registros_pendentes"] == 1, "Única pendência legada ambígua deve permanecer separada"
-assert c["registros_homologados"] == 59, "18 relatos de campo do dia 24 devem estar homologados"
-assert state["data_referencia"] == "2026-11-24", "Data da última homologação divergente"
+assert c["registros_homologados"] == 69, "Dez registros reconciliados do dia 26 devem estar homologados"
+assert state["data_referencia"] == "2026-11-26", "Data da última homologação divergente"
 field = c["execucao_em_campo"]
 assert field["sem_contagem_dupla"] is True
 piles = field["estacas_por_eixo"]
@@ -32,9 +32,9 @@ assert piles["E09"]["previstas_projeto"] == 24
 assert piles["E09"]["diferenca_executado_menos_previsto"] == 1
 assert piles["E09"]["locacao_conforme_projeto"] == "nao_verificada"
 assert piles["E09"]["participacao_na_resistencia"] == "nao_determinada"
-assert field["longarinas"]["concretadas_em_campo"] == 3
+assert field["longarinas"]["concretadas_em_campo"] == 4
 assert field["pilares_parciais_E03"]["metades_inferiores_concretadas"] == 2
-assert field["pilares_parciais_E03"]["concretagem_superior_confirmada"] is False
+assert field["pilares_parciais_E03"]["concretagem_superior_confirmada"] is True
 
 # O indicador de evolução usa a última execução homologada por eixo, jamais somente
 # os 111 da base histórica ou a soma indiscriminada dos totais de diferentes dias.
@@ -52,10 +52,10 @@ assert [x["origem_execucao"] for x in evo["estacas_por_eixo"][6:]] == ["campo_ho
 assert [x["origem_execucao"] for x in evo["estacas_por_eixo"][:6]] == ["base_historica"]*6
 assert evo["estacas_por_eixo"][8]["excedente_executado"] == 1
 assert evo["estacas_por_eixo"][8]["participacao_resistente"] == "nao_determinada"
-assert evo["total_longarinas_concretadas_em_campo"] == 3
-assert evo["total_pilares_integralmente_concretados_registrados"] == 6
+assert evo["total_longarinas_concretadas_em_campo"] == 4
+assert evo["total_pilares_integralmente_concretados_registrados"] == 8
 assert evo["total_blocos_concluidos_registrados"] == 2
-assert evo["pilares_E03_concretagem_parcial"]["concretagem_superior_confirmada"] is False
+assert evo["pilares_E03_concretagem_parcial"]["concretagem_superior_confirmada"] is True
 assert evo["prelajes_acrescimos_reportados_novembro"] == 218
 assert evo["prelajes_estoque_total"] is None
 assert len({x["eixo"] for x in evo["estacas_por_eixo"]}) == 9
@@ -80,6 +80,8 @@ assert not any(e["id"] == "wa-20261117-0852-e07-camisas-ambiguo"
                for e in events), "Mensagem ambígua foi homologada indevidamente"
 assert c["base_historica_ainda_nao_auditada_por_peca"] is True
 assert state["estacas"]["historicas_por_eixo"][8] < details["estacas_feitas_etapa_indefinida"]["E09"]["quantity"], "Etapas indevidas"
+assert c["detalhes"]["perfuracao_ordinal_em_andamento"]["E07"]["position"] == 27
+assert c["detalhes"]["perfuracao_ordinal_em_andamento"]["E08"]["position"] == 15
 assert c["detalhes"]["prelajes_acrescimos_nao_conciliados"], "Acréscimos de pré-lajes perdidos"
 html = (root / "painel-cliente.html").read_text(encoding="utf-8")
 assert "<!-- CERTARE_CONFIG -->" in html
